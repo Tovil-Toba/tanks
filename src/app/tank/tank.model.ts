@@ -22,6 +22,7 @@ export interface Tank {
   name?: string;
   shellType: ShellTypeEnum;
   shellImpactType: ShellImpactTypeEnum;
+  shellSpeed: number;
   speed: number;
   turboMultiplier: number;
   trackType: TrackTypeEnum;

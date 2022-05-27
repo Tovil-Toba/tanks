@@ -7,7 +7,7 @@
     "turbo": ["ShiftLeft", "ShiftRight"],
     "up": ["KeyW", "ArrowUp"]
   },
-  "fps": 30,
+  "fps": 60,
   "interval": 100,
   "isDebugMode": false,
   "tank": {
@@ -20,6 +20,7 @@
     "hullColor": "A",
     "hullType": 1,
     "shellType": "HEAVY",
+    "shellSpeed": 10,
     "shellImpactType": "A",
     "speed": 1,
     "trackType": 1,
@@ -28,6 +29,7 @@
   },
   "world": {
     "size": 500,
+    "showBlastTrail": true,
     "squaresPerSide": 10,
     "type": "B"
   }

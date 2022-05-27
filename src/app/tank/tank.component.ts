@@ -49,6 +49,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   @Input() name?: string;
   @Input() shellType?: ShellTypeEnum;
   @Input() shellImpactType?: ShellImpactTypeEnum;
+  @Input() shellSpeed: number;
   @Input() speed: number;
   @Input() size!: number;
   // @Input() tick!: number | null;
@@ -103,6 +104,8 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.isTurboActive = false;
     this.left = 0;
     this.shellType = settings.tank.shellType;
+    this.shellImpactType = settings.tank.shellImpactType;
+    this.shellSpeed = settings.tank.shellSpeed;
     this.size = settings.world.size / settings.world.squaresPerSide;
     this.speed = settings.tank.speed;
     this.speedMultiplier = 1;
@@ -333,10 +336,8 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
       return;
     }
 
-    // TODO: прописать скорость для снарядов также
-    const speed = this.settings.convertSpeed(this.speed);
-
-    const distance = this.size * speed * this.speedMultiplier;
+    const convertedSpeed = this.settings.convertSpeed(this.speed);
+    const distance = this.size * convertedSpeed * this.speedMultiplier;
     const bottom = this.top + this.size;
     const right = this.left + this.size;
     let directionSquares: Array<Square> = [];

@@ -125,7 +125,8 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
       return;
     }
 
-    const distance = this.size * this.speed;
+    const convertedSpeed = this.settings.convertSpeed(this.speed);
+    const distance = this.settings.squareSize * convertedSpeed;
     const bottom = this.top + this.size;
     const right = this.left + this.size;
     const directionSquares: Array<Square> = this.worldService.squares.filter((square) => (

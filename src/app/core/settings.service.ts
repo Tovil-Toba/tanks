@@ -98,6 +98,10 @@ export class SettingsService {
     }
   }
 
+  get squareSize(): number {
+    return this._world.size / this._world.squaresPerSide;
+  }
+
   get tank(): Tank {
     return this._tank;
   }
@@ -139,8 +143,11 @@ export class SettingsService {
       this._tank.shellImpactType = shellImpactType;
     }
 
-    const speed = +tank.speed;
-    if (speed > 0 && speed <= 2) {
+    if (typeof tank.shellSpeed === 'number' && tank.shellSpeed > 0) {
+      this._tank.shellSpeed = tank.shellSpeed;
+    }
+
+    if (typeof tank.speed === 'number' && tank.speed > 0 && tank.speed <= 2) {
       this._tank.speed = tank.speed;
     }
 
@@ -171,6 +178,10 @@ export class SettingsService {
   set world(world: any) {
     if (typeof world.size === 'number') {
       this._world.size = world.size;
+    }
+
+    if (typeof world.showBlastTrail === 'boolean') {
+      this._world.showBlastTrail = world.showBlastTrail;
     }
 
     if (typeof world.squaresPerSide === 'number') {

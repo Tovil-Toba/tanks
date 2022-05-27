@@ -21,7 +21,7 @@ const settings: Settings = {
     turbo: ['ShiftLeft', 'ShiftRight'],
     up: ['KeyW', 'ArrowUp'],
   },
-  fps: 30,
+  fps: 60,
   interval: 100,
   isDebugMode: false,
   tank: {
@@ -35,6 +35,7 @@ const settings: Settings = {
     hullType: HullTypeEnum.One,
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
+    shellSpeed: 10,
     speed: 1, // 1 - тяжелый, 1.5 - средний, 2 - легкий. За единицу скорости принято количество миллисекунд в
               // одном кадре. Т.е. при 30 кадрах в секунду скорость 1 будет преобразована в 1/30 = 0.033.
     turboMultiplier: 1.5,
@@ -44,6 +45,7 @@ const settings: Settings = {
   },
   world: {
     size: 500,
+    showBlastTrail: true,
     squaresPerSide: 10,
     type: WorldTypeEnum.B
   }
