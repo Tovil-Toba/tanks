@@ -1,0 +1,34 @@
+{
+  "controls": {
+    "down": ["KeyS", "ArrowDown"],
+    "fire": ["Enter", "Space"],
+    "left": ["KeyA", "ArrowLeft"],
+    "right": ["KeyD", "ArrowRight"],
+    "turbo": ["ShiftLeft", "ShiftRight"],
+    "up": ["KeyW", "ArrowUp"]
+  },
+  "fps": 30,
+  "interval": 100,
+  "isDebugMode": false,
+  "tank": {
+    "armor": "HEAVY",
+    "color": "A",
+    "explosionType": "A",
+    "flashType": "A",
+    "gunColor": "A",
+    "gunType": 1,
+    "hullColor": "A",
+    "hullType": 1,
+    "shellType": "HEAVY",
+    "shellImpactType": "A",
+    "speed": 1,
+    "trackType": 1,
+    "turretType": 1,
+    "type": "HEAVY"
+  },
+  "world": {
+    "size": 500,
+    "squaresPerSide": 10,
+    "type": "B"
+  }
+}

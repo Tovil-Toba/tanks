@@ -1,0 +1,22 @@
+<div
+  style="box-sizing: border-box;"
+  class="bg-no-repeat bg-cover z-2"
+  [style.background-image]="backgroundImage"
+  [style.height.px]="size"
+  [style.width.px]="size"
+  [style]="{
+    border: settings.isDebugMode ? isActive ? '0.5px solid white' : '0.5px solid #5d513f' : '',
+    outline: settings.isDebugMode ? '1px solid' : ''
+  }"
+  [style.outline-color]="isDestroyable ? 'red' : 'purple'"
+  [style.outline-offset.px]="-movementDelta"
+>
+  <img *ngIf="image" [src]="image" class="w-full h-full field" alt="">
+  <app-explosion
+    *ngIf="isExplode"
+    [showBlastTrail]="explosionType !== collisionExplosionType"
+    [type]="explosionType"
+  ></app-explosion>
+  <!--<span style="color: red">{{index}}</span>-->
+  <!--<span style="color: red">{{size}}</span>-->
+</div>

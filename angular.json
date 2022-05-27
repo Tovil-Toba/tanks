@@ -31,6 +31,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/primeflex/primeflex.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -103,9 +104,21 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
-  "defaultProject": "tanks"
+  "defaultProject": "tanks",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

@@ -1,0 +1,35 @@
+<div class="relative">
+  <div
+    class=""
+    style="border: 1px solid gray;"
+    [style.width.px]="size"
+    [style.height.px]="size"
+    [style.background-color]="backgroundColor"
+  >
+    <div class="w-full h-full flex flex-wrap align-content-start">
+      <app-tank
+        [color]="tankColor"
+        [explosionType]="explosionType"
+        [gunType]="gunType"
+        [flashType]="flashType"
+        [hullType]="hullType"
+        [shellType]="shellType"
+        [shellImpactType]="shellImpactType"
+        [size]="squareSize"
+        [speed]="speed"
+        [trackType]="trackType"
+        [turboMultiplier]="turboMultiplier"
+        [turretType]="turretType"
+        [worldSize]="size"
+      ></app-tank><!-- [tick]="tick$ | async" -->
+
+      <app-square
+        *ngFor="let square of worldService.squares"
+        [index]="square.index"
+        [size]="squareSize"
+        [type]="square.type"
+        [worldType]="type"
+      ></app-square><!-- [tick]="tick$ | async" -->
+    </div>
+  </div>
+</div>

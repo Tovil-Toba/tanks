@@ -1,0 +1,41 @@
+<!-- Левая гусеница -->
+<app-track
+  [hullType]="type"
+  [side]="trackSideEnum.Left"
+  [speed]="speed"
+  [type]="trackType"
+></app-track><!-- [tick]="tick" -->
+
+<!-- Правая гусеница -->
+<app-track
+  [hullType]="type"
+  [side]="trackSideEnum.Right"
+  [speed]="speed"
+  [type]="trackType"
+></app-track><!-- [tick]="tick" -->
+
+<!-- Выхлоп -->
+<app-exhaust
+  [isRotating]="isRotating"
+  [isTurboActive]="isTurboActive"
+  [hullType]="type"
+  [side]="exhaustSideEnum.Left"
+  [speed]="speed"
+
+></app-exhaust><!-- [tick]="tick" -->
+
+<app-exhaust
+  [isRotating]="isRotating"
+  [isTurboActive]="isTurboActive"
+  [hullType]="type"
+  [side]="exhaustSideEnum.Right"
+  [speed]="speed"
+
+></app-exhaust><!-- [tick]="tick" -->
+
+<!-- Корпус -->
+<img
+  src="assets/images/craftpix/Hulls_Color_{{color}}/Hull_0{{type}}.png"
+  class="w-full h-full absolute z-4"
+  alt=""
+>

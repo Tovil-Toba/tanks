@@ -1,0 +1,60 @@
+<div
+  class="absolute z-3"
+  [class.rotate-0]="direction === directionEnum.Up"
+  [class.rotate-45]="direction === directionEnum.UpRight"
+  [class.-rotate-45]="direction === directionEnum.UpLeft"
+  [class.rotate-90]="direction === directionEnum.Right"
+  [class.-rotate-90]="direction === directionEnum.Left"
+  [class.rotate-135]="direction === directionEnum.DownRight"
+  [class.-rotate-135]="direction === directionEnum.DownLeft"
+  [class.rotate-180]="direction === directionEnum.Down"
+  [style.height.px]="size"
+  [style.width.px]="size"
+  [style.top.px]="top"
+  [style.left.px]="left"
+><!-- [style]="{ border: settings.isDebugMode ? '1px solid blue' : '' }" -->
+  <div
+    *ngIf="settings.isDebugMode"
+    [style.outline]="'1px solid blue'"
+    [style.outline-offset]="-movementDelta/2 + 'px'"
+    class="absolute w-full h-full z-5"
+  ></div>
+
+  <!-- Корпус -->
+  <app-hull
+    [color]="hullColor"
+    [speed]="currentSpeed"
+    [isRotating]="isRotating"
+    [isTurboActive]="isTurboActive"
+    [trackType]="trackType"
+    [type]="hullType"
+  ></app-hull><!-- [tick]="tick" -->
+
+  <!-- Башня -->
+  <app-turret
+    [color]="turretColor"
+    [type]="turretType"
+  ></app-turret>
+
+  <!-- Пушка -->
+  <app-gun
+    [color]="gunColor"
+    [flashType]="flashType"
+    [trigger]="fireTrigger"
+    [type]="gunType"
+  ></app-gun>
+</div>
+
+<!-- Снаряд -->
+<app-shell
+  [explosionType]="explosionType"
+  [impactType]="shellImpactType"
+  [initialDirection]="direction"
+  [initialLeft]="this.left + (this.size / 4)"
+  [initialTop]="this.top + (this.size / 4)"
+  [(isVisible)]="isShellVisible"
+  [size]="size / 2"
+  [speed]="0.5"
+  [type]="shellType"
+  [worldSize]="worldSize"
+></app-shell><!-- [tick]="tick" -->

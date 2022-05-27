@@ -1,0 +1,27 @@
+<div
+  class="absolute"
+  [class.hidden]="!isVisible"
+  [class.rotate-0]="direction === directionEnum.Up"
+  [class.rotate-90]="direction === directionEnum.Right"
+  [class.rotate-180]="direction === directionEnum.Down"
+  [class.-rotate-90]="direction === directionEnum.Left"
+  [style.height.px]="size"
+  [style.width.px]="size"
+  [style.top.px]="top"
+  [style.left.px]="left"
+  [style]="{ outline: settings.isDebugMode ? '1px solid red' : '' }"
+  [style.outline-offset]="-movementDelta + 'px'"
+>
+  <img
+    *ngIf="!isImpact"
+    src="assets/images/craftpix/Effects/{{shellFileName}}.png"
+    class="h-full w-full"
+    alt=""
+  >
+  <app-shell-impact
+    *ngIf="isImpact"
+    [interval]="impactInterval"
+    [type]="impactType"
+  ></app-shell-impact>
+</div>
+

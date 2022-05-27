@@ -1,0 +1,13 @@
+<ng-template
+  [ngTemplateOutlet]="shell"
+  [ngTemplateOutletContext]="{ frame: frame$ | async }"
+></ng-template>
+<ng-template #shell let-frame=frame>
+  <img
+    *ngIf="frame !== null && frame < framesCount"
+    src="assets/images/craftpix/Effects/Sprites/Sprite_Fire_Shots_Shot_{{type}}_00{{frame}}.png"
+    [style]="{ height, width: width, left, top }"
+    class="absolute z-5"
+    alt=""
+  >
+</ng-template>
