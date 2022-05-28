@@ -5,7 +5,7 @@
 <ng-template #shellImpact let-frame=frame>
   <img
     *ngIf="frame !== null && frame < framesCount"
-    src="assets/images/craftpix/Effects/Sprites/Sprite_Fire_Shots_Impact_{{type}}_00{{frame}}.png"
+    src="{{shellImpactImagePath}}/Sprite_Fire_Shots_Impact_{{type}}_00{{frame}}.png"
     class="absolute z-5 w-full h-full"
     alt=""
   >

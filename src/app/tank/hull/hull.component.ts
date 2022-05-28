@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 
+import { CRAFT_PIX_IMAGES_PATH } from '../../core/images.constants';
 import { ExhaustSideEnum } from '../exhaust/exhaust-side.enum';
 import { HullTypeEnum } from './hull-type.enum';
 import { SettingsService } from '../../core/settings.service';
@@ -21,6 +22,7 @@ export class HullComponent {
   @Input() trackType?: TrackTypeEnum;
   @Input() type?: HullTypeEnum;
 
+  readonly craftPixImagesPath = CRAFT_PIX_IMAGES_PATH;
   exhaustSideEnum: typeof ExhaustSideEnum;
   trackSideEnum: typeof TrackSideEnum;
 

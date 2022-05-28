@@ -1,6 +1,6 @@
 <ng-container *ngIf="frame !== null">
   <img
-    src="assets/images/craftpix/Effects/Sprites/Sprite_Effects_Exhaust_0{{type}}_00{{frame}}.png"
+    src="{{exhaustImagePath}}/Sprite_Effects_Exhaust_0{{type}}_00{{frame}}.png"
     class="absolute w-full h-full"
     [style.top]="style.top"
     [style.left]="side === exhaustSideEnum.Left && style.offset"

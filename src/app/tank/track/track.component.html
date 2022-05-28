@@ -1,5 +1,5 @@
 <img
-  src="assets/images/craftpix/Tracks/Track_{{type}}_A.png"
+  src="{{trackImagePath}}/Track_{{type}}_A.png"
   class="absolute"
   [class.hidden]="speed > 0 && tick && tick % 2 === 0"
   [style]="{ height: style.height, bottom: style.bottom }"
@@ -8,7 +8,7 @@
   alt=""
 >
 <img
-  src="assets/images/craftpix/Tracks/Track_{{type}}_B.png"
+  src="{{trackImagePath}}/Track_{{type}}_B.png"
   class="absolute"
   [class.hidden]="speed > 0 && tick && tick % 2 === 1"
   [style]="{ height: style.height, bottom: style.bottom }"

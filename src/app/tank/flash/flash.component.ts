@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { map, Observable, of, take, timer } from 'rxjs';
 
 import { FlashTypeEnum } from './flash-type.enum';
+import { FLASH_IMAGE_PATH } from '../../core/images.constants';
 import { SettingsService } from '../../core/settings.service';
 
 @Component({
@@ -18,6 +19,7 @@ export class FlashComponent implements OnChanges {
   @Input() type?: FlashTypeEnum;
   @Input() width?: string;
 
+  readonly flashImagePath = FLASH_IMAGE_PATH;
   frame$: Observable<number | null>;
   readonly framesCount = 4;
 

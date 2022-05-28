@@ -5,13 +5,13 @@
 <ng-template #explosion let-frame=frame>
   <img
     *ngIf="frame !== null && frame < framesCount"
-    src="{{imagePath}}/Explosion_{{type}}_0{{frame}}.png"
+    src="{{explosionImagePath}}/Explosion_{{type}}_0{{frame}}.png"
     class="w-full h-full z-5 relative"
     alt=""
   >
   <img
     *ngIf="showBlastTrail && frame >= framesCount"
-    src="assets/images/craftpix/Decor_Items/Blast_Trail_0{{blastTrailType}}.png"
+    [src]="isCollision ? collisionImage : blastTrailImage"
     class="w-full h-full z-2 relative opacity-70"
     alt=""
   >

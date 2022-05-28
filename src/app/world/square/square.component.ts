@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import { BLOCK_IMAGE_PATH, GROUND_IMAGE_PATH, HEDGEHOG_IMAGE_PATH } from '../../core/images.constants';
 import { ExplosionTypeEnum } from '../explosion/explosion-type.enum';
 import { randomIntFromInterval } from '../../shared/utils';
 import { selectTick } from '../../store/tick.selectors';
@@ -105,46 +106,23 @@ export class SquareComponent implements OnDestroy, OnInit {
         console.log('Impact square', impactSquare);
       }
 
-      let explosionTimerId: number;
+      const explosionTimerId = setTimeout(() => {
+        if (directionSquare) {
+          this.explosionType = this.collisionExplosionType;
+        } else {
+          this.explosionType = impactSquare?.explosionType as ExplosionTypeEnum;
+        }
 
-      switch (this.type) {
-        /*case SquareTypeEnum.Block:
-        case SquareTypeEnum.Stump:
-        case SquareTypeEnum.Rock:
-          switch(this.worldType) {
-            case WorldTypeEnum.A:
-              this.currentType = SquareTypeEnum.Rock;
-              this.image = `assets/images/craftpix/Props/Rock_0${randomIntFromInterval(1, 3)}.png`;
-              break;
-            case WorldTypeEnum.B:
-              this.currentType = SquareTypeEnum.Stump;
-              this.image = `assets/images/craftpix/Props/Stump.png`;
-              break;
-            case WorldTypeEnum.C:
-              this.currentType = SquareTypeEnum.Rock;
-              this.image = `assets/images/craftpix/Props/Rock_0${randomIntFromInterval(1, 3)}.png`;
-              break;
-          }
-          break;*/
-        default:
-          explosionTimerId = setTimeout(() => {
-            if (directionSquare) {
-              this.explosionType = this.collisionExplosionType;
-            } else {
-              this.explosionType = impactSquare?.explosionType as ExplosionTypeEnum;
-            }
+        //if (impactSquare) {
+        this.isExplode = true;
+        //}
 
-            //if (impactSquare) {
-            this.isExplode = true;
-            //}
-
-            this.type = SquareTypeEnum.Empty;
-            this.image = undefined;
-            this.worldService.squares[this.index].type = SquareTypeEnum.Empty;
-            this.worldService.squares[this.index].isDestroyable = false;
-            clearTimeout(explosionTimerId);
-          }, this.settings.interval);
-      }
+        this.type = SquareTypeEnum.Empty;
+        this.image = undefined;
+        this.worldService.squares[this.index].type = SquareTypeEnum.Empty;
+        this.worldService.squares[this.index].isDestroyable = false;
+        clearTimeout(explosionTimerId);
+      }, this.settings.interval);
     }
   }
 
@@ -153,18 +131,18 @@ export class SquareComponent implements OnDestroy, OnInit {
 
     switch (this.type) {
       case SquareTypeEnum.Block:
-        image = `assets/images/craftpix/Blocks/Block_${this.worldType}_02.png`;
+        image = `${BLOCK_IMAGE_PATH}/Block_${this.worldType}_02.png`;
         break;
       case SquareTypeEnum.Empty:
         image = undefined;
         break;
       case SquareTypeEnum.Hedgehog:
-        image = `assets/images/craftpix/Decor_Items/Czech_Hdgehog_A.png`;
+        image = `${HEDGEHOG_IMAGE_PATH}/Czech_Hdgehog_A.png`;
         break;
     }
 
     this.image = image;
     const rand = randomIntFromInterval(1, 2);
-    this.backgroundImage = `url(assets/images/craftpix/Tiles/Ground_Tile_0${rand}_${this.worldType}.png)`;
+    this.backgroundImage = `url(${GROUND_IMAGE_PATH}/Ground_Tile_0${rand}_${this.worldType}.png)`;
   }
 }

@@ -6,6 +6,7 @@ import { HullTypeEnum } from '../hull/hull-type.enum';
 import { selectTick } from '../../store/tick.selectors';
 import { SettingsService } from '../../core/settings.service';
 import { TrackSideEnum } from './track-side.enum';
+import { TRACK_IMAGE_PATH } from '../../core/images.constants';
 import { TRACK_STYLES, TrackStyle, TrackStyles } from './track-styles';
 import { TrackTypeEnum } from './track-type.enum';
 
@@ -22,6 +23,7 @@ export class TrackComponent implements OnDestroy, OnInit {
   @Input() type?: TrackTypeEnum;
 
   tick: number;
+  readonly trackImagePath = TRACK_IMAGE_PATH;
   readonly trackSide: typeof TrackSideEnum;
   readonly trackStyles: TrackStyles;
 

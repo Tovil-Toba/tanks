@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
+import { EXHAUST_IMAGE_PATH } from '../../core/images.constants';
 import { ExhaustSideEnum } from './exhaust-side.enum';
 import { EXHAUST_STYLES, ExhaustStyle, ExhaustStyles } from './exhaust-styles';
 import { ExhaustTypeEnum } from './exhaust-type.enum';
@@ -22,6 +23,7 @@ export class ExhaustComponent implements OnInit, OnDestroy {
   @Input() speed!: number;
   // @Input() tick!: number | null;
 
+  readonly exhaustImagePath = EXHAUST_IMAGE_PATH;
   readonly exhaustSideEnum: typeof ExhaustSideEnum;
   readonly exhaustStyles: ExhaustStyles;
   frame: number | null;

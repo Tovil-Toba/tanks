@@ -6,6 +6,7 @@ import { DirectionEnum } from '../../shared/direction.enum';
 import { ExplosionTypeEnum } from '../../world/explosion/explosion-type.enum';
 import { selectTick } from '../../store/tick.selectors';
 import { SettingsService } from '../../core/settings.service';
+import { SHELL_IMAGE_PATH } from '../../core/images.constants';
 import { ShellTypeEnum } from './shell-type.enum';
 import { ShellImpactTypeEnum } from './shell-impact/shell-impact-type.enum';
 import { Square } from '../../world/square/square.model';
@@ -36,6 +37,7 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
   readonly impactInterval: number;
   isImpact: boolean;
   left: number;
+  readonly shellImagePath = SHELL_IMAGE_PATH;
   top: number;
 
   private readonly shellFileNames: Record<ShellTypeEnum, string>;

@@ -14,7 +14,7 @@
   <img *ngIf="image" [src]="image" class="w-full h-full field" alt="">
   <app-explosion
     *ngIf="isExplode"
-    [showBlastTrail]="settings.world.showBlastTrail && explosionType !== collisionExplosionType"
+    [showBlastTrail]="settings.world.showBlastTrail"
     [type]="explosionType"
   ></app-explosion>
   <!--<span style="color: red">{{index}}</span>-->

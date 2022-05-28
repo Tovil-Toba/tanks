@@ -3,6 +3,7 @@ import { map, Observable, of, take, timer } from 'rxjs';
 
 import { SettingsService } from '../../../core/settings.service';
 import { ShellImpactTypeEnum } from './shell-impact-type.enum';
+import { SHELL_IMPACT_IMAGE_PATH } from '../../../core/images.constants';
 
 @Component({
   selector: 'app-shell-impact',
@@ -15,6 +16,7 @@ export class ShellImpactComponent implements OnInit {
 
   frame$: Observable<number | null>;
   readonly framesCount = 4;
+  readonly shellImpactImagePath = SHELL_IMPACT_IMAGE_PATH;
 
   constructor(private settings: SettingsService) {
     this.frame$ = of(null);

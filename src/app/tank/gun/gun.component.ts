@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { map, take, timer, of, Observable } from 'rxjs';
 
+import { CRAFT_PIX_IMAGES_PATH } from '../../core/images.constants';
 import { FlashTypeEnum } from '../flash/flash-type.enum';
 import { GunTypeEnum } from './gun-type.enum';
 import { SettingsService } from '../../core/settings.service';
@@ -18,6 +19,7 @@ export class GunComponent implements OnChanges {
   @Input() trigger: number | null;
   @Input() type?: GunTypeEnum;
 
+  readonly craftPixImagesPath = CRAFT_PIX_IMAGES_PATH;
   top$: Observable<number>;
 
   constructor(private settings: SettingsService) {
