@@ -28,6 +28,7 @@
     "type": "HEAVY"
   },
   "world": {
+    "collisionExplosionType": "H",
     "size": 500,
     "showBlastTrail": true,
     "squaresPerSide": 10,

@@ -176,6 +176,12 @@ export class SettingsService {
   }
 
   set world(world: any) {
+    if (world.collisionExplosionType in ExplosionTypeEnum &&
+      ![ExplosionTypeEnum.A, ExplosionTypeEnum.B, ExplosionTypeEnum.C].includes(world.collisionExplosionType)
+    ) {
+      this._world.collisionExplosionType = world.collisionExplosionType;
+    }
+
     if (typeof world.size === 'number') {
       this._world.size = world.size;
     }

@@ -43,7 +43,7 @@ export class SquareComponent implements OnDestroy, OnInit {
     private readonly worldService: WorldService
   ) {
     this.explosionType = settings.tank.explosionType;
-    this.collisionExplosionType = ExplosionTypeEnum.H; // todo: вынести в настройки
+    this.collisionExplosionType = settings.world.collisionExplosionType;
     this.isExplode = false;
     this.size = settings.world.size / settings.world.squaresPerSide;
     this.squareTypeEnum = SquareTypeEnum;

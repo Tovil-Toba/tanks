@@ -51,7 +51,7 @@ export class ExplosionComponent implements OnInit {
   }
 
   get isCollision(): boolean {
-    return this.type === ExplosionTypeEnum.H;
+    return this.type === this.settings.world.collisionExplosionType;
   }
 
   get explosionImagePath(): string {

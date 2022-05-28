@@ -44,6 +44,7 @@ const settings: Settings = {
     type: TankTypeEnum.Heavy
   },
   world: {
+    collisionExplosionType: ExplosionTypeEnum.H,
     size: 500,
     showBlastTrail: true,
     squaresPerSide: 10,
