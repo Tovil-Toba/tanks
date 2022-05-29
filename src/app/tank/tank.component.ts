@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
@@ -40,11 +40,14 @@ import { WorldService } from '../world/world.service';
 export class TankComponent implements OnChanges, OnDestroy, OnInit {
   @Input() armor?;
   @Input() color?: TankColorEnum;
+  @Input() directionControl?: DirectionEnum;
   @Input() explosionType?: ExplosionTypeEnum;
   @Input() flashType?: FlashTypeEnum;
   @Input() gunColor?: TankColorEnum;
   @Input() gunType?: GunTypeEnum;
   @Input() hullColor?: TankColorEnum;
+  @Input() isFireControl?: boolean;
+  @Input() isTurboControl?: boolean;
   @Input() hullType?: HullTypeEnum;
   @Input() name?: string;
   @Input() shellType?: ShellTypeEnum;
@@ -62,7 +65,6 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
   currentSpeed: number;
   direction: DirectionEnum;
-  readonly explosionTypeEnum: typeof ExplosionTypeEnum;
   readonly directionEnum: typeof DirectionEnum;
   fireTrigger: number | null;
   isRotating: boolean;
@@ -85,9 +87,9 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   constructor(
-    public readonly settings: SettingsService,
-    private readonly store: Store,
-    private readonly worldService: WorldService
+    public settings: SettingsService,
+    private store: Store,
+    private worldService: WorldService
   ) {
     this.armor = settings.tank.armor;
     this.color = settings.tank.color;
@@ -95,7 +97,6 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.direction = DirectionEnum.Up;
     this.directionEnum = DirectionEnum;
     this.explosionType = settings.tank.explosionType;
-    this.explosionTypeEnum = ExplosionTypeEnum;
     this.fireTrigger = 0;
     this.flashType = settings.tank.flashType;
     this.gunType = settings.tank.gunType;
@@ -125,129 +126,6 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.tick$ = this.store.select(selectTick);
   }
 
-  @HostListener('window:keydown', ['$event'])
-  handleKeyDown(event: KeyboardEvent): void {
-    if (this.isDirectionButton(event) && !this.isRotating) {
-      this.previousDirection = this.direction;
-
-      if (this.isDownButton(event)) {
-        switch (this.previousDirection) {
-          case DirectionEnum.Up:
-            upDown((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            }, 100); // TODO: вот тут и везде ниже прописать множитель для поворота
-            break;
-          case DirectionEnum.Left:
-            leftDown((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Right:
-            rightDown((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          default:
-            this.direction = DirectionEnum.Down;
-            this.isRotating = false;
-        }
-      } else if (this.isLeftButton(event)) {
-        switch (this.previousDirection) {
-          case DirectionEnum.Up:
-            upLeft((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Right:
-            rightLeft((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Down:
-            downLeft((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          default:
-            this.direction = DirectionEnum.Left;
-            this.isRotating = false;
-        }
-      } else if (this.isRightButton(event)) {
-        switch (this.previousDirection) {
-          case DirectionEnum.Up:
-            upRight((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Left:
-            leftRight((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Down:
-            downRight((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          default:
-            this.direction = DirectionEnum.Right;
-            this.isRotating = false;
-        }
-      } else if (this.isUpButton(event)) {
-        switch (this.previousDirection) {
-          case DirectionEnum.Down:
-            downUp((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Left:
-            leftUp((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          case DirectionEnum.Right:
-            rightUp((direction, isRotating) => {
-              this.direction = direction;
-              this.isRotating = isRotating;
-            });
-            break;
-          default:
-            this.direction = DirectionEnum.Up;
-            this.isRotating = false;
-        }
-      }
-
-      this.currentSpeed = this.speed;
-    } else if (!this.isReloading && !this.isTurboActive && this.isFireButton(event)) {
-      console.log('Fire');
-      this.fire();
-    } else if (!this.isSlowdownActive && this.isTurboButton(event)) {
-      this.speedMultiplier = this.turboMultiplier;
-      this.isTurboActive = true;
-    }
-  }
-
-  @HostListener('window:keyup', ['$event'])
-  handleKeyUp(event: KeyboardEvent): void {
-    if (this.isDirectionButton(event)) {
-      this.currentSpeed = 0;
-    } else if (this.isTurboButton(event)) {
-      this.speedMultiplier = 1;
-      this.isTurboActive = false;
-    }
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     // Если tick передаётся пропсом
     /*if (this.currentSpeed > 0) {
@@ -256,6 +134,18 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
     if (changes['size']?.currentValue !== changes['size']?.previousValue) {
       this.recalculatePosition(changes['size']?.previousValue);
+    }
+
+    if (changes['directionControl']?.currentValue !== changes['directionControl']?.previousValue) {
+      this.handleDirectionControl();
+    }
+
+    /*if (changes['isFireControl']?.currentValue !== changes['isFireControl']?.previousValue) {
+      this.handleFireControl();
+    }*/
+
+    if (changes['isTurboControl']?.currentValue !== changes['isTurboControl']?.previousValue) {
+      this.handleTurboControl();
     }
   }
 
@@ -271,6 +161,11 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
         if (this.currentSpeed > 0) {
           this.move();
+        }
+
+        // Вынесено сюда, чтобы стрельба продолжалась при зажатой кнопке
+        if (this.isFireControl) {
+          this.handleFireControl();
         }
       })
     );
@@ -299,36 +194,137 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.fireTrigger = this.tick;
   }
 
-  private isDirectionButton(event: KeyboardEvent): boolean {
-    return this.isDownButton(event) ||
-      this.isLeftButton(event) ||
-      this.isRightButton(event) ||
-      this.isUpButton(event)
-    ;
+  private handleDirectionControl(): void {
+    if (this.directionControl && !this.isRotating) {
+      this.previousDirection = this.direction;
+
+      switch (this.directionControl) {
+        case DirectionEnum.Down:
+          switch (this.previousDirection) {
+            case DirectionEnum.Up:
+              upDown((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              }, 100); // TODO: вот тут и везде ниже прописать множитель для поворота
+              break;
+            case DirectionEnum.Left:
+              leftDown((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Right:
+              rightDown((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            default:
+              this.direction = DirectionEnum.Down;
+              this.isRotating = false;
+          }
+          break;
+        case DirectionEnum.Left:
+          switch (this.previousDirection) {
+            case DirectionEnum.Up:
+              upLeft((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Right:
+              rightLeft((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Down:
+              downLeft((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            default:
+              this.direction = DirectionEnum.Left;
+              this.isRotating = false;
+          }
+          break;
+        case DirectionEnum.Right:
+          switch (this.previousDirection) {
+            case DirectionEnum.Up:
+              upRight((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Left:
+              leftRight((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Down:
+              downRight((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            default:
+              this.direction = DirectionEnum.Right;
+              this.isRotating = false;
+          }
+          break;
+        case DirectionEnum.Up:
+          switch (this.previousDirection) {
+            case DirectionEnum.Down:
+              downUp((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Left:
+              leftUp((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            case DirectionEnum.Right:
+              rightUp((direction, isRotating) => {
+                this.direction = direction;
+                this.isRotating = isRotating;
+              });
+              break;
+            default:
+              this.direction = DirectionEnum.Up;
+              this.isRotating = false;
+          }
+          break;
+      }
+
+      this.currentSpeed = this.speed;
+    } else {
+      this.currentSpeed = 0;
+    }
   }
 
-  private isDownButton(event: KeyboardEvent): boolean {
-    return this.settings.controls.down.includes(event.code);
+  private handleFireControl(): void {
+    if (this.isFireControl &&
+      !this.isReloading &&
+      !this.isRotating &&
+      !this.isTurboActive
+    ) {
+      this.fire();
+    }
   }
 
-  private isFireButton(event: KeyboardEvent): boolean {
-    return this.settings.controls.fire.includes(event.code);
-  }
-
-  private isLeftButton(event: KeyboardEvent): boolean {
-    return this.settings.controls.left.includes(event.code);
-  }
-
-  private isRightButton(event: KeyboardEvent): boolean {
-    return this.settings.controls.right.includes(event.code);
-  }
-
-  private isTurboButton(event: KeyboardEvent): boolean {
-    return this.settings.controls.turbo.includes(event.code);
-  }
-
-  private isUpButton(event: KeyboardEvent): boolean {
-    return this.settings.controls.up.includes(event.code);
+  private handleTurboControl(): void {
+    if (this.isTurboControl && !this.isSlowdownActive) {
+      this.speedMultiplier = this.turboMultiplier;
+      this.isTurboActive = true;
+    } else {
+      this.speedMultiplier = 1;
+      this.isTurboActive = false;
+    }
   }
 
   private move(): void {
@@ -442,7 +438,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.speedMultiplier = speedMultiplier;
     const timerId = setTimeout(() => {
       this.isSlowdownActive = false;
-      this.speedMultiplier = 1;
+      this.speedMultiplier = this.isTurboActive ? this.turboMultiplier : 1;
       clearTimeout(timerId);
     }, timeout);
   }

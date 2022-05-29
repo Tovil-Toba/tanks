@@ -1,7 +1,9 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { interval, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import { ControlsService } from '../core/controls.service';
+import { DirectionEnum } from '../shared/direction.enum';
 import { ExplosionTypeEnum } from './explosion/explosion-type.enum';
 import { FlashTypeEnum } from '../tank/flash/flash-type.enum';
 import { GunTypeEnum } from '../tank/gun/gun-type.enum';
@@ -26,10 +28,13 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   @Input() size!: number;
   @Input() type: WorldTypeEnum;
 
+  directionControl?: DirectionEnum;
   readonly explosionType: ExplosionTypeEnum;
   readonly flashType: FlashTypeEnum;
   readonly gunType: GunTypeEnum;
   readonly hullType: HullTypeEnum;
+  isFireControl?: boolean;
+  isTurboControl?: boolean;
   readonly shellType: ShellTypeEnum;
   readonly shellImpactType: ShellImpactTypeEnum;
   readonly speed: number;
@@ -50,7 +55,38 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     return this.size / this.settings.world.squaresPerSide;
   }
 
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent): void {
+    if (this.controls.isDirectionButton(event)) {
+      if (this.controls.isDownButton(event)) {
+        this.directionControl = DirectionEnum.Down;
+      } else if (this.controls.isLeftButton(event)) {
+        this.directionControl = DirectionEnum.Left;
+      } else if (this.controls.isRightButton(event)) {
+        this.directionControl = DirectionEnum.Right;
+      } else if (this.controls.isUpButton(event)) {
+        this.directionControl = DirectionEnum.Up;
+      }
+    } else if (this.controls.isFireButton(event)) {
+      this.isFireControl = true;
+    } else if (this.controls.isTurboButton(event)) {
+      this.isTurboControl = true;
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  handleKeyUp(event: KeyboardEvent): void {
+    if (this.controls.isDirectionButton(event)) {
+      this.directionControl = undefined;
+    } else if (this.controls.isFireButton(event)) {
+      this.isFireControl = false;
+    } else if (this.controls.isTurboButton(event)) {
+      this.isTurboControl = false;
+    }
+  }
+
   constructor(
+    private controls: ControlsService,
     public settings: SettingsService,
     private readonly store: Store,
     public worldService: WorldService
