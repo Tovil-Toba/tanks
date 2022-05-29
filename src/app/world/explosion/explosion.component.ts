@@ -25,11 +25,16 @@ export class ExplosionComponent implements OnInit {
   blastTrailType: number;
   frame$: Observable<number | null>;
   readonly framesCount = 5;
+  readonly rotationRandomMultiplier: number;
 
   constructor(private settings: SettingsService) {
     this.blastTrailType = randomIntFromInterval(1, 3);
     this.frame$ = of(null);
     this.interval = settings.interval;
+    this.rotationRandomMultiplier = settings.world.isAssetsRandomRotationEnabled
+      ? randomIntFromInterval(0, 3)
+      : 0
+    ;
     this.type = settings.tank.explosionType;
   }
 

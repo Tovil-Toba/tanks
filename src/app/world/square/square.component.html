@@ -11,7 +11,15 @@
   [style.outline-color]="isDestroyable ? 'red' : 'purple'"
   [style.outline-offset.px]="-movementDelta"
 >
-  <img *ngIf="image" [src]="image" class="w-full h-full field" alt="">
+  <img
+    *ngIf="image"
+    [src]="image"
+    class="w-full h-full field"
+    [class.rotate-90]="rotationRandomMultiplier === 1"
+    [class.rotate-180]="rotationRandomMultiplier === 2"
+    [class.-rotate-90]="rotationRandomMultiplier === 3"
+    alt=""
+  >
   <app-explosion
     *ngIf="isExplode"
     [showBlastTrail]="settings.world.showBlastTrail"

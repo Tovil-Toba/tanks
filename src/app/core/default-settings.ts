@@ -44,6 +44,7 @@ const settings: Settings = {
     type: TankTypeEnum.Heavy
   },
   world: {
+    isAssetsRandomRotationEnabled: true,
     collisionExplosionType: ExplosionTypeEnum.H,
     size: 500,
     showBlastTrail: true,

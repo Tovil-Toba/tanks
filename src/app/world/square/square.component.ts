@@ -30,6 +30,7 @@ export class SquareComponent implements OnDestroy, OnInit {
   explosionType: ExplosionTypeEnum;
   image?: string;
   isExplode: boolean;
+  readonly rotationRandomMultiplier: number;
   squareTypeEnum: typeof SquareTypeEnum;
   tick: number;
 
@@ -42,6 +43,10 @@ export class SquareComponent implements OnDestroy, OnInit {
     private readonly store: Store,
     private readonly worldService: WorldService
   ) {
+    this.rotationRandomMultiplier = settings.world.isAssetsRandomRotationEnabled
+      ? randomIntFromInterval(0, 3)
+      : 0
+    ;
     this.explosionType = settings.tank.explosionType;
     this.collisionExplosionType = settings.world.collisionExplosionType;
     this.isExplode = false;

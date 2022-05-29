@@ -176,6 +176,10 @@ export class SettingsService {
   }
 
   set world(world: any) {
+    if (typeof world.isAssetsRandomRotationEnabled === 'boolean') {
+      this._world.isAssetsRandomRotationEnabled = world.isAssetsRandomRotationEnabled;
+    }
+
     if (world.collisionExplosionType in ExplosionTypeEnum &&
       ![ExplosionTypeEnum.A, ExplosionTypeEnum.B, ExplosionTypeEnum.C].includes(world.collisionExplosionType)
     ) {

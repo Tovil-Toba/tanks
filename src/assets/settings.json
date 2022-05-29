@@ -28,6 +28,7 @@
     "type": "HEAVY"
   },
   "world": {
+    "isAssetsRandomRotationEnabled": true,
     "collisionExplosionType": "H",
     "size": 500,
     "showBlastTrail": true,
