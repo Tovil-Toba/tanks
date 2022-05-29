@@ -8,10 +8,12 @@ import { ExplosionTypeEnum } from './explosion/explosion-type.enum';
 import { FlashTypeEnum } from '../tank/flash/flash-type.enum';
 import { GunTypeEnum } from '../tank/gun/gun-type.enum';
 import { HullTypeEnum } from '../tank/hull/hull-type.enum';
+import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
 import { ShellTypeEnum } from '../tank/shell/shell-type.enum';
 import { ShellImpactTypeEnum } from '../tank/shell/shell-impact/shell-impact-type.enum';
 import { TankColorEnum } from '../tank/tank-color.enum';
+import { TankIndex } from '../tank/tank-index.model';
 import * as TickActions from '../store/tick.actions';
 import { TrackTypeEnum } from '../tank/track/track-type.enum';
 import { TurretTypeEnum } from '../tank/turret/turret-type.enum';
@@ -28,17 +30,19 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   @Input() size!: number;
   @Input() type: WorldTypeEnum;
 
-  directionControl?: DirectionEnum;
+  directionControls: Array<DirectionEnum | undefined>;
   readonly explosionType: ExplosionTypeEnum;
   readonly flashType: FlashTypeEnum;
   readonly gunType: GunTypeEnum;
   readonly hullType: HullTypeEnum;
-  isFireControl?: boolean;
-  isTurboControl?: boolean;
+  isFireControls: Array<boolean | undefined>;
+  isTurboControls: Array<boolean | undefined>;
+  playerTankIndex: TankIndex;
   readonly shellType: ShellTypeEnum;
   readonly shellImpactType: ShellImpactTypeEnum;
   readonly speed: number;
-  readonly tankColor: TankColorEnum;
+  readonly tankColors: Array<TankColorEnum>;
+  readonly tankIndexes: Array<TankIndex>;
   readonly turboMultiplier: number;
   readonly turretType: TurretTypeEnum;
   readonly trackType: TrackTypeEnum;
@@ -46,6 +50,42 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   tick$: Observable<number>;
 
   private readonly subscription: Subscription;
+
+  constructor(
+    private controls: ControlsService,
+    public settings: SettingsService,
+    private readonly store: Store,
+    public worldService: WorldService
+  ) {
+    this.directionControls = new Array<DirectionEnum | undefined>(4);
+    this.explosionType = settings.tank.explosionType;
+    this.flashType = settings.tank.flashType;
+    this.gunType = settings.tank.gunType;
+    this.hullType = settings.tank.hullType;
+    this.isFireControls = new Array<boolean | undefined>(4);
+    this.isTurboControls = new Array<boolean | undefined>(4);
+    this.playerTankIndex = randomIntFromInterval(0, 3) as TankIndex;
+    this.shellType = settings.tank.shellType;
+    this.shellImpactType = settings.tank.shellImpactType;
+    this.size = settings.world.size;
+    this.speed = settings.tank.speed;
+    this.tankColors = [
+      TankColorEnum.A,
+      TankColorEnum.B,
+      TankColorEnum.C,
+      TankColorEnum.D
+    ];
+    this.tankIndexes = [0, 1, 2, 3];
+    this.turboMultiplier = settings.tank.turboMultiplier;
+    this.turretType = settings.tank.turretType;
+    this.trackType = settings.tank.trackType;
+    const millisecondsPerFrame = 1000 / this.settings.fps; // todo: можно инициализировать интервал настроек тут
+    console.log('Milliseconds in 1 frame', millisecondsPerFrame);
+    this.tick$ = interval(millisecondsPerFrame);
+    this.type = WorldTypeEnum.A;
+    // todo: сделать рандомную генерацию 4 танков
+    this.subscription = new Subscription();
+  }
 
   get backgroundColor(): string {
     return WORLD_COLORS[this.type];
@@ -59,56 +99,30 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   handleKeyDown(event: KeyboardEvent): void {
     if (this.controls.isDirectionButton(event)) {
       if (this.controls.isDownButton(event)) {
-        this.directionControl = DirectionEnum.Down;
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Down;
       } else if (this.controls.isLeftButton(event)) {
-        this.directionControl = DirectionEnum.Left;
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Left;
       } else if (this.controls.isRightButton(event)) {
-        this.directionControl = DirectionEnum.Right;
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Right;
       } else if (this.controls.isUpButton(event)) {
-        this.directionControl = DirectionEnum.Up;
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Up;
       }
     } else if (this.controls.isFireButton(event)) {
-      this.isFireControl = true;
+      this.isFireControls[this.playerTankIndex] = true;
     } else if (this.controls.isTurboButton(event)) {
-      this.isTurboControl = true;
+      this.isTurboControls[this.playerTankIndex] = true;
     }
   }
 
   @HostListener('window:keyup', ['$event'])
   handleKeyUp(event: KeyboardEvent): void {
     if (this.controls.isDirectionButton(event)) {
-      this.directionControl = undefined;
+      this.directionControls[this.playerTankIndex] = undefined;
     } else if (this.controls.isFireButton(event)) {
-      this.isFireControl = false;
+      this.isFireControls[this.playerTankIndex] = false;
     } else if (this.controls.isTurboButton(event)) {
-      this.isTurboControl = false;
+      this.isTurboControls[this.playerTankIndex] = false;
     }
-  }
-
-  constructor(
-    private controls: ControlsService,
-    public settings: SettingsService,
-    private readonly store: Store,
-    public worldService: WorldService
-  ) {
-    this.explosionType = settings.tank.explosionType;
-    this.flashType = settings.tank.flashType;
-    this.gunType = settings.tank.gunType;
-    this.hullType = settings.tank.hullType;
-    this.shellType = settings.tank.shellType;
-    this.shellImpactType = settings.tank.shellImpactType;
-    this.size = settings.world.size;
-    this.speed = settings.tank.speed;
-    this.tankColor = settings.tank.color;
-    this.turboMultiplier = settings.tank.turboMultiplier;
-    this.turretType = settings.tank.turretType;
-    this.trackType = settings.tank.trackType;
-    const millisecondsPerFrame = 1000 / this.settings.fps; // todo: можно инициализировать интервал настроек тут
-    console.log('Milliseconds in 1 frame', millisecondsPerFrame);
-    this.tick$ = interval(millisecondsPerFrame);
-    this.type = WorldTypeEnum.A;
-    // todo: сделать рандомную генерацию 4 танков
-    this.subscription = new Subscription();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

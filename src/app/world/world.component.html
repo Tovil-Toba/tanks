@@ -8,14 +8,16 @@
   >
     <div class="w-full h-full flex flex-wrap align-content-start">
       <app-tank
-        [color]="tankColor"
-        [directionControl]="directionControl"
+        *ngFor="let index of tankIndexes"
+        [index]="index"
+        [color]="tankColors[index]"
+        [directionControl]="directionControls[index]"
         [explosionType]="explosionType"
         [gunType]="gunType"
         [flashType]="flashType"
         [hullType]="hullType"
-        [isFireControl]="isFireControl"
-        [isTurboControl]="isTurboControl"
+        [isFireControl]="isFireControls[index]"
+        [isTurboControl]="isTurboControls[index]"
         [shellType]="shellType"
         [shellImpactType]="shellImpactType"
         [size]="squareSize"

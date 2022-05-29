@@ -28,6 +28,7 @@ import { ShellImpactTypeEnum } from './shell/shell-impact/shell-impact-type.enum
 import { Square } from '../world/square/square.model';
 import { SquareTypeEnum } from '../world/square/square-type.enum';
 import { TankColorEnum } from './tank-color.enum';
+import { TankIndex } from './tank-index.model';
 import { TrackTypeEnum } from './track/track-type.enum';
 import { TurretTypeEnum } from './turret/turret-type.enum';
 import { WorldService } from '../world/world.service';
@@ -46,6 +47,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   @Input() gunColor?: TankColorEnum;
   @Input() gunType?: GunTypeEnum;
   @Input() hullColor?: TankColorEnum;
+  @Input() index!: TankIndex;
   @Input() isFireControl?: boolean;
   @Input() isTurboControl?: boolean;
   @Input() hullType?: HullTypeEnum;
@@ -81,10 +83,6 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   private readonly reloadingTime: number;
   private readonly subscription: Subscription;
   private readonly tick$: Observable<number>;
-
-  get movementDelta(): number {
-    return this.size / 4;
-  }
 
   constructor(
     public settings: SettingsService,
@@ -126,6 +124,21 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.tick$ = this.store.select(selectTick);
   }
 
+  get movementDelta(): number {
+    return this.size / 4;
+  }
+
+  private get cornersCoordinates(): Array<{ top: number, left: number }>{
+    const squaresPerSide = this.settings.world.squaresPerSide;
+
+    return [
+      { top: 0, left: 0 },
+      { top: 0, left: (squaresPerSide - 1) * this.size },
+      { top: (squaresPerSide - 1) * this.size, left: 0 },
+      { top: (squaresPerSide - 1) * this.size, left: (squaresPerSide - 1) * this.size }
+    ];
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     // Если tick передаётся пропсом
     /*if (this.currentSpeed > 0) {
@@ -133,7 +146,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     }*/
 
     if (changes['size']?.currentValue !== changes['size']?.previousValue) {
-      this.recalculatePosition(changes['size']?.previousValue);
+      this.recalculatePosition(changes['size']?.previousValue as number);
     }
 
     if (changes['directionControl']?.currentValue !== changes['directionControl']?.previousValue) {
@@ -154,6 +167,9 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    this.initCoordinates();
+    this.initDirection();
+
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
@@ -324,6 +340,19 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     } else {
       this.speedMultiplier = 1;
       this.isTurboActive = false;
+    }
+  }
+
+  private initCoordinates(): void {
+    this.left = this.cornersCoordinates[this.index].left;
+    this.top = this.cornersCoordinates[this.index].top;
+  }
+
+  private initDirection(): void {
+    if (this.index <= 1) {
+      this.direction = DirectionEnum.Down;
+    } else {
+      this.direction = DirectionEnum.Up;
     }
   }
 
