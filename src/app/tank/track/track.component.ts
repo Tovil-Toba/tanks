@@ -30,10 +30,6 @@ export class TrackComponent implements OnDestroy, OnInit {
   private readonly subscription: Subscription;
   private readonly tick$: Observable<number>;
 
-  get style(): TrackStyle {
-    return this.trackStyles[this.hullType ?? this.settings.tank.hullType];
-  }
-
   constructor(
     private readonly settings: SettingsService,
     private readonly store: Store
@@ -46,6 +42,10 @@ export class TrackComponent implements OnDestroy, OnInit {
 
     this.subscription = new Subscription();
     this.tick$ = store.select(selectTick);
+  }
+
+  get style(): TrackStyle {
+    return this.trackStyles[this.hullType ?? this.settings.tank.hullType];
   }
 
   ngOnDestroy(): void {

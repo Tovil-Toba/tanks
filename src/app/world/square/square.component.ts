@@ -59,6 +59,12 @@ export class SquareComponent implements OnDestroy, OnInit {
     this.tick$ = store.select(selectTick);
   }
 
+  get isActive(): boolean {
+    return this.worldService.directionSquares
+      .filter((square) => square.index === this.index)
+      .length > 0;
+  }
+
   get isDestroyable(): boolean {
     return this.worldService.squares[this.index].isDestroyable;
   }
@@ -86,12 +92,6 @@ export class SquareComponent implements OnDestroy, OnInit {
     );
     //this.currentType = this.type;
     this.initImages();
-  }
-
-  get isActive(): boolean {
-    return this.worldService.directionSquares
-      .filter((square) => square.index === this.index)
-      .length > 0;
   }
 
   private checkSquare(): void {

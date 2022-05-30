@@ -86,17 +86,17 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.isVisible) {
       if (changes['initialDirection']?.currentValue !== changes['initialDirection']?.previousValue) {
-        this.direction = changes['initialDirection'].currentValue;
+        this.direction = changes['initialDirection'].currentValue as DirectionEnum;
         this.isImpact = false;
       }
 
       if (changes['initialLeft']?.currentValue !== changes['initialLeft']?.previousValue) {
-        this.left = changes['initialLeft'].currentValue;
+        this.left = changes['initialLeft'].currentValue as number;
         this.isImpact = false;
       }
 
       if (changes['initialTop']?.currentValue !== changes['initialTop']?.previousValue) {
-        this.top = changes['initialTop'].currentValue;
+        this.top = changes['initialTop'].currentValue as number;
         this.isImpact = false;
       }
     }

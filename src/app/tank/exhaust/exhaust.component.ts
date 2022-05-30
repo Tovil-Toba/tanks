@@ -34,10 +34,6 @@ export class ExhaustComponent implements OnInit, OnDestroy {
   private readonly tick$: Observable<number>;
   private readonly subscription: Subscription;
 
-  get style(): ExhaustStyle {
-    return this.exhaustStyles[this.hullType ?? this.settings.tank.hullType];
-  }
-
   constructor(
     private readonly settings: SettingsService,
     private readonly store: Store
@@ -50,6 +46,10 @@ export class ExhaustComponent implements OnInit, OnDestroy {
 
     this.tick$ = store.select(selectTick);
     this.subscription = new Subscription();
+  }
+
+  get style(): ExhaustStyle {
+    return this.exhaustStyles[this.hullType ?? this.settings.tank.hullType];
   }
 
   ngOnDestroy(): void {

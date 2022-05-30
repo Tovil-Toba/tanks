@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
 
 import defaultSettings from './default-settings';
@@ -42,29 +43,35 @@ export class SettingsService {
     return this._controls;
   }
 
-  set controls(controls: any) {
-    if (isNonEmptyArrayOfStrings(controls.down)) {
-      this._controls.down = controls.down;
+  set controls(controls: unknown) {
+    const down: string[] | undefined = (controls as Controls)?.down;
+    if (isNonEmptyArrayOfStrings(down)) {
+      this._controls.down = down;
     }
 
-    if (isNonEmptyArrayOfStrings(controls.fire)) {
-      this._controls.fire = controls.fire;
+    const fire: string[] | undefined = (controls as Controls)?.fire;
+    if (isNonEmptyArrayOfStrings(fire)) {
+      this._controls.fire = fire;
     }
 
-    if (isNonEmptyArrayOfStrings(controls.left)) {
-      this._controls.left = controls.left;
+    const left: string[] | undefined = (controls as Controls)?.left;
+    if (isNonEmptyArrayOfStrings(left)) {
+      this._controls.left = left;
     }
 
-    if (isNonEmptyArrayOfStrings(controls.right)) {
-      this._controls.right = controls.right;
+    const right: string[] | undefined = (controls as Controls)?.right;
+    if (isNonEmptyArrayOfStrings(right)) {
+      this._controls.right = right;
     }
 
-    if (isNonEmptyArrayOfStrings(controls.turbo)) {
-      this._controls.turbo = controls.turbo;
+    const turbo: string[] | undefined = (controls as Controls)?.turbo;
+    if (isNonEmptyArrayOfStrings(turbo)) {
+      this._controls.turbo = turbo;
     }
 
-    if (isNonEmptyArrayOfStrings(controls.up)) {
-      this._controls.up = controls.up;
+    const up: string[] | undefined = (controls as Controls)?.up;
+    if (isNonEmptyArrayOfStrings(up)) {
+      this._controls.up = up;
     }
   }
 
@@ -106,68 +113,77 @@ export class SettingsService {
     return this._tank;
   }
 
-  set tank(tank: any) {
+  set tank(tank: unknown) {
     /*if ([1, 2, 3].includes(tank.armor)) { // todo: наверное не нужно, для этого есть тип танка
       this._tank.armor = tank.armor;
     }*/
 
-    if (tank.color in TankColorEnum) {
-      this._tank.color = tank.color;
-      this._tank.gunColor = tank.color;
-      this._tank.hullColor = tank.hullColor;
+    const color: string | undefined = (tank as Tank)?.color?.toUpperCase();
+    if (color && Object.values(TankColorEnum).includes(color as TankColorEnum)) {
+      this._tank.color = color as TankColorEnum;
+      this._tank.gunColor = color as TankColorEnum;
+      this._tank.hullColor = color as TankColorEnum;
     }
 
-    if (tank.explosionType in ExplosionTypeEnum) {
-      this._tank.explosionType = tank.explosionType;
+    const explosionType: string | undefined = (tank as Tank)?.explosionType?.toUpperCase();
+    if (explosionType && Object.values(ExplosionTypeEnum).includes(explosionType as ExplosionTypeEnum)) {
+      this._tank.explosionType = explosionType as ExplosionTypeEnum;
     }
 
-    if (tank.flashType in FlashTypeEnum) {
-      this._tank.flashType = tank.flashType;
+    const flashType: string | undefined = (tank as Tank)?.flashType?.toUpperCase();
+    if (flashType && Object.values(FlashTypeEnum).includes(flashType as FlashTypeEnum)) {
+      this._tank.flashType = flashType as FlashTypeEnum;
     }
 
-    if (tank.gunType in GunTypeEnum) {
-      this._tank.gunType = tank.gunType;
+    const gunType: GunTypeEnum | undefined = (tank as Tank)?.gunType;
+    if (gunType in GunTypeEnum) {
+      this._tank.gunType = gunType;
     }
 
-    if (tank.hullType in HullTypeEnum) {
-      this._tank.hullType = tank.hullType;
+    const hullType: HullTypeEnum | undefined = (tank as Tank)?.hullType;
+    if (hullType in HullTypeEnum) {
+      this._tank.hullType = hullType;
     }
 
-    const shellType = tank.shellType.toUpperCase();
-    if (Object.values(ShellTypeEnum).includes(shellType)) {
-      this._tank.shellType = shellType;
+    const shellType: string | undefined = (tank as Tank)?.shellType?.toUpperCase();
+    if (shellType && Object.values(ShellTypeEnum).includes(shellType as ShellTypeEnum)) {
+      this._tank.shellType = shellType as ShellTypeEnum;
     }
 
-    const shellImpactType = tank.shellImpactType.toUpperCase();
-    if (Object.values(ShellImpactTypeEnum).includes(shellImpactType)) {
-      this._tank.shellImpactType = shellImpactType;
+    const shellImpactType: string | undefined = (tank as Tank)?.shellImpactType?.toUpperCase();
+    if (shellImpactType && Object.values(ShellImpactTypeEnum).includes(shellImpactType as ShellImpactTypeEnum)) {
+      this._tank.shellImpactType = shellImpactType as ShellImpactTypeEnum;
     }
 
-    if (typeof tank.shellSpeed === 'number' && tank.shellSpeed > 0) {
-      this._tank.shellSpeed = tank.shellSpeed;
+    const shellSpeed: number | undefined = (tank as Tank)?.shellSpeed;
+    if (shellSpeed > 0) {
+      this._tank.shellSpeed = shellSpeed;
     }
 
-    if (typeof tank.speed === 'number' && tank.speed > 0 && tank.speed <= 2) {
-      this._tank.speed = tank.speed;
+    const speed: number | undefined = (tank as Tank)?.speed;
+    if (speed > 0 && speed <= 2) {
+      this._tank.speed = speed;
     }
 
-    if (tank.trackType in TrackTypeEnum) {
-      this._tank.trackType = tank.trackType;
+    const trackType: TrackTypeEnum | undefined = (tank as Tank)?.trackType;
+    if (trackType in TrackTypeEnum) {
+      this._tank.trackType = trackType;
     }
 
-    if (tank.turretType in TurretTypeEnum) {
-      this._tank.turretType = tank.turretType;
+    const turretType: TurretTypeEnum | undefined = (tank as Tank)?.turretType;
+    if (turretType in TurretTypeEnum) {
+      this._tank.turretType = turretType;
     }
 
-    const turboMultiplier = +tank.turboMultiplier;
+    const turboMultiplier: number | undefined = (tank as Tank)?.turboMultiplier;
     if (turboMultiplier > 0 && turboMultiplier <= 10) {
-      this._tank.turboMultiplier = tank.turboMultiplier;
+      this._tank.turboMultiplier = turboMultiplier;
     }
 
     // todo: тип танка должен определяться по типу корпуса. сделать выше и закомментировать это
-    const type = tank.type.toUpperCase();
-    if (Object.values(TankTypeEnum).includes(type)) {
-      this._tank.type = type;
+    const type: string | undefined = (tank as Tank)?.type?.toUpperCase();
+    if (type && Object.values(TankTypeEnum).includes(type as TankTypeEnum)) {
+      this._tank.type = type as TankTypeEnum;
     }
   }
 
@@ -175,31 +191,37 @@ export class SettingsService {
     return this._world;
   }
 
-  set world(world: any) {
-    if (typeof world.isAssetsRandomRotationEnabled === 'boolean') {
-      this._world.isAssetsRandomRotationEnabled = world.isAssetsRandomRotationEnabled;
+  set world(world: unknown) {
+    const isAssetsRandomRotationEnabled: boolean | undefined = (world as World)?.isAssetsRandomRotationEnabled;
+    if (typeof isAssetsRandomRotationEnabled === 'boolean') {
+      this._world.isAssetsRandomRotationEnabled = isAssetsRandomRotationEnabled;
     }
 
-    if (world.collisionExplosionType in ExplosionTypeEnum &&
-      ![ExplosionTypeEnum.A, ExplosionTypeEnum.B, ExplosionTypeEnum.C].includes(world.collisionExplosionType)
+    const collisionExplosionType: string | undefined = (world as World)?.collisionExplosionType?.toUpperCase();
+    if (collisionExplosionType &&
+      ![ExplosionTypeEnum.A, ExplosionTypeEnum.B, ExplosionTypeEnum.C].includes(collisionExplosionType as ExplosionTypeEnum)
     ) {
-      this._world.collisionExplosionType = world.collisionExplosionType;
+      this._world.collisionExplosionType = collisionExplosionType as ExplosionTypeEnum;
     }
 
-    if (typeof world.size === 'number') {
-      this._world.size = world.size;
+    const size: number | undefined = (world as World)?.size;
+    if (typeof size === 'number') {
+      this._world.size = size;
     }
 
-    if (typeof world.showBlastTrail === 'boolean') {
-      this._world.showBlastTrail = world.showBlastTrail;
+    const showBlastTrail: boolean | undefined = (world as World)?.showBlastTrail;
+    if (typeof showBlastTrail === 'boolean') {
+      this._world.showBlastTrail = showBlastTrail;
     }
 
-    if (typeof world.squaresPerSide === 'number') {
-      this._world.squaresPerSide = world.squaresPerSide;
+    const squaresPerSide: number | undefined = (world as World)?.squaresPerSide;
+    if (typeof squaresPerSide === 'number') {
+      this._world.squaresPerSide = squaresPerSide;
     }
 
-    if (world.type in WorldTypeEnum) {
-      this._world.type = world.type;
+    const type: string | undefined = (world as World)?.type?.toUpperCase();
+    if (type && Object.values(WorldTypeEnum).includes(type as WorldTypeEnum)) {
+      this._world.type = type as WorldTypeEnum;
     }
   }
 
