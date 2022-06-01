@@ -10,14 +10,14 @@
   }"
   [style.outline-color]="isDestroyable ? 'red' : 'purple'"
   [style.outline-offset.px]="-movementDelta"
+  [class.rotate-90]="rotationRandomMultiplier === 1"
+  [class.rotate-180]="rotationRandomMultiplier === 2"
+  [class.-rotate-90]="rotationRandomMultiplier === 3"
 >
   <img
     *ngIf="image"
     [src]="image"
-    class="w-full h-full field"
-    [class.rotate-90]="rotationRandomMultiplier === 1"
-    [class.rotate-180]="rotationRandomMultiplier === 2"
-    [class.-rotate-90]="rotationRandomMultiplier === 3"
+    class="w-full h-full field m-0"
     alt=""
   >
   <app-explosion

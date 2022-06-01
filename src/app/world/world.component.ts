@@ -129,6 +129,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     if (changes['size']?.currentValue !== changes['size']?.previousValue) {
       this.settings.world.size = this.size;
       this.worldService.recalculateSquareSizes(this.squareSize);
+      this.worldService.recalculateTanksCoordinates(
+        changes['size']?.currentValue as number,
+        changes['size']?.previousValue as number
+      );
     }
   }
 

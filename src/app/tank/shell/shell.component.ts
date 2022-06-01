@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, S
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import { Coordinates } from '../../shared/coordinates.model';
 import { DirectionEnum } from '../../shared/direction.enum';
 import { ExplosionTypeEnum } from '../../world/explosion/explosion-type.enum';
 import { selectTick } from '../../store/tick.selectors';
@@ -10,6 +11,7 @@ import { SHELL_IMAGE_PATH } from '../../core/images.constants';
 import { ShellTypeEnum } from './shell-type.enum';
 import { ShellImpactTypeEnum } from './shell-impact/shell-impact-type.enum';
 import { Square } from '../../world/square/square.model';
+import { TankIndex, TANKS_INDEXES } from '../tank-index.model';
 import { WorldService } from '../../world/world.service';
 
 @Component({
@@ -26,6 +28,7 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
   @Input() isVisible: boolean;
   @Input() size!: number;
   @Input() speed!: number;
+  @Input() tankIndex!: TankIndex;
   // @Input() tick!: number | null;
   @Input() type?: ShellTypeEnum;
   @Input() worldSize!: number;
@@ -132,10 +135,10 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
     const bottom = this.top + this.size;
     const right = this.left + this.size;
     const directionSquares: Array<Square> = this.worldService.squares.filter((square) => (
-      square.top < bottom - this.size/2 &&
-      square.bottom > this.top + this.size/2 &&
-      square.left < right - this.size/2 &&
-      square.right > this.left + this.size/2
+      square.top <= bottom - this.size/2 &&
+      square.right >= this.left + this.size/2 &&
+      square.bottom >= this.top + this.size/2 &&
+      square.left <= right - this.size/2
     ));
     const impactSquares: Array<Square> = directionSquares.filter((square) => (
       !square.isPassable || square.isDestroyable
@@ -152,35 +155,82 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
       return;
     }
 
+    let top = 0;
+    let left = 0;
+    let isShellReset = false;
+
     switch (this.direction) {
       case DirectionEnum.Down:
-        if (this.top + this.size + distance <= this.worldSize) { // this.settings.worldSize
-          this.top = this.top + distance;
+        top = this.top + distance;
+        left = this.left;
+
+        if (top <= this.worldSize) { // this.settings.worldSize
+          this.top = top;
         } else {
-          this.resetShell();
+          isShellReset = true;
         }
+
         break;
       case DirectionEnum.Left:
-        if (this.left - distance >= 0) {
-          this.left = this.left - distance;
+        top = this.top;
+        left = this.left - distance;
+
+        if (left >= 0) {
+          this.left = left;
         } else {
-          this.resetShell();
+          isShellReset = true;
         }
         break;
       case DirectionEnum.Right:
-        if (this.left + this.size + distance <= this.worldSize) {
-          this.left = this.left + distance;
+        top = this.top;
+        left = this.left  + distance;
+
+        if (left + this.size <= this.worldSize) {
+          this.left = left;
         } else {
-          this.resetShell();
+          isShellReset = true;
         }
+
         break;
       case DirectionEnum.Up:
-        if (this.top - distance >= 0) {
-          this.top = this.top - distance;
+        top = this.top - distance;
+        left = this.left;
+
+        if (top >= 0) {
+          this.top = top;
         } else {
-          this.resetShell();
+          isShellReset = true;
         }
+
         break;
+    }
+
+    const impactTanksIndexes: Array<TankIndex> = [];
+
+    for (const tankIndex of TANKS_INDEXES) {
+      if (tankIndex === this.tankIndex) {
+        continue;
+      }
+
+      const tankCoordinates: Coordinates = this.worldService.tanksCoordinates[tankIndex];
+
+      // todo: Для расчета столкновений выбрать между этим вариантом и способом выше (столкновение с квадратами),
+      //  и вынести все это в отдельную функцию
+      if (tankCoordinates.top <= top + this.size/2 &&
+        tankCoordinates.right >= right - this.size/2 &&
+        tankCoordinates.bottom >= bottom - this.size/2 &&
+        tankCoordinates.left <= left + this.size/2
+      ) {
+        impactTanksIndexes.push(tankIndex);
+      }
+    }
+
+    if (impactTanksIndexes.length) {
+      console.log('Impact tanks indexes', impactTanksIndexes);
+    }
+
+    if (isShellReset) {
+      this.resetShell();
     }
   }
 

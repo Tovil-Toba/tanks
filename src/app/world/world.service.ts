@@ -4,6 +4,8 @@ import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
 import { Square } from './square/square.model';
 import { SquareTypeEnum } from './square/square-type.enum';
+import { TankIndex, TANKS_INDEXES } from '../tank/tank-index.model';
+import { TanksCoordinates } from './shared/tanks-coordinates.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,9 @@ import { SquareTypeEnum } from './square/square-type.enum';
 export class WorldService {
   directionSquares: Array<Square>;
   impactSquares?: Array<Square>;
+  impactTanksIndexes: Array<TankIndex>;
   readonly squares: Array<Square>;
+  readonly tanksCoordinates: TanksCoordinates;
 
   private readonly squareTypes: Array<SquareTypeEnum> = [
     // SquareTypeEnum.Barrel,
@@ -28,9 +32,24 @@ export class WorldService {
     // SquareTypeEnum.Well
   ];
 
-  constructor(private readonly settings: SettingsService) {
+  constructor(private settings: SettingsService) {
     this.directionSquares = new Array<Square>();
+    this.impactTanksIndexes = new Array<TankIndex>();
     this.squares = new Array<Square>();
+    const initialCoordinates = { top: 0, right: settings.squareSize, bottom: settings.squareSize, left: 0 };
+    this.tanksCoordinates = {
+      0: initialCoordinates,
+      1: initialCoordinates,
+      2: initialCoordinates,
+      3: initialCoordinates
+    };
+  }
+
+  getRandomType(): SquareTypeEnum {
+    // const randomIndex = randomIntFromInterval(0, 7);
+    const randomIndex = randomIntFromInterval(0, 5);
+
+    return this.squareTypes[randomIndex];
   }
 
   initSquares(size: number): void {
@@ -70,7 +89,7 @@ export class WorldService {
         colIndex = 0;
       }
 
-      let type: SquareTypeEnum = this.getRandomType();//SquareTypeEnum.Ground,//this.getRandomType();
+      let type: SquareTypeEnum = this.getRandomType();
 
       if (emptyCorners.includes(i)) { // чтобы в углах было пусто
         type = SquareTypeEnum.Empty;
@@ -115,10 +134,22 @@ export class WorldService {
     });
   }
 
-  getRandomType(): SquareTypeEnum {
-    // const randomIndex = randomIntFromInterval(0, 7);
-    const randomIndex = randomIntFromInterval(0, 5);
+  recalculateTanksCoordinates(currentWorldSize: number, previousWorldSize: number): void {
+    if (currentWorldSize <= 0 || previousWorldSize <= 0) {
+      return;
+    }
 
-    return this.squareTypes[randomIndex];
+    const multiplier = currentWorldSize / previousWorldSize;
+
+    for (const tankIndex of TANKS_INDEXES) {
+      this.tanksCoordinates[tankIndex].top *= multiplier;
+      this.tanksCoordinates[tankIndex].right *= multiplier;
+      this.tanksCoordinates[tankIndex].bottom *= multiplier;
+      this.tanksCoordinates[tankIndex].left *= multiplier;
+    }
+
+    if (this.settings.isDebugMode) {
+      console.log('Tanks coordinates', this.tanksCoordinates);
+    }
   }
 }

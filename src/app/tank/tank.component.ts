@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
+import { Coordinates } from '../shared/coordinates.model';
 import { DirectionEnum } from '../shared/direction.enum';
 import {
   downLeft,
@@ -346,6 +347,12 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   private initCoordinates(): void {
     this.left = this.cornersCoordinates[this.index].left;
     this.top = this.cornersCoordinates[this.index].top;
+    this.worldService.tanksCoordinates[this.index] = {
+      top: this.top,
+      right: this.left + this.size,
+      bottom: this.top + this.size,
+      left: this.left
+    } as Coordinates;
   }
 
   private initDirection(): void {
@@ -446,7 +453,12 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
         break;
     }
 
-    // console.log('directionSquares', directionSquares);
+    this.worldService.tanksCoordinates[this.index] = {
+      top: this.top,
+      right: this.left + this.size,
+      bottom: this.top + this.size,
+      left: this.left
+    } as Coordinates;
     this.worldService.directionSquares = directionSquares;
   }
 
