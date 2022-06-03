@@ -16,6 +16,7 @@
         [gunType]="gunType"
         [flashType]="flashType"
         [hullType]="hullType"
+        [isExplode]="getShellsImpactByTankIndex(index).length > 0"
         [isFireControl]="isFireControls[index]"
         [isTurboControl]="isTurboControls[index]"
         [shellType]="shellType"
@@ -26,7 +27,9 @@
         [turboMultiplier]="turboMultiplier"
         [turretType]="turretType"
         [worldSize]="size"
-      ></app-tank><!-- [tick]="tick$ | async" -->
+      ></app-tank>
+      <!-- [tick]="tick$ | async" -->
+      <!-- [isExplode]="shellImpactTanksIndexes.includes(index)" -->
 
       <app-square
         *ngFor="let square of worldService.squares"

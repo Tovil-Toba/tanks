@@ -41,34 +41,36 @@ import { WorldService } from '../world/world.service';
 })
 export class TankComponent implements OnChanges, OnDestroy, OnInit {
   @Input() armor?;
-  @Input() color?: TankColorEnum;
+  @Input() color: TankColorEnum;
   @Input() directionControl?: DirectionEnum;
-  @Input() explosionType?: ExplosionTypeEnum;
-  @Input() flashType?: FlashTypeEnum;
+  @Input() explosionType: ExplosionTypeEnum;
+  @Input() flashType: FlashTypeEnum;
   @Input() gunColor?: TankColorEnum;
-  @Input() gunType?: GunTypeEnum;
+  @Input() gunType: GunTypeEnum;
   @Input() hullColor?: TankColorEnum;
   @Input() index!: TankIndex;
+  @Input() isExplode?: boolean;
   @Input() isFireControl?: boolean;
   @Input() isTurboControl?: boolean;
-  @Input() hullType?: HullTypeEnum;
+  @Input() hullType: HullTypeEnum;
   @Input() name?: string;
-  @Input() shellType?: ShellTypeEnum;
-  @Input() shellImpactType?: ShellImpactTypeEnum;
+  @Input() shellType: ShellTypeEnum;
+  @Input() shellImpactType: ShellImpactTypeEnum;
   @Input() shellSpeed: number;
   @Input() speed: number;
   @Input() size!: number;
   // @Input() tick!: number | null;
-  @Input() trackType?: TrackTypeEnum;
+  @Input() trackType: TrackTypeEnum;
   @Input() turboMultiplier: number;
   @Input() turretColor?: TankColorEnum;
-  @Input() turretType?: TurretTypeEnum;
+  @Input() turretType: TurretTypeEnum;
   @Input() worldSize!: number;
   // @Input() type todo: сделать type
 
   currentSpeed: number;
   direction: DirectionEnum;
   readonly directionEnum: typeof DirectionEnum;
+  explosionFrame: number;
   fireTrigger: number | null;
   isRotating: boolean;
   isShellVisible: boolean;
@@ -95,6 +97,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.currentSpeed = 0;
     this.direction = DirectionEnum.Up;
     this.directionEnum = DirectionEnum;
+    this.explosionFrame = 0;
     this.explosionType = settings.tank.explosionType;
     this.fireTrigger = 0;
     this.flashType = settings.tank.flashType;

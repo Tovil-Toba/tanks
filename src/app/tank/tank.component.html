@@ -8,6 +8,7 @@
   [class.rotate-135]="direction === directionEnum.DownRight"
   [class.-rotate-135]="direction === directionEnum.DownLeft"
   [class.rotate-180]="direction === directionEnum.Down"
+  [style.filter]="isExplode && explosionFrame >= 4 ? 'brightness(40%)' : ''"
   [style.height.px]="size"
   [style.width.px]="size"
   [style.top.px]="top"
@@ -43,6 +44,13 @@
     [trigger]="fireTrigger"
     [type]="gunType"
   ></app-gun>
+
+  <!-- Взрыв -->
+  <app-explosion
+    *ngIf="isExplode"
+    (frame)="explosionFrame = $event"
+    [showBlastTrail]="settings.world.showBlastTrail"
+  ></app-explosion>
 </div>
 
 <!-- Снаряд -->

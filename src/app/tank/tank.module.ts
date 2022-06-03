@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ExhaustComponent } from './exhaust/exhaust.component';
+import { ExplosionComponent } from './explosion/explosion.component';
 import { FlashComponent } from './flash/flash.component';
 import { GunComponent } from './gun/gun.component';
 import { HullComponent } from './hull/hull.component';
@@ -14,6 +15,7 @@ import { TurretComponent } from './turret/turret.component';
 @NgModule({
   declarations: [
     ExhaustComponent,
+    ExplosionComponent,
     FlashComponent,
     GunComponent,
     HullComponent,

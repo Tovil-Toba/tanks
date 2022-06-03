@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
+import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
 import { Square } from './square/square.model';
 import { SquareTypeEnum } from './square/square-type.enum';
 import { TankIndex, TANKS_INDEXES } from '../tank/tank-index.model';
@@ -12,8 +13,9 @@ import { TanksCoordinates } from './shared/tanks-coordinates.model';
 })
 export class WorldService {
   directionSquares: Array<Square>;
-  impactSquares?: Array<Square>;
-  impactTanksIndexes: Array<TankIndex>;
+  shellImpactSquares?: Array<Square>;
+  // shellImpactTanksIndexes: Array<TankIndex>;
+  readonly shellsImpactWithTanks: Array<ShellImpactWithTank>;
   readonly squares: Array<Square>;
   readonly tanksCoordinates: TanksCoordinates;
 
@@ -34,7 +36,8 @@ export class WorldService {
 
   constructor(private settings: SettingsService) {
     this.directionSquares = new Array<Square>();
-    this.impactTanksIndexes = new Array<TankIndex>();
+    // this.shellImpactTanksIndexes = new Array<TankIndex>();
+    this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
     const initialCoordinates = { top: 0, right: settings.squareSize, bottom: settings.squareSize, left: 0 };
     this.tanksCoordinates = {
@@ -45,11 +48,21 @@ export class WorldService {
     };
   }
 
+  addShellImpactWithTank(shellImpact: ShellImpactWithTank): void {
+    this.shellsImpactWithTanks.push(shellImpact);
+  }
+
   getRandomType(): SquareTypeEnum {
     // const randomIndex = randomIntFromInterval(0, 7);
     const randomIndex = randomIntFromInterval(0, 5);
 
     return this.squareTypes[randomIndex];
+  }
+
+  getShellsImpactByTankIndex(targetTankIndex: TankIndex): Array<ShellImpactWithTank> {
+    return this.shellsImpactWithTanks.filter((shellImpactWithTank) => (
+      shellImpactWithTank.targetTankIndex === targetTankIndex
+    ));
   }
 
   initSquares(size: number): void {

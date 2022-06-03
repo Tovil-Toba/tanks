@@ -101,24 +101,24 @@ export class SquareComponent implements OnDestroy, OnInit {
 
     const directionSquare: Square | undefined =
       this.worldService.directionSquares.find((square) => square.index === this.index);
-    const impactSquare: Square | undefined =
-      this.worldService.impactSquares?.find((square) => square.index === this.index);
+    const shellImpactSquare: Square | undefined =
+      this.worldService.shellImpactSquares?.find((square) => square.index === this.index);
 
-    if (directionSquare || impactSquare) {
+    if (directionSquare || shellImpactSquare) {
       this.isCollision = true;
 
-      if (this.settings.isDebugMode && impactSquare) {
-        console.log('Impact square', impactSquare);
+      if (this.settings.isDebugMode && shellImpactSquare) {
+        console.log('Shell impact square', shellImpactSquare);
       }
 
       const explosionTimerId = setTimeout(() => {
         if (directionSquare) {
           this.explosionType = this.collisionExplosionType;
         } else {
-          this.explosionType = impactSquare?.explosionType as ExplosionTypeEnum;
+          this.explosionType = shellImpactSquare?.explosionType as ExplosionTypeEnum;
         }
 
-        //if (impactSquare) {
+        //if (shellImpactSquare) {
         this.isExplode = true;
         //}
 

@@ -5,7 +5,7 @@ import {
   BLAST_TRAIL_IMAGE_PATH,
   COLLISION_IMAGE_PATH,
   CUSTOM_EXPLOSION_IMAGE_PATH,
-  EXPLOSION_IMAGE_PATH
+  SQUARE_EXPLOSION_IMAGE_PATH
 } from '../../core/images.constants';
 import { ExplosionTypeEnum } from './explosion-type.enum';
 import { randomIntFromInterval } from '../../shared/utils';
@@ -22,7 +22,7 @@ export class ExplosionComponent implements OnInit {
   @Input() type?: ExplosionTypeEnum;
   @Input() showBlastTrail?: boolean;
 
-  blastTrailType: number;
+  readonly blastTrailType: number;
   frame$: Observable<number | null>;
   readonly framesCount = 5;
   readonly rotationRandomMultiplier: number;
@@ -62,7 +62,7 @@ export class ExplosionComponent implements OnInit {
   get explosionImagePath(): string {
     return this.isCollision
       ? CUSTOM_EXPLOSION_IMAGE_PATH
-      : EXPLOSION_IMAGE_PATH
+      : SQUARE_EXPLOSION_IMAGE_PATH
     ;
   }
 

@@ -10,6 +10,7 @@ import { SettingsService } from '../../core/settings.service';
 import { SHELL_IMAGE_PATH } from '../../core/images.constants';
 import { ShellTypeEnum } from './shell-type.enum';
 import { ShellImpactTypeEnum } from './shell-impact/shell-impact-type.enum';
+import { ShellImpactWithTank } from '../../world/shared/shell-impact-with-tank';
 import { Square } from '../../world/square/square.model';
 import { TankIndex, TANKS_INDEXES } from '../tank-index.model';
 import { WorldService } from '../../world/world.service';
@@ -30,7 +31,7 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
   @Input() speed!: number;
   @Input() tankIndex!: TankIndex;
   // @Input() tick!: number | null;
-  @Input() type?: ShellTypeEnum;
+  @Input() type: ShellTypeEnum;
   @Input() worldSize!: number;
 
   @Output() readonly isVisibleChange: EventEmitter<boolean>;
@@ -125,87 +126,54 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
     );
   }
 
+  private checkImpact(coordinates: Coordinates): boolean {
+    const bottom = this.top + this.size;
+    const right = this.left + this.size;
+
+    return coordinates.top <= this.top + this.size/2 &&
+      coordinates.right >= right - this.size/2 &&
+      coordinates.bottom >= bottom - this.size/2 &&
+      coordinates.left <= this.left + this.size/2
+    ;
+  }
+
+  // Альтернативный вариант проверки столкновения
+  private checkImpactAlt(coordinates: Coordinates): boolean {
+    const bottom = this.top + this.size;
+    const right = this.left + this.size;
+
+    return coordinates.top <= bottom - this.size/2 &&
+      coordinates.right >= this.left + this.size/2 &&
+      coordinates.bottom >= this.top + this.size/2 &&
+      coordinates.left <= right - this.size/2
+    ;
+  }
+
   private move(): void {
     if (this.isImpact) {
       return;
     }
 
-    const convertedSpeed = this.settings.convertSpeed(this.speed);
-    const distance = this.settings.squareSize * convertedSpeed;
-    const bottom = this.top + this.size;
-    const right = this.left + this.size;
-    const directionSquares: Array<Square> = this.worldService.squares.filter((square) => (
-      square.top <= bottom - this.size/2 &&
-      square.right >= this.left + this.size/2 &&
-      square.bottom >= this.top + this.size/2 &&
-      square.left <= right - this.size/2
-    ));
-    const impactSquares: Array<Square> = directionSquares.filter((square) => (
-      !square.isPassable || square.isDestroyable
-    ));
+    const impactSquares: Array<Square> = this.worldService.squares
+      .filter((square) => this.checkImpact(square))
+      .filter((square) => (!square.isPassable || square.isDestroyable))
+    ;
 
     if (impactSquares.length) {
       for (const square of impactSquares) {
         square.explosionType = this.explosionType;
       }
 
-      this.worldService.impactSquares = impactSquares;
+      this.worldService.shellImpactSquares = impactSquares;
+
+      if (this.settings.isDebugMode) {
+        console.log('Shell impact squares', this.worldService.shellImpactSquares);
+      }
+
       this.impact();
 
       return;
     }
-
-    let top = 0;
-    let left = 0;
-    let isShellReset = false;
-
-    switch (this.direction) {
-      case DirectionEnum.Down:
-        top = this.top + distance;
-        left = this.left;
-
-        if (top <= this.worldSize) { // this.settings.worldSize
-          this.top = top;
-        } else {
-          isShellReset = true;
-        }
-
-        break;
-      case DirectionEnum.Left:
-        top = this.top;
-        left = this.left - distance;
-
-        if (left >= 0) {
-          this.left = left;
-        } else {
-          isShellReset = true;
-        }
-        break;
-      case DirectionEnum.Right:
-        top = this.top;
-        left = this.left  + distance;
-
-        if (left + this.size <= this.worldSize) {
-          this.left = left;
-        } else {
-          isShellReset = true;
-        }
-
-        break;
-      case DirectionEnum.Up:
-        top = this.top - distance;
-        left = this.left;
-
-        if (top >= 0) {
-          this.top = top;
-        } else {
-          isShellReset = true;
-        }
-
-        break;
-    }
-
-    const impactTanksIndexes: Array<TankIndex> = [];
 
     for (const tankIndex of TANKS_INDEXES) {
       if (tankIndex === this.tankIndex) {
@@ -214,23 +182,81 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
 
       const tankCoordinates: Coordinates = this.worldService.tanksCoordinates[tankIndex];
 
-      // todo: Для расчета столкновений выбрать между этим вариантом и способом выше (столкновение с квадратами),
-      //  и вынести все это в отдельную функцию
-      if (tankCoordinates.top <= top + this.size/2 &&
-        tankCoordinates.right >= right - this.size/2 &&
-        tankCoordinates.bottom >= bottom - this.size/2 &&
-        tankCoordinates.left <= left + this.size/2
-      ) {
-        impactTanksIndexes.push(tankIndex);
+      if (this.checkImpact(tankCoordinates)) {
+        /*if (!this.worldService.shellImpactTanksIndexes.includes(tankIndex)) {
+          this.worldService.shellImpactTanksIndexes.push(tankIndex);
+        }*/
+
+        const shellsImpactWithTank = this.worldService
+          .getShellsImpactByTankIndex(tankIndex)
+          .filter((shellImpact) => shellImpact.parentTankIndex !== this.tankIndex)
+        ;
+
+        if (!shellsImpactWithTank.length) {
+          const shellImpactWithTank: ShellImpactWithTank = {
+            parentTankIndex: this.tankIndex,
+            shellType: this.type,
+            targetTankIndex: tankIndex
+          };
+
+          this.worldService.addShellImpactWithTank(shellImpactWithTank);
+        }
+
+        if (this.settings.isDebugMode) {
+          console.log('Shells impact tank', this.worldService.getShellsImpactByTankIndex(tankIndex));
+        }
+
+        this.impact();
+
+        return;
       }
     }
 
-    if (impactTanksIndexes.length) {
-      console.log('Impact tanks indexes', impactTanksIndexes);
-    }
+    const convertedSpeed = this.settings.convertSpeed(this.speed);
+    const distance = this.settings.squareSize * convertedSpeed;
+    let top = 0;
+    let left = 0;
 
-    if (isShellReset) {
-      this.resetShell();
+    switch (this.direction) {
+      case DirectionEnum.Down:
+        top = this.top + distance;
+
+        if (top <= this.worldSize) { // this.settings.worldSize
+          this.top = top;
+        } else {
+          this.resetShell();
+        }
+
+        break;
+      case DirectionEnum.Left:
+        left = this.left - distance;
+
+        if (left >= 0) {
+          this.left = left;
+        } else {
+          this.resetShell();
+        }
+        break;
+      case DirectionEnum.Right:
+        left = this.left + distance;
+
+        if (left + this.size <= this.worldSize) {
+          this.left = left;
+        } else {
+          this.resetShell();
+        }
+
+        break;
+      case DirectionEnum.Up:
+        top = this.top - distance;
+
+        if (top >= 0) {
+          this.top = top;
+        } else {
+          this.resetShell();
+        }
+
+        break;
     }
   }
 

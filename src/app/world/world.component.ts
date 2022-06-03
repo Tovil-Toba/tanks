@@ -10,6 +10,7 @@ import { GunTypeEnum } from '../tank/gun/gun-type.enum';
 import { HullTypeEnum } from '../tank/hull/hull-type.enum';
 import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
+import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
 import { ShellTypeEnum } from '../tank/shell/shell-type.enum';
 import { ShellImpactTypeEnum } from '../tank/shell/shell-impact/shell-impact-type.enum';
 import { TankColorEnum } from '../tank/tank-color.enum';
@@ -79,8 +80,12 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.turboMultiplier = settings.tank.turboMultiplier;
     this.turretType = settings.tank.turretType;
     this.trackType = settings.tank.trackType;
-    const millisecondsPerFrame = 1000 / this.settings.fps; // todo: можно инициализировать интервал настроек тут
-    console.log('Milliseconds in 1 frame', millisecondsPerFrame);
+    const millisecondsPerFrame = 1000 / settings.fps; // todo: можно инициализировать интервал настроек тут
+
+    if (settings.isDebugMode) {
+      console.log('Milliseconds in 1 frame', millisecondsPerFrame);
+    }
+
     this.tick$ = interval(millisecondsPerFrame);
     this.type = WorldTypeEnum.A;
     // todo: сделать рандомную генерацию 4 танков
@@ -94,6 +99,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   get squareSize(): number {
     return this.size / this.settings.world.squaresPerSide;
   }
+
+  /*get shellImpactTanksIndexes(): Array<TankIndex> {
+    return this.worldService.shellImpactTanksIndexes;
+  }*/
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
@@ -123,6 +132,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     } else if (this.controls.isTurboButton(event)) {
       this.isTurboControls[this.playerTankIndex] = false;
     }
+  }
+
+  getShellsImpactByTankIndex(tankIndex: TankIndex): Array<ShellImpactWithTank> {
+    return this.worldService.getShellsImpactByTankIndex(tankIndex);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
