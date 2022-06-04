@@ -39,7 +39,12 @@ export class WorldService {
     // this.shellImpactTanksIndexes = new Array<TankIndex>();
     this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
-    const initialCoordinates = { top: 0, right: settings.squareSize, bottom: settings.squareSize, left: 0 };
+    const initialCoordinates = {
+      top: 0,
+      right: settings.squareSize,
+      bottom: settings.squareSize,
+      left: 0
+    };
     this.tanksCoordinates = {
       0: initialCoordinates,
       1: initialCoordinates,
