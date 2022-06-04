@@ -29,7 +29,7 @@ import { ShellImpactTypeEnum } from './shell/shell-impact/shell-impact-type.enum
 import { Square } from '../world/square/square.model';
 import { SquareTypeEnum } from '../world/square/square-type.enum';
 import { TankColorEnum } from './tank-color.enum';
-import { TankIndex } from './tank-index.model';
+import { TankIndex, TANKS_INDEXES } from './tank-index.model';
 import { TrackTypeEnum } from './track/track-type.enum';
 import { TurretTypeEnum } from './turret/turret-type.enum';
 import { WorldService } from '../world/world.service';
@@ -132,6 +132,10 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     return this.size / 4;
   }
 
+  private get bottom(): number {
+    return this.top + this.size;
+  }
+
   private get cornersCoordinates(): Array<{ top: number, left: number }>{
     const squaresPerSide = this.settings.world.squaresPerSide;
 
@@ -141,6 +145,15 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
       { top: (squaresPerSide - 1) * this.size, left: 0 },
       { top: (squaresPerSide - 1) * this.size, left: (squaresPerSide - 1) * this.size }
     ];
+  }
+
+  private get movementDistance(): number {
+    const convertedSpeed = this.settings.convertSpeed(this.speed);
+    return this.size * convertedSpeed * this.speedMultiplier;
+  }
+
+  private get right(): number {
+    return this.left + this.size;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -201,6 +214,37 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     if (!this.turretColor) {
       this.turretColor = this.color;
     }
+  }
+
+  private checkDirection(
+    direction: DirectionEnum,
+    coordinates: Coordinates,
+    isStrictImpact = false
+  ): boolean {
+    const movementDelta = isStrictImpact ? 0 : this.movementDelta;
+    const distance = this.movementDistance;
+
+    return coordinates.top < this.bottom - movementDelta + (direction === DirectionEnum.Down ? distance : 0) &&
+      coordinates.bottom > this.top + movementDelta - (direction === DirectionEnum.Up ? distance : 0) &&
+      coordinates.left < this.right - movementDelta + (direction === DirectionEnum.Right ? distance : 0) &&
+      coordinates.right > this.left + movementDelta - (direction === DirectionEnum.Left ? distance : 0)
+    ;
+  }
+
+  private checkDownDirection(coordinates: Coordinates, isStrictImpact = false): boolean {
+    return this.checkDirection(DirectionEnum.Down, coordinates, isStrictImpact);
+  }
+
+  private checkLeftDirection(coordinates: Coordinates, isStrictImpact = false): boolean {
+    return this.checkDirection(DirectionEnum.Left, coordinates, isStrictImpact);
+  }
+
+  private checkRightDirection(coordinates: Coordinates, isStrictImpact = false): boolean {
+    return this.checkDirection(DirectionEnum.Right, coordinates, isStrictImpact);
+  }
+
+  private checkUpDirection(coordinates: Coordinates, isStrictImpact = false): boolean {
+    return this.checkDirection(DirectionEnum.Up, coordinates, isStrictImpact);
   }
 
   private fire(): void {
@@ -366,91 +410,62 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     }
   }
 
+  // todo: Класс стал слишком большим, в том числе и этот метод. Попробовать разбить на части
   private move(): void {
     if (this.isRotating) {
       return;
     }
 
-    const convertedSpeed = this.settings.convertSpeed(this.speed);
-    const distance = this.size * convertedSpeed * this.speedMultiplier;
-    const bottom = this.top + this.size;
-    const right = this.left + this.size;
     let directionSquares: Array<Square> = [];
+    let impactedTanksCoordinates: Array<Coordinates> = [];
+
+    const tanksCoordinates: Array<Coordinates> = [];
+    for (const tankIndex of TANKS_INDEXES) {
+      if (tankIndex !== this.index) {
+        tanksCoordinates.push(this.worldService.tanksCoordinates[tankIndex]);
+      }
+    }
+
+    impactedTanksCoordinates = tanksCoordinates.filter((coordinates) => (
+      this.checkDirection(this.direction, coordinates)
+    ));
+
+    if (impactedTanksCoordinates.length) {
+      return;
+    }
+
+    directionSquares = this.worldService.squares.filter((square) => (
+      this.checkDirection(this.direction, square)
+    ));
+
+    if (directionSquares.find((square) => !square.isPassable)) {
+      return;
+    } else if (directionSquares.find((square) => square.type === SquareTypeEnum.Block)) {
+      this.slowDown();
+    }
 
     switch (this.direction) {
       case DirectionEnum.Down:
-        directionSquares = this.worldService.squares.filter((square) => (
-          square.top < bottom + distance - this.movementDelta && // убрать this.movementDelta для строгого столкновения
-          square.bottom > this.top + this.movementDelta &&
-          square.left < right - this.movementDelta &&
-          square.right > this.left + this.movementDelta
-        ));
-
-        if (directionSquares.find((square) => !square.isPassable)) {
-          return;
-        } else if (directionSquares.find((square) => square.type === SquareTypeEnum.Block)) {
-          this.slowDown();
-        }
-
-        if (this.top + this.size + distance <= this.worldSize) {
-          this.top = this.top + distance;
+        if (this.top + this.size + this.movementDistance <= this.worldSize) {
+          this.top = this.top + this.movementDistance;
         }
 
         break;
       case DirectionEnum.Left:
-        directionSquares = this.worldService.squares.filter((square) => (
-          square.top < bottom - this.movementDelta &&
-          square.bottom > this.top + this.movementDelta &&
-          square.left < right - this.movementDelta &&
-          square.right > this.left - distance + this.movementDelta // убрать this.movementDelta для строгого столкновения
-        ));
-
-        if (directionSquares.find((square) => !square.isPassable)) {
-          return;
-        } else if (directionSquares.find((square) => square.type === SquareTypeEnum.Block)) {
-          this.slowDown();
-        }
-
-        if (this.left - distance >= 0) {
-          this.left = this.left - distance;
+        if (this.left - this.movementDistance >= 0) {
+          this.left = this.left - this.movementDistance;
         }
 
         break;
       case DirectionEnum.Right:
-        directionSquares = this.worldService.squares.filter((square) => (
-          square.top < bottom - this.movementDelta &&
-          square.bottom > this.top + this.movementDelta &&
-          square.left < right + distance - this.movementDelta && // убрать this.movementDelta для строгого столкновения
-          square.right > this.left + this.movementDelta
-        ));
-
-        if (directionSquares.find((square) => !square.isPassable)) {
-          return;
-        } else if (directionSquares.find((square) => square.type === SquareTypeEnum.Block)) {
-          this.slowDown();
-        }
-
-        if (this.left + this.size + distance <= this.worldSize) {
-          this.left = this.left + distance;
+        if (this.left + this.size + this.movementDistance <= this.worldSize) {
+          this.left = this.left + this.movementDistance;
         }
 
         break;
       case DirectionEnum.Up:
-        directionSquares = this.worldService.squares.filter((square) => (
-          square.top < bottom - this.movementDelta &&
-          square.bottom > this.top - distance + this.movementDelta && // убрать this.movementDelta для строгого столкновения
-          square.left < right - this.movementDelta &&
-          square.right > this.left + this.movementDelta
-        ));
-
-        if (directionSquares.find((square) => !square.isPassable)) {
-          return;
-        } else if (directionSquares.find((square) => square.type === SquareTypeEnum.Block)) {
-          this.slowDown();
-        }
-
-        if (this.top - distance >= 0) {
-          this.top = this.top - distance;
+        if (this.top - this.movementDistance >= 0) {
+          this.top = this.top - this.movementDistance;
         }
 
         break;
