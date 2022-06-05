@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
@@ -30,6 +30,8 @@ import { Square } from '../world/square/square.model';
 import { SquareTypeEnum } from '../world/square/square-type.enum';
 import { TankColorEnum } from './tank-color.enum';
 import { TankIndex, TANKS_INDEXES } from './tank-index.model';
+import { TankMovement } from '../core/tank-movement.model';
+import { TankMovementService } from '../core/tank-movement.service';
 import { TrackTypeEnum } from './track/track-type.enum';
 import { TurretTypeEnum } from './turret/turret-type.enum';
 import { WorldService } from '../world/world.service';
@@ -67,6 +69,8 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   @Input() worldSize!: number;
   // @Input() type todo: сделать type
 
+  @Output() readonly moving: EventEmitter<TankMovement>;
+
   currentSpeed: number;
   direction: DirectionEnum;
   readonly directionEnum: typeof DirectionEnum;
@@ -90,9 +94,11 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   constructor(
     public settings: SettingsService,
     private store: Store,
+    private tankMovementService: TankMovementService,
     private worldService: WorldService
   ) {
     this.armor = settings.tank.armor;
+    this.moving = new EventEmitter<TankMovement>();
     this.color = settings.tank.color;
     this.currentSpeed = 0;
     this.direction = DirectionEnum.Up;
@@ -394,12 +400,13 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   private initCoordinates(): void {
     this.left = this.cornersCoordinates[this.index].left;
     this.top = this.cornersCoordinates[this.index].top;
-    this.worldService.tanksCoordinates[this.index] = {
+    const coordinates: Coordinates = {
       top: this.top,
       right: this.left + this.size,
       bottom: this.top + this.size,
       left: this.left
-    } as Coordinates;
+    };
+    this.tankMovementService.setTankCoordinates(this.index, coordinates);
   }
 
   private initDirection(): void {
@@ -413,6 +420,8 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   // todo: Класс стал слишком большим, в том числе и этот метод. Попробовать разбить на части
   private move(): void {
     if (this.isRotating) {
+      this.moving.emit({ direction: this.direction, canMove: true });
+
       return;
     }
 
@@ -422,7 +431,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     const tanksCoordinates: Array<Coordinates> = [];
     for (const tankIndex of TANKS_INDEXES) {
       if (tankIndex !== this.index) {
-        tanksCoordinates.push(this.worldService.tanksCoordinates[tankIndex]);
+        tanksCoordinates.push(this.tankMovementService.getTankCoordinates(tankIndex));
       }
     }
 
@@ -431,6 +440,8 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     ));
 
     if (impactedTanksCoordinates.length) {
+      this.moving.emit({ direction: this.direction, canMove: false });
+
       return;
     }
 
@@ -439,45 +450,55 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     ));
 
     if (directionSquares.find((square) => !square.isPassable)) {
+      this.moving.emit({ direction: this.direction, canMove: false });
+
       return;
     } else if (directionSquares.find((square) => square.type === SquareTypeEnum.Block)) {
       this.slowDown();
     }
 
+    let canMove = false;
+
     switch (this.direction) {
       case DirectionEnum.Down:
         if (this.top + this.size + this.movementDistance <= this.worldSize) {
           this.top = this.top + this.movementDistance;
+          canMove = true;
         }
 
         break;
       case DirectionEnum.Left:
         if (this.left - this.movementDistance >= 0) {
           this.left = this.left - this.movementDistance;
+          canMove = true;
         }
 
         break;
       case DirectionEnum.Right:
         if (this.left + this.size + this.movementDistance <= this.worldSize) {
           this.left = this.left + this.movementDistance;
+          canMove = true;
         }
 
         break;
       case DirectionEnum.Up:
         if (this.top - this.movementDistance >= 0) {
           this.top = this.top - this.movementDistance;
+          canMove = true;
         }
 
         break;
     }
 
-    this.worldService.tanksCoordinates[this.index] = {
+    this.moving.emit({ direction: this.direction, canMove });
+    const coordinates: Coordinates = {
       top: this.top,
       right: this.left + this.size,
       bottom: this.top + this.size,
       left: this.left
-    } as Coordinates;
-    this.worldService.directionSquares = directionSquares;
+    };
+    this.tankMovementService.setTankCoordinates(this.index, coordinates);
+    this.tankMovementService.setDirectionSquares(this.index, directionSquares);
   }
 
   private recalculatePosition(previousSize?: number): void {

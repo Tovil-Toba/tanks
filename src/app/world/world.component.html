@@ -10,6 +10,7 @@
       <app-tank
         *ngFor="let index of tankIndexes"
         [index]="index"
+        (moving)="tankMovementService.tankMovingHandler(index, $event)"
         [color]="tankColors[index]"
         [directionControl]="directionControls[index]"
         [explosionType]="explosionType"

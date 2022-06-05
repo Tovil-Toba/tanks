@@ -9,6 +9,7 @@ import { selectTick } from '../../store/tick.selectors';
 import { SettingsService } from '../../core/settings.service';
 import { Square } from './square.model';
 import { SquareTypeEnum } from './square-type.enum';
+import { TankMovementService } from '../../core/tank-movement.service';
 import { WorldService } from '../world.service';
 import { WorldTypeEnum } from '../world-type.enum';
 
@@ -39,9 +40,10 @@ export class SquareComponent implements OnDestroy, OnInit {
   private readonly tick$: Observable<number>;
 
   constructor(
-    public readonly settings: SettingsService,
-    private readonly store: Store,
-    private readonly worldService: WorldService
+    public settings: SettingsService,
+    private store: Store,
+    private tankMovementService: TankMovementService,
+    private worldService: WorldService
   ) {
     this.rotationRandomMultiplier = settings.world.isAssetsRandomRotationEnabled
       ? randomIntFromInterval(0, 3)
@@ -60,9 +62,10 @@ export class SquareComponent implements OnDestroy, OnInit {
   }
 
   get isActive(): boolean {
-    return this.worldService.directionSquares
+    return this.tankMovementService.directionSquaresArray
       .filter((square) => square.index === this.index)
-      .length > 0;
+      .length > 0
+    ;
   }
 
   get isDestroyable(): boolean {
@@ -99,10 +102,12 @@ export class SquareComponent implements OnDestroy, OnInit {
       return;
     }
 
-    const directionSquare: Square | undefined =
-      this.worldService.directionSquares.find((square) => square.index === this.index);
-    const shellImpactSquare: Square | undefined =
-      this.worldService.shellImpactSquares?.find((square) => square.index === this.index);
+    const directionSquare: Square | undefined = this.tankMovementService.directionSquaresArray
+      .find((square) => square.index === this.index)
+    ;
+    const shellImpactSquare: Square | undefined = this.worldService.shellImpactSquares
+      ?.find((square) => square.index === this.index)
+    ;
 
     if (directionSquare || shellImpactSquare) {
       this.isCollision = true;

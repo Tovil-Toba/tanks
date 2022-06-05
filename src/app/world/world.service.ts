@@ -5,19 +5,15 @@ import { SettingsService } from '../core/settings.service';
 import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
 import { Square } from './square/square.model';
 import { SquareTypeEnum } from './square/square-type.enum';
-import { TankIndex, TANKS_INDEXES } from '../tank/tank-index.model';
-import { TanksCoordinates } from './shared/tanks-coordinates.model';
+import { TankIndex } from '../tank/tank-index.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorldService {
-  directionSquares: Array<Square>;
   shellImpactSquares?: Array<Square>;
-  // shellImpactTanksIndexes: Array<TankIndex>;
   readonly shellsImpactWithTanks: Array<ShellImpactWithTank>;
   readonly squares: Array<Square>;
-  readonly tanksCoordinates: TanksCoordinates;
 
   private readonly squareTypes: Array<SquareTypeEnum> = [
     // SquareTypeEnum.Barrel,
@@ -35,22 +31,8 @@ export class WorldService {
   ];
 
   constructor(private settings: SettingsService) {
-    this.directionSquares = new Array<Square>();
-    // this.shellImpactTanksIndexes = new Array<TankIndex>();
     this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
-    const initialCoordinates = {
-      top: 0,
-      right: settings.squareSize,
-      bottom: settings.squareSize,
-      left: 0
-    };
-    this.tanksCoordinates = {
-      0: initialCoordinates,
-      1: initialCoordinates,
-      2: initialCoordinates,
-      3: initialCoordinates
-    };
   }
 
   addShellImpactWithTank(shellImpact: ShellImpactWithTank): void {
@@ -150,24 +132,5 @@ export class WorldService {
 
       colIndex++;
     });
-  }
-
-  recalculateTanksCoordinates(currentWorldSize: number, previousWorldSize: number): void {
-    if (currentWorldSize <= 0 || previousWorldSize <= 0) {
-      return;
-    }
-
-    const multiplier = currentWorldSize / previousWorldSize;
-
-    for (const tankIndex of TANKS_INDEXES) {
-      this.tanksCoordinates[tankIndex].top *= multiplier;
-      this.tanksCoordinates[tankIndex].right *= multiplier;
-      this.tanksCoordinates[tankIndex].bottom *= multiplier;
-      this.tanksCoordinates[tankIndex].left *= multiplier;
-    }
-
-    if (this.settings.isDebugMode) {
-      console.log('Tanks coordinates', this.tanksCoordinates);
-    }
   }
 }

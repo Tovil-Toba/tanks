@@ -8,13 +8,13 @@ import { ExplosionTypeEnum } from './explosion/explosion-type.enum';
 import { FlashTypeEnum } from '../tank/flash/flash-type.enum';
 import { GunTypeEnum } from '../tank/gun/gun-type.enum';
 import { HullTypeEnum } from '../tank/hull/hull-type.enum';
-import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
 import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
 import { ShellTypeEnum } from '../tank/shell/shell-type.enum';
 import { ShellImpactTypeEnum } from '../tank/shell/shell-impact/shell-impact-type.enum';
 import { TankColorEnum } from '../tank/tank-color.enum';
 import { TankIndex } from '../tank/tank-index.model';
+import { TankMovementService } from '../core/tank-movement.service';
 import * as TickActions from '../store/tick.actions';
 import { TrackTypeEnum } from '../tank/track/track-type.enum';
 import { TurretTypeEnum } from '../tank/turret/turret-type.enum';
@@ -53,19 +53,20 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   private readonly subscription: Subscription;
 
   constructor(
-    private controls: ControlsService,
+    private controlsService: ControlsService,
     public settings: SettingsService,
-    private readonly store: Store,
+    private store: Store,
+    public tankMovementService: TankMovementService,
     public worldService: WorldService
   ) {
-    this.directionControls = new Array<DirectionEnum | undefined>(4);
+    this.directionControls = tankMovementService.directionControls;
     this.explosionType = settings.tank.explosionType;
     this.flashType = settings.tank.flashType;
     this.gunType = settings.tank.gunType;
     this.hullType = settings.tank.hullType;
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
-    this.playerTankIndex = randomIntFromInterval(0, 3) as TankIndex;
+    this.playerTankIndex = tankMovementService.playerTankIndex;
     this.shellType = settings.tank.shellType;
     this.shellImpactType = settings.tank.shellImpactType;
     this.size = settings.world.size;
@@ -100,36 +101,32 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     return this.size / this.settings.world.squaresPerSide;
   }
 
-  /*get shellImpactTanksIndexes(): Array<TankIndex> {
-    return this.worldService.shellImpactTanksIndexes;
-  }*/
-
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
-    if (this.controls.isDirectionButton(event)) {
-      if (this.controls.isDownButton(event)) {
+    if (this.controlsService.isDirectionButton(event)) {
+      if (this.controlsService.isDownButton(event)) {
         this.directionControls[this.playerTankIndex] = DirectionEnum.Down;
-      } else if (this.controls.isLeftButton(event)) {
+      } else if (this.controlsService.isLeftButton(event)) {
         this.directionControls[this.playerTankIndex] = DirectionEnum.Left;
-      } else if (this.controls.isRightButton(event)) {
+      } else if (this.controlsService.isRightButton(event)) {
         this.directionControls[this.playerTankIndex] = DirectionEnum.Right;
-      } else if (this.controls.isUpButton(event)) {
+      } else if (this.controlsService.isUpButton(event)) {
         this.directionControls[this.playerTankIndex] = DirectionEnum.Up;
       }
-    } else if (this.controls.isFireButton(event)) {
+    } else if (this.controlsService.isFireButton(event)) {
       this.isFireControls[this.playerTankIndex] = true;
-    } else if (this.controls.isTurboButton(event)) {
+    } else if (this.controlsService.isTurboButton(event)) {
       this.isTurboControls[this.playerTankIndex] = true;
     }
   }
 
   @HostListener('window:keyup', ['$event'])
   handleKeyUp(event: KeyboardEvent): void {
-    if (this.controls.isDirectionButton(event)) {
+    if (this.controlsService.isDirectionButton(event)) {
       this.directionControls[this.playerTankIndex] = undefined;
-    } else if (this.controls.isFireButton(event)) {
+    } else if (this.controlsService.isFireButton(event)) {
       this.isFireControls[this.playerTankIndex] = false;
-    } else if (this.controls.isTurboButton(event)) {
+    } else if (this.controlsService.isTurboButton(event)) {
       this.isTurboControls[this.playerTankIndex] = false;
     }
   }
@@ -142,7 +139,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     if (changes['size']?.currentValue !== changes['size']?.previousValue) {
       this.settings.world.size = this.size;
       this.worldService.recalculateSquareSizes(this.squareSize);
-      this.worldService.recalculateTanksCoordinates(
+      this.tankMovementService.recalculateTanksCoordinates(
         changes['size']?.currentValue as number,
         changes['size']?.previousValue as number
       );
@@ -155,6 +152,8 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.worldService.initSquares(this.squareSize);
+    this.tankMovementService.initDirectionControls(this.playerTankIndex);
+
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe(() => {

@@ -3,10 +3,8 @@
   <ng-container *ngIf="settings$ | async as settings">
     <!--World size: {{worldSize}}-->
     <div class="flex w-full h-full align-items-center justify-content-center">
-      <div style="width: 100%;" (resized)="onWorldResize($event)"><!-- 100vh; -->
+      <div style="width: 80vh;" (resized)="onWorldResize($event)"><!-- 100vh; -->
         <app-world [size]="worldSize" [type]="worldType"></app-world>
-<!--        <app-world [size]="worldCont.offsetWidth" [type]="worldType"></app-world>-->
-<!--        <app-world [size]="worldContRef?.nativeElement.offsetWidth" [type]="worldType"></app-world>-->
       </div>
     </div>
   </ng-container>

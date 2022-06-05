@@ -13,6 +13,7 @@ import { ShellImpactTypeEnum } from './shell-impact/shell-impact-type.enum';
 import { ShellImpactWithTank } from '../../world/shared/shell-impact-with-tank';
 import { Square } from '../../world/square/square.model';
 import { TankIndex, TANKS_INDEXES } from '../tank-index.model';
+import { TankMovementService } from '../../core/tank-movement.service';
 import { WorldService } from '../../world/world.service';
 
 @Component({
@@ -49,9 +50,10 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
   private readonly tick$: Observable<number>;
 
   constructor(
-    public readonly settings: SettingsService,
-    private readonly store: Store,
-    private readonly worldService: WorldService
+    public settings: SettingsService,
+    private store: Store,
+    private tankMovementService: TankMovementService,
+    private worldService: WorldService
   ) {
     this.direction = DirectionEnum.Up;
     this.directionEnum = DirectionEnum;
@@ -180,13 +182,9 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
         continue;
       }
 
-      const tankCoordinates: Coordinates = this.worldService.tanksCoordinates[tankIndex];
+      const tankCoordinates: Coordinates = this.tankMovementService.getTankCoordinates(tankIndex);
 
       if (this.checkImpact(tankCoordinates)) {
-        /*if (!this.worldService.shellImpactTanksIndexes.includes(tankIndex)) {
-          this.worldService.shellImpactTanksIndexes.push(tankIndex);
-        }*/
-
         const shellsImpactWithTank = this.worldService
           .getShellsImpactByTankIndex(tankIndex)
           .filter((shellImpact) => shellImpact.parentTankIndex !== this.tankIndex)
