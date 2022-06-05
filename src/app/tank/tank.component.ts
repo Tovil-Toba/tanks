@@ -192,6 +192,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   ngOnInit(): void {
     this.initCoordinates();
     this.initDirection();
+    let explosionFrame = 0;
 
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
@@ -200,6 +201,17 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
         if (this.currentSpeed > 0) {
           this.move();
+
+          if (this.isExplode) {
+            if (explosionFrame >= this.settings.fps / 2) { // todo: Сделать случайным расстояние (explosionFrame),
+                                                           //  которое танк может проехать после попадания.
+                                                           //  Прикрутить также постепенную и случайную
+                                                           //  потерю скорости во время взрыва.
+              this.currentSpeed = 0;
+            }
+
+            explosionFrame++;
+          }
         }
 
         // Вынесено сюда, чтобы стрельба продолжалась при зажатой кнопке

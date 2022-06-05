@@ -31,7 +31,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   @Input() size!: number;
   @Input() type: WorldTypeEnum;
 
-  directionControls: Array<DirectionEnum | undefined>;
+  directionControls: Record<TankIndex, DirectionEnum | undefined>;
   readonly explosionType: ExplosionTypeEnum;
   readonly flashType: FlashTypeEnum;
   readonly gunType: GunTypeEnum;

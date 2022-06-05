@@ -13,16 +13,27 @@ import { TanksCoordinates } from '../world/shared/tanks-coordinates.model';
   providedIn: 'root'
 })
 export class TankMovementService {
-  directionControls: Array<DirectionEnum | undefined>;
+  readonly directionControls: Record<TankIndex, DirectionEnum | undefined>;
   readonly directionSquares: Record<TankIndex, Array<Square>>;
-  readonly prevDirections: Record<TankIndex, DirectionEnum | undefined>;
+  readonly prevDirectionControls: Record<TankIndex, DirectionEnum | undefined>;
   readonly movementDirections: Array<DirectionEnum>;
   playerTankIndex: TankIndex;
   readonly tanksCoordinates: TanksCoordinates;
 
   constructor(private settings: SettingsService) {
     this.playerTankIndex = randomIntFromInterval(0, 3) as TankIndex;
-    this.directionControls = new Array<DirectionEnum | undefined>(4);
+    this.directionControls = {
+      0: undefined,
+      1: undefined,
+      2: undefined,
+      3: undefined,
+    };
+    this.prevDirectionControls = {
+      0: undefined,
+      1: undefined,
+      2: undefined,
+      3: undefined,
+    };
     this.directionSquares = {
       0: new Array<Square>(),
       1: new Array<Square>(),
@@ -46,12 +57,6 @@ export class TankMovementService {
       1: initialCoordinates,
       2: initialCoordinates,
       3: initialCoordinates
-    };
-    this.prevDirections = {
-      0: undefined,
-      1: undefined,
-      2: undefined,
-      3: undefined,
     };
   }
 
@@ -128,12 +133,13 @@ export class TankMovementService {
 
     const filteredDirections = this.movementDirections
       .filter((direction) => (
-        direction !== movement.direction && direction !== this.prevDirections?.[tankIndex]
+        direction !== movement.direction// && direction !== this.prevDirectionControls[tankIndex]
+                                        // todo: разобраться, почему с условием выше работает нестабильно
       ))
     ;
 
     const randomDirectionIndex = randomIntFromInterval(0, 2);
+    this.prevDirectionControls[tankIndex] = this.directionControls[tankIndex];
     this.directionControls[tankIndex] = filteredDirections[randomDirectionIndex];
-    this.prevDirections[tankIndex] = this.directionControls[tankIndex];
   }
 }
