@@ -35,6 +35,12 @@ export class WorldService {
     this.squares = new Array<Square>();
   }
 
+  get undestroyableBlocks(): Array<Square> {
+    return this.squares
+      .filter((square) => !square.isDestroyable && square.type !== SquareTypeEnum.Empty)
+    ;
+  }
+
   addShellImpactWithTank(shellImpact: ShellImpactWithTank): void {
     this.shellsImpactWithTanks.push(shellImpact);
   }

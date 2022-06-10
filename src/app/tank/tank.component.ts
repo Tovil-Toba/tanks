@@ -29,6 +29,7 @@ import { ShellImpactTypeEnum } from './shell/shell-impact/shell-impact-type.enum
 import { Square } from '../world/square/square.model';
 import { SquareTypeEnum } from '../world/square/square-type.enum';
 import { TankColorEnum } from './tank-color.enum';
+import { TankFireService } from '../core/tank-fire.service';
 import { TankIndex, TANKS_INDEXES } from './tank-index.model';
 import { TankMovement } from '../core/tank-movement.model';
 import { TankMovementService } from '../core/tank-movement.service';
@@ -94,6 +95,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   constructor(
     public settings: SettingsService,
     private store: Store,
+    private tankFireService: TankFireService,
     private tankMovementService: TankMovementService,
     private worldService: WorldService
   ) {
@@ -218,6 +220,9 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
         if (this.isFireControl) {
           this.handleFireControl();
         }
+
+        // Стрельба ИИ
+        this.checkTargets();
       })
     );
 
@@ -263,6 +268,18 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
   private checkUpDirection(coordinates: Coordinates, isStrictImpact = false): boolean {
     return this.checkDirection(DirectionEnum.Up, coordinates, isStrictImpact);
+  }
+
+  private checkTargets(): void {
+    if (this.isExplode || this.index === this.tankMovementService.playerTankIndex) {
+      return;
+    }
+
+    const targetDirections: Array<DirectionEnum> = this.tankFireService.checkTargets(this.index);
+
+    if (targetDirections.includes(this.direction)) {
+      this.fire();
+    }
   }
 
   private fire(): void {
