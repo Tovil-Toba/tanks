@@ -10,7 +10,6 @@ import { WorldService } from '../world/world.service';
   providedIn: 'root'
 })
 export class TankFireService {
-
   constructor(
     private tankMovementService: TankMovementService,
     private worldService: WorldService
@@ -18,145 +17,83 @@ export class TankFireService {
 
   checkTargets(tankIndex: TankIndex): Array<DirectionEnum> {
     const targetDirections = new Array<DirectionEnum>();
-    const currentTank = this.tankMovementService.tanksCoordinates[tankIndex];
-    const targets = this.tankMovementService.tanksCoordinatesArray;
-    let isFreeWay = true;
 
-    const getSize = (coordinates: Coordinates): number => coordinates.right - coordinates.left;
-
+    const checkTargetsInDirection = (direction: DirectionEnum): boolean => (
+      this.checkTargetsInDirection(direction, tankIndex)
+    );
 
     // Цели сверху
-
-    const topTargets = targets.filter((target) => {
-      const targetSize = getSize(target);
-      return target.bottom <= currentTank.top + targetSize/2 &&
-        target.left >= currentTank.left - targetSize/2 &&
-        target.right <= currentTank.right + targetSize/2
-      ;
-    });
-
-    isFreeWay = true;
-
-    topTargets.forEach((target) => {
-      const undestroyableBlocks = this.worldService.undestroyableBlocks
-        .filter((square) => {
-          const targetSize = getSize(target);
-
-          return target.bottom <= square.top + targetSize/2 &&
-            target.left >= square.left - targetSize/2 &&
-            target.right <= square.right + targetSize/2
-          ;
-        })
-      ;
-
-      if (undestroyableBlocks.length) {
-        isFreeWay = false;
-      }
-    });
-
-    if (isFreeWay && topTargets.length) {
+    if (checkTargetsInDirection(DirectionEnum.Up)) {
       targetDirections.push(DirectionEnum.Up);
     }
 
-
     // Цели снизу
-
-    const bottomTargets = targets.filter((target) => {
-      const targetSize = getSize(target);
-      return target.top >= currentTank.bottom - targetSize/2 &&
-        target.left >= currentTank.left - targetSize/2 &&
-        target.right <= currentTank.right + targetSize/2
-      ;
-    });
-
-    isFreeWay = true;
-
-    bottomTargets.forEach((target) => {
-      const undestroyableBlocks = this.worldService.undestroyableBlocks
-        .filter((square) => {
-          const targetSize = getSize(target);
-          return target.top >= square.bottom - targetSize/2 &&
-            target.left >= square.left - targetSize/2 &&
-            target.right <= square.right + targetSize/2
-          ;
-        })
-      ;
-
-      if (undestroyableBlocks.length) {
-        isFreeWay = false;
-      }
-    });
-
-    if (isFreeWay && bottomTargets.length) {
+    if (checkTargetsInDirection(DirectionEnum.Down)) {
       targetDirections.push(DirectionEnum.Down);
     }
 
-
     // Цели слева
-
-    const leftTargets = targets.filter((target) => {
-      const targetSize = getSize(target);
-      return target.right <= currentTank.left + targetSize/2  &&
-        target.top >= currentTank.top - targetSize/2 &&
-        target.bottom <= currentTank.bottom + targetSize/2
-      ;
-    });
-
-    isFreeWay = true;
-
-    leftTargets.forEach((target) => {
-      const undestroyableBlocks = this.worldService.undestroyableBlocks
-        .filter((square) => {
-          const targetSize = getSize(target);
-          return target.right <= square.left + targetSize/2  &&
-            target.top >= square.top - targetSize/2 &&
-            target.bottom <= square.bottom + targetSize/2
-          ;
-        })
-      ;
-
-      if (undestroyableBlocks.length) {
-        isFreeWay = false;
-      }
-    });
-
-    if (isFreeWay && leftTargets.length) {
+    if (checkTargetsInDirection(DirectionEnum.Left)) {
       targetDirections.push(DirectionEnum.Left);
     }
 
-
     // Цели справа
-
-    const rightTargets = targets.filter((target) => {
-      const targetSize = getSize(target);
-      return target.left >= currentTank.right - targetSize/2 &&
-        target.top >= currentTank.top - targetSize/2 &&
-        target.bottom <= currentTank.bottom + targetSize/2
-      ;
-    });
-
-    isFreeWay = true;
-
-    rightTargets.forEach((target) => {
-      const undestroyableBlocks = this.worldService.undestroyableBlocks
-        .filter((square) => {
-          const targetSize = getSize(target);
-          return target.left >= square.right - targetSize/2 &&
-            target.top >= square.top - targetSize/2 &&
-            target.bottom <= square.bottom + targetSize/2
-          ;
-        })
-      ;
-
-      if (undestroyableBlocks.length) {
-        isFreeWay = false;
-      }
-    });
-
-    if (isFreeWay && rightTargets.length) {
+    if (checkTargetsInDirection(DirectionEnum.Right)) {
       targetDirections.push(DirectionEnum.Right);
     }
 
     return targetDirections;
+  }
+
+  checkTargetsInDirection(direction: DirectionEnum, tankIndex: TankIndex): boolean {
+    const currentTank: Coordinates = this.tankMovementService.tanksCoordinates[tankIndex];
+
+    const getSize = (coordinates: Coordinates): number => coordinates.right - coordinates.left;
+
+    const compareCoordinates = (target: Coordinates, tankOrBlock: Coordinates): boolean => {
+      const targetSize = getSize(target);
+
+      switch(direction) {
+        case DirectionEnum.Up:
+          return target.bottom <= tankOrBlock.top + targetSize/2 &&
+            target.left >= tankOrBlock.left - targetSize/2 &&
+            target.right <= tankOrBlock.right + targetSize/2
+          ;
+        case DirectionEnum.Right:
+          return target.left >= tankOrBlock.right - targetSize/2 &&
+            target.top >= tankOrBlock.top - targetSize/2 &&
+            target.bottom <= tankOrBlock.bottom + targetSize/2
+          ;
+        case DirectionEnum.Down:
+          return target.top >= tankOrBlock.bottom - targetSize/2 &&
+            target.left >= tankOrBlock.left - targetSize/2 &&
+            target.right <= tankOrBlock.right + targetSize/2
+          ;
+        case DirectionEnum.Left:
+          return target.right <= tankOrBlock.left + targetSize/2  &&
+            target.top >= tankOrBlock.top - targetSize/2 &&
+            target.bottom <= tankOrBlock.bottom + targetSize/2
+          ;
+        default:
+          return  false;
+      }
+    };
+
+    const targets: Array<Coordinates> = this.tankMovementService.tanksCoordinatesArray
+      .filter((target) => compareCoordinates(target, currentTank))
+    ;
+
+    let isTargetInDirection = false;
+
+    targets.forEach((target) => {
+      const undestroyableBlocks: Array<Coordinates> = this.worldService.undestroyableBlocks
+        .filter((square) => compareCoordinates(target, square));
+
+      if (!undestroyableBlocks.length) {
+        isTargetInDirection = true;
+      }
+    });
+
+    return isTargetInDirection;
   }
 }
