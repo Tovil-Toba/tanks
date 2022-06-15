@@ -21,6 +21,7 @@ export class ExplosionComponent implements OnInit {
   @Input() interval: number;
   @Input() type?: ExplosionTypeEnum;
   @Input() showBlastTrail?: boolean;
+  @Input() worldType?: WorldTypeEnum;
 
   readonly blastTrailType: number;
   frame$: Observable<number | null>;
@@ -36,10 +37,11 @@ export class ExplosionComponent implements OnInit {
       : 0
     ;
     this.type = settings.tank.explosionType;
+    this.worldType = settings.world.type;
   }
 
   get collisionImage(): string | null {
-    switch(this.settings.world.type) {
+    switch(this.worldType) {
       case WorldTypeEnum.A:
         return `${COLLISION_IMAGE_PATH}/Rock_01.png`;
       case WorldTypeEnum.B:
