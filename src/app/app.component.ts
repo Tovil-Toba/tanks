@@ -14,18 +14,20 @@ import { WorldTypeEnum } from './world/world-type.enum';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnDestroy, OnInit {
+  isWorldExists: boolean;
   readonly settings$: Observable<Settings>;
   title = 'Tanks';
-  readonly worldType: WorldTypeEnum;
+  worldType: WorldTypeEnum;
   worldSize: number;
 
   private readonly subscription: Subscription;
   private readonly worldTypes: Array<WorldTypeEnum>;
 
   constructor(
-    private readonly httpClient: HttpClient,
-    private readonly settings: SettingsService
+    private httpClient: HttpClient,
+    private settings: SettingsService
   ) {
+    this.isWorldExists = true;
     this.settings$ = this.httpClient.get<Settings>('assets/settings.json');
     this.subscription = new Subscription();
     this.worldSize = settings.world.size;
@@ -48,6 +50,7 @@ export class AppComponent implements OnDestroy, OnInit {
         this.settings.controls = settings.controls;
         this.settings.fps = settings.fps;
         this.settings.isDebugMode = settings.isDebugMode;
+        this.settings.isPlayerActive = settings.isPlayerActive;
         this.settings.tank = settings.tank;
         this.settings.world = settings.world;
         this.settings.world.type = this.worldType;
@@ -57,5 +60,18 @@ export class AppComponent implements OnDestroy, OnInit {
 
   onWorldResize(event: ResizedEvent): void {
     this.worldSize = event.newRect.width;
+  }
+
+  resetWorld(): void {
+    this.isWorldExists = false;
+    const timeoutId = setTimeout(() => {
+      this.setRandomWorldType();
+      this.isWorldExists = true;
+      clearTimeout(timeoutId);
+    }, 100);
+  }
+
+  private setRandomWorldType(): void {
+    this.worldType = this.worldTypes[randomIntFromInterval(0, 2)];
   }
 }

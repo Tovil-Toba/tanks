@@ -6,9 +6,7 @@ import { TankIndex } from '../tank/tank-index.model';
 import { TankMovementService } from './tank-movement.service';
 import { WorldService } from '../world/world.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TankFireService {
   constructor(
     private tankMovementService: TankMovementService,
@@ -80,7 +78,10 @@ export class TankFireService {
     };
 
     const targets: Array<Coordinates> = this.tankMovementService.tanksCoordinatesArray
-      .filter((target) => compareCoordinates(target, currentTank))
+      .filter((target, index) => (
+        !this.worldService.isTankDestroyed(index as TankIndex) &&
+        compareCoordinates(target, currentTank))
+      )
     ;
 
     let isTargetInDirection = false;

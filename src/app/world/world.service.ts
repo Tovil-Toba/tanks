@@ -7,10 +7,9 @@ import { Square } from './square/square.model';
 import { SquareTypeEnum } from './square/square-type.enum';
 import { TankIndex } from '../tank/tank-index.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class WorldService {
+  readonly destroyedTankIndexes: Set<TankIndex>;
   shellImpactSquares?: Array<Square>;
   readonly shellsImpactWithTanks: Array<ShellImpactWithTank>;
   readonly squares: Array<Square>;
@@ -31,6 +30,7 @@ export class WorldService {
   ];
 
   constructor(private settings: SettingsService) {
+    this.destroyedTankIndexes = new Set<TankIndex>();
     this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
   }
@@ -118,6 +118,10 @@ export class WorldService {
     if (this.settings.isDebugMode) {
       console.log('Squares', this.squares);
     }
+  }
+
+  isTankDestroyed(tankIndex: TankIndex): boolean {
+    return this.destroyedTankIndexes.has(tankIndex);
   }
 
   recalculateSquareSizes(size: number): void {

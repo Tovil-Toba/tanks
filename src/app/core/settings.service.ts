@@ -27,6 +27,7 @@ export class SettingsService {
   private _fps: number;
   private _interval: number;
   private _isDebugMode: boolean;
+  private _isPlayerActive: boolean;
   private readonly _tank: Tank;
   private readonly _world: World;
 
@@ -35,6 +36,7 @@ export class SettingsService {
     this._fps = defaultSettings.fps;
     this._interval = defaultSettings.interval;
     this._isDebugMode = false;
+    this._isPlayerActive = true;
     this._tank = defaultSettings.tank;
     this._world = defaultSettings.world;
   }
@@ -102,6 +104,16 @@ export class SettingsService {
   set isDebugMode(isDebugMode: unknown) {
     if (typeof isDebugMode === 'boolean') {
       this._isDebugMode = isDebugMode;
+    }
+  }
+
+  get isPlayerActive(): boolean {
+    return this._isPlayerActive;
+  }
+
+  set isPlayerActive(isPlayerActive: unknown) {
+    if (typeof isPlayerActive === 'boolean') {
+      this._isPlayerActive = isPlayerActive;
     }
   }
 
@@ -202,6 +214,11 @@ export class SettingsService {
       ![ExplosionTypeEnum.A, ExplosionTypeEnum.B, ExplosionTypeEnum.C].includes(collisionExplosionType as ExplosionTypeEnum)
     ) {
       this._world.collisionExplosionType = collisionExplosionType as ExplosionTypeEnum;
+    }
+
+    const resetTimeout: number | undefined = (world as World)?.resetTimeout;
+    if (typeof resetTimeout === 'number') {
+      this._world.resetTimeout = resetTimeout;
     }
 
     const size: number | undefined = (world as World)?.size;

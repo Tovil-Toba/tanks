@@ -5,6 +5,7 @@ import { World } from '../world/world.model';
 export interface Settings {
   controls: Controls;
   isDebugMode: boolean;
+  isPlayerActive: boolean;
   fps: number;
   interval: number;
   tank: Tank;

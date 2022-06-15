@@ -10,6 +10,7 @@
   "fps": 60,
   "interval": 100,
   "isDebugMode": false,
+  "isPlayerActive": false,
   "tank": {
     "armor": "HEAVY",
     "color": "A",
@@ -30,6 +31,7 @@
   "world": {
     "isAssetsRandomRotationEnabled": true,
     "collisionExplosionType": "H",
+    "resetTimeout": 5000,
     "size": 500,
     "showBlastTrail": true,
     "squaresPerSide": 10,

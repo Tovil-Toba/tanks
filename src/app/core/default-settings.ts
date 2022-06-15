@@ -24,6 +24,7 @@ const settings: Settings = {
   fps: 60,
   interval: 100,
   isDebugMode: false,
+  isPlayerActive: true,
   tank: {
     armor: ArmorTypeEnum.Heavy,
     color: TankColorEnum.A,
@@ -46,6 +47,7 @@ const settings: Settings = {
   world: {
     isAssetsRandomRotationEnabled: true,
     collisionExplosionType: ExplosionTypeEnum.H,
+    resetTimeout: 5000, // 0 - не перезапускать мир
     size: 500,
     showBlastTrail: true,
     squaresPerSide: 10,

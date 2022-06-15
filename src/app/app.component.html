@@ -4,7 +4,12 @@
     <!--World size: {{worldSize}}-->
     <div class="flex w-full h-full align-items-center justify-content-center">
       <div style="width: 80vh;" (resized)="onWorldResize($event)"><!-- 100vh; -->
-        <app-world [size]="worldSize" [type]="worldType"></app-world>
+        <app-world
+          *ngIf="isWorldExists"
+          (resetWorld)="resetWorld()"
+          [size]="worldSize"
+          [type]="worldType"
+        ></app-world>
       </div>
     </div>
   </ng-container>

@@ -9,19 +9,20 @@ import { TankIndex, TANKS_INDEXES } from '../tank/tank-index.model';
 import { TankMovement } from './tank-movement.model';
 import { TanksCoordinates } from '../world/shared/tanks-coordinates.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TankMovementService {
   readonly directionControls: Record<TankIndex, DirectionEnum | undefined>;
   readonly directionSquares: Record<TankIndex, Array<Square>>;
   readonly prevDirectionControls: Record<TankIndex, DirectionEnum | undefined>;
   readonly movementDirections: Array<DirectionEnum>;
-  playerTankIndex: TankIndex;
+  playerTankIndex?: TankIndex;
   readonly tanksCoordinates: TanksCoordinates;
 
   constructor(private settings: SettingsService) {
-    this.playerTankIndex = randomIntFromInterval(0, 3) as TankIndex;
+    if (settings.isPlayerActive) {
+      this.playerTankIndex = randomIntFromInterval(0, 3) as TankIndex;
+    }
+
     this.directionControls = {
       0: undefined,
       1: undefined,
@@ -88,7 +89,7 @@ export class TankMovementService {
     return this.tanksCoordinates[tankIndex];
   }
 
-  initDirectionControls(playerTankIndex: TankIndex): void {
+  initDirectionControls(playerTankIndex?: TankIndex): void {
     for (const tankIndex of TANKS_INDEXES) {
       if (tankIndex === playerTankIndex) {
         continue;
