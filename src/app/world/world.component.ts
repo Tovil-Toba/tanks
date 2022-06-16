@@ -19,6 +19,7 @@ import { FlashTypeEnum } from '../tank/flash/flash-type.enum';
 import { GunTypeEnum } from '../tank/gun/gun-type.enum';
 import { HullTypeEnum } from '../tank/hull/hull-type.enum';
 import { randomIntFromInterval } from '../shared/utils';
+import { selectWorldNumber } from '../store/world-number.selectors';
 import { SettingsService } from '../core/settings.service';
 import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
 import { ShellTypeEnum } from '../tank/shell/shell-type.enum';
@@ -29,9 +30,10 @@ import { TankMovementService } from '../core/tank-movement.service';
 import * as TickActions from '../store/tick.actions';
 import { TrackTypeEnum } from '../tank/track/track-type.enum';
 import { TurretTypeEnum } from '../tank/turret/turret-type.enum';
+import { WORLD_COLORS } from './world-colors';
+import * as WorldNumberActions from '../store/world-number.actions';
 import { WorldService } from './world.service';
 import { WorldTypeEnum } from './world-type.enum';
-import { WORLD_COLORS } from './world-colors';
 
 @Component({
   selector: 'app-world',
@@ -51,7 +53,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   readonly gunType: GunTypeEnum;
   readonly hullType: HullTypeEnum;
   isFireControls: Array<boolean | undefined>;
-  isPauseActive?: boolean;
+  isPauseMaskActive?: boolean;
   isTurboControls: Array<boolean | undefined>;
   readonly millisecondsPerFrame: number;
   readonly shellType: ShellTypeEnum;
@@ -64,7 +66,9 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   readonly trackType: TrackTypeEnum;
 
   tick$: Observable<number>;
+  worldNumber$: Observable<number>;
 
+  private isPauseActive?: boolean;
   private readonly subscription: Subscription;
 
   constructor(
@@ -87,6 +91,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.shellImpactType = settings.tank.shellImpactType;
     this.size = settings.world.size;
     this.speed = settings.tank.speed;
+    this.subscription = new Subscription();
     this.tankColors = [
       TankColorEnum.A,
       TankColorEnum.B,
@@ -104,8 +109,8 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
 
     this.tick$ = interval(this.millisecondsPerFrame);
     this.type = WorldTypeEnum.A;
+    this.worldNumber$ = store.select(selectWorldNumber);
     // todo: сделать рандомную генерацию 4 танков
-    this.subscription = new Subscription();
   }
 
   get backgroundColor(): string {
@@ -149,6 +154,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   handleKeyUp(event: KeyboardEvent): void {
     if (this.controlsService.isPauseButton(event)) {
       this.isPauseActive = !this.isPauseActive;
+      this.isPauseMaskActive = this.isPauseActive;
     }
 
     if (!this.settings.isPlayerActive && this.controlsService.isFireButton(event)) {
@@ -190,6 +196,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(WorldNumberActions.increment());
     this.worldService.initSquares(this.squareSize);
     this.tankMovementService.initDirectionControls(this.playerTankIndex);
 

@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { TankModule } from './tank/tank.module';
 import { tickReducer } from './store/tick.reducer';
 import { WorldModule } from './world/world.module';
+import { worldNumberReducer } from './store/world-number.reducer';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { WorldModule } from './world/world.module';
     AngularResizeEventModule,
     BrowserModule,
     HttpClientModule,
-    StoreModule.forRoot({ tick: tickReducer }),
+    StoreModule.forRoot({ tick: tickReducer, worldNumber: worldNumberReducer }),
     TankModule,
     WorldModule,
   ],
