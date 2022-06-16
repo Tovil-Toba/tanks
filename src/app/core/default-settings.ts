@@ -17,6 +17,7 @@ const settings: Settings = {
     down: ['KeyS', 'ArrowDown'],
     fire: ['Enter', 'Space'],
     left: ['KeyA', 'ArrowLeft'],
+    pause: ['Escape', 'KeyP'],
     right: ['KeyD', 'ArrowRight'],
     turbo: ['ShiftLeft', 'ShiftRight'],
     up: ['KeyW', 'ArrowUp'],

@@ -61,6 +61,11 @@ export class SettingsService {
       this._controls.left = left;
     }
 
+    const pause: string[] | undefined = (controls as Controls)?.pause;
+    if (isNonEmptyArrayOfStrings(pause)) {
+      this._controls.pause = pause;
+    }
+
     const right: string[] | undefined = (controls as Controls)?.right;
     if (isNonEmptyArrayOfStrings(right)) {
       this._controls.right = right;

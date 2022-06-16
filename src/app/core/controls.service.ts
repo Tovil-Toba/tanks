@@ -28,6 +28,10 @@ export class ControlsService {
     return this.settings.controls.left.includes(event.code);
   }
 
+  isPauseButton(event: KeyboardEvent): boolean {
+    return this.settings.controls.pause.includes(event.code);
+  }
+
   isRightButton(event: KeyboardEvent): boolean {
     return this.settings.controls.right.includes(event.code);
   }

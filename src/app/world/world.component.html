@@ -6,6 +6,15 @@
     [style.height.px]="size"
     [style.background-color]="backgroundColor"
   >
+    <!-- Маска паузы -->
+    <div
+      *ngIf="isPauseActive"
+      class="absolute w-full h-full z-6 flex align-items-center justify-content-center bg-black-alpha-60"
+    >
+      <span class="text-white-alpha-90">Пауза</span>
+    </div>
+
+    <!-- Мир -->
     <div class="w-full h-full flex flex-wrap align-content-start">
       <app-tank
         *ngFor="let index of tankIndexes"

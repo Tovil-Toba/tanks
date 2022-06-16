@@ -51,7 +51,9 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   readonly gunType: GunTypeEnum;
   readonly hullType: HullTypeEnum;
   isFireControls: Array<boolean | undefined>;
+  isPauseActive?: boolean;
   isTurboControls: Array<boolean | undefined>;
+  readonly millisecondsPerFrame: number;
   readonly shellType: ShellTypeEnum;
   readonly shellImpactType: ShellImpactTypeEnum;
   readonly speed: number;
@@ -79,6 +81,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.hullType = settings.tank.hullType;
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
+    this.millisecondsPerFrame = 1000 / settings.fps;
     this.resetWorld = new EventEmitter<void>();
     this.shellType = settings.tank.shellType;
     this.shellImpactType = settings.tank.shellImpactType;
@@ -94,13 +97,12 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.turboMultiplier = settings.tank.turboMultiplier;
     this.turretType = settings.tank.turretType;
     this.trackType = settings.tank.trackType;
-    const millisecondsPerFrame = 1000 / settings.fps; // todo: можно инициализировать интервал настроек тут
 
     if (settings.isDebugMode) {
-      console.log('Milliseconds in 1 frame', millisecondsPerFrame);
+      console.log('Milliseconds in 1 frame', this.millisecondsPerFrame);
     }
 
-    this.tick$ = interval(millisecondsPerFrame);
+    this.tick$ = interval(this.millisecondsPerFrame);
     this.type = WorldTypeEnum.A;
     // todo: сделать рандомную генерацию 4 танков
     this.subscription = new Subscription();
@@ -145,6 +147,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
 
   @HostListener('window:keyup', ['$event'])
   handleKeyUp(event: KeyboardEvent): void {
+    if (this.controlsService.isPauseButton(event)) {
+      this.isPauseActive = !this.isPauseActive;
+    }
+
     if (!this.settings.isPlayerActive && this.controlsService.isFireButton(event)) {
       this.initPlayer();
     }
@@ -193,16 +199,24 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe(() => {
+        if (this.isPauseActive) {
+          return;
+        }
+
         this.store.dispatch(TickActions.increment());
 
         if (worldResetTimeout > 0 &&
           !isWorldResetStarted &&
-          this.worldService.destroyedTankIndexes.size >= TANKS_INDEXES.length - 1
+          this.worldService.destroyedTankIndexes.size >= TANKS_INDEXES.length - 1 &&
+          !this.isPauseActive
         ) {
           isWorldResetStarted = true;
 
           const timeoutId = setTimeout(() => {
-            this.resetWorld.emit();
+            if (!this.isPauseActive) {
+              this.resetWorld.emit();
+            }
+
             clearTimeout(timeoutId);
           }, worldResetTimeout);
         }
