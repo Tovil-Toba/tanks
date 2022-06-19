@@ -8,5 +8,6 @@ export interface World {
   size: number;
   showBlastTrail: boolean;
   squaresPerSide: number;
+  startTimeout: number;
   type: WorldTypeEnum;
 }

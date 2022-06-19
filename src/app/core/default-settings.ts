@@ -48,10 +48,11 @@ const settings: Settings = {
   world: {
     isAssetsRandomRotationEnabled: true,
     collisionExplosionType: ExplosionTypeEnum.H,
-    resetTimeout: 5000, // 0 - не перезапускать мир
+    resetTimeout: 5, // 0 - не перезапускать мир
     size: 500,
     showBlastTrail: true,
     squaresPerSide: 10,
+    startTimeout: 8,
     type: WorldTypeEnum.B
   }
 };

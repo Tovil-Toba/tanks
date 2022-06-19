@@ -241,6 +241,11 @@ export class SettingsService {
       this._world.squaresPerSide = squaresPerSide;
     }
 
+    const startTimeout: number | undefined = (world as World)?.startTimeout;
+    if (typeof startTimeout === 'number') {
+      this._world.startTimeout = startTimeout;
+    }
+
     const type: string | undefined = (world as World)?.type?.toUpperCase();
     if (type && Object.values(WorldTypeEnum).includes(type as WorldTypeEnum)) {
       this._world.type = type as WorldTypeEnum;

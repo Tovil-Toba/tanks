@@ -54,11 +54,13 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   readonly hullType: HullTypeEnum;
   isFireControls: Array<boolean | undefined>;
   isPauseMaskActive?: boolean;
+  isStartTimerActive?: boolean;
   isTurboControls: Array<boolean | undefined>;
   readonly millisecondsPerFrame: number;
   readonly shellType: ShellTypeEnum;
   readonly shellImpactType: ShellImpactTypeEnum;
   readonly speed: number;
+  startTimerText?: string;
   readonly tankColors: Array<TankColorEnum>;
   readonly tankIndexes: Array<TankIndex>;
   readonly turboMultiplier: number;
@@ -85,6 +87,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.hullType = settings.tank.hullType;
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
+    this.isStartTimerActive = true;
     this.millisecondsPerFrame = 1000 / settings.fps;
     this.resetWorld = new EventEmitter<void>();
     this.shellType = settings.tank.shellType;
@@ -198,16 +201,45 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   ngOnInit(): void {
     this.store.dispatch(WorldNumberActions.increment());
     this.worldService.initSquares(this.squareSize);
-    this.tankMovementService.initDirectionControls(this.playerTankIndex);
 
+    let isDirectionControlsInitialized = false;
     let isWorldResetStarted = false;
+    const worldStartTimeout = this.settings.world.startTimeout;
     const worldResetTimeout = this.settings.world.resetTimeout;
+
+    let countdown = 3;
+    let timer = 0;
 
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-      this.tick$.subscribe(() => {
+      this.tick$.subscribe((tick) => {
         if (this.isPauseActive) {
           return;
+        }
+
+        if (tick % this.settings.fps === 0) {
+          timer++;
+          // console.log(timer);
+
+          if ((timer > worldStartTimeout - countdown - 2) &&
+            (timer < worldStartTimeout - countdown)
+          ) {
+            this.startTimerText = ' ';
+          } else if (timer >= worldStartTimeout - countdown) {
+            this.startTimerText = countdown ? countdown.toString() : 'Бой!';
+            countdown--;
+          }
+        }
+
+        this.isStartTimerActive = !this.isPauseMaskActive && timer <= worldStartTimeout;
+
+        if (this.isStartTimerActive) {
+          return;
+        }
+
+        if (!isDirectionControlsInitialized) {
+          this.tankMovementService.initDirectionControls(this.playerTankIndex);
+          isDirectionControlsInitialized = true;
         }
 
         this.store.dispatch(TickActions.increment());
@@ -225,7 +257,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
             }
 
             clearTimeout(timeoutId);
-          }, worldResetTimeout);
+          }, worldResetTimeout * 1000);
         }
       })
     );

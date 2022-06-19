@@ -32,10 +32,11 @@
   "world": {
     "isAssetsRandomRotationEnabled": true,
     "collisionExplosionType": "H",
-    "resetTimeout": 5000,
+    "resetTimeout": 5,
     "size": 500,
     "showBlastTrail": true,
     "squaresPerSide": 10,
+    "startTimeout": 8,
     "type": "B"
   }
 }
