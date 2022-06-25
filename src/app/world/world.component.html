@@ -8,20 +8,30 @@
   >
     <!-- Маска паузы -->
     <div
-      *ngIf="isPauseMaskActive"
+      *ngIf="worldService.isPauseMaskActive"
       class="absolute w-full h-full z-6 flex align-items-center justify-content-center bg-black-alpha-60"
     >
       <span class="text-white-alpha-90">Пауза</span>
     </div>
 
-    <!-- Маска таймера запуска -->
+    <!-- Название мира и обратный отсчет до начала боя -->
     <div
-      *ngIf="isStartTimerActive && !isPauseMaskActive"
+      *ngIf="isStartTimerActive && !worldService.isPauseMaskActive"
       class="absolute w-full h-full z-6 flex align-items-center justify-content-center"
     >
-      <span class="text-white-alpha-90">
+      <span class="text-white-alpha-90 text-lg">
         <span *ngIf="!startTimerText">Мир {{worldNumber$ | async}}</span>
         <span *ngIf="startTimerText">{{startTimerText}}</span>
+      </span>
+    </div>
+
+    <!-- Информация -->
+    <div
+      *ngIf="!settings.isPlayerActive && !worldService.isPauseMaskActive"
+      class="absolute w-full h-full z-6 flex justify-content-between"
+    >
+      <span class="text-white-alpha-90 text-sm m-1" [class.hidden]="!isInfoVisible">
+        Нажмите на кнопку стрельбы
       </span>
     </div>
 

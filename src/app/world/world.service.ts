@@ -10,6 +10,8 @@ import { TankIndex } from '../tank/tank-index.model';
 @Injectable()
 export class WorldService {
   readonly destroyedTankIndexes: Set<TankIndex>;
+  isPauseActive: boolean;
+  isPauseMaskActive: boolean;
   shellImpactSquares?: Array<Square>;
   readonly shellsImpactWithTanks: Array<ShellImpactWithTank>;
   readonly squares: Array<Square>;
@@ -31,6 +33,8 @@ export class WorldService {
 
   constructor(private settings: SettingsService) {
     this.destroyedTankIndexes = new Set<TankIndex>();
+    this.isPauseActive = false;
+    this.isPauseMaskActive = false;
     this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
   }

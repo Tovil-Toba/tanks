@@ -122,6 +122,10 @@ export class SettingsService {
     }
   }
 
+  get millisecondsPerFrame(): number {
+    return 1000 / this.fps;
+  }
+
   get squareSize(): number {
     return this._world.size / this._world.squaresPerSide;
   }

@@ -1,0 +1,19 @@
+<div
+  *ngIf="isVisible"
+  class="absolute w-full h-full z-7 align-items-center justify-content-center text-white-alpha-90 text-sm"
+  [class.hidden]="isHidden"
+  [class.flex]="!isHidden"
+  [class.rotate-0]="tankDirection === directionEnum.Up"
+  [class.-rotate-45]="tankDirection === directionEnum.UpRight"
+  [class.rotate-45]="tankDirection === directionEnum.UpLeft"
+  [class.-rotate-90]="tankDirection === directionEnum.Right"
+  [class.rotate-90]="tankDirection === directionEnum.Left"
+  [class.-rotate-135]="tankDirection === directionEnum.DownRight"
+  [class.rotate-135]="tankDirection === directionEnum.DownLeft"
+  [class.rotate-180]="tankDirection === directionEnum.Down"
+>
+  <i class="pi pi-user"></i>
+  <!--<i class="pi pi-star-fill"></i>-->
+  <!--<i class="pi pi-star"></i>-->
+  <!--Игрок-->
+</div>

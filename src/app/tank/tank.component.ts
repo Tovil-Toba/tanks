@@ -78,6 +78,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   readonly directionEnum: typeof DirectionEnum;
   explosionFrame: number;
   fireTrigger: number | null;
+  isPlayerIndicatorVisible: boolean;
   isRotating: boolean;
   isShellVisible: boolean;
   isTurboActive: boolean;
@@ -86,6 +87,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   tick: number;
   top: number;
 
+  private isPlayer?: boolean;
   private isReloading: boolean;
   private isSlowdownActive: boolean;
   private previousDirection: DirectionEnum;
@@ -112,6 +114,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.flashType = settings.tank.flashType;
     this.gunType = settings.tank.gunType;
     this.hullType = settings.tank.hullType;
+    this.isPlayerIndicatorVisible = false;
     this.isShellVisible = false;
     this.isTurboActive = false;
     this.left = 0;
@@ -185,6 +188,11 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
     if (changes['isTurboControl']?.currentValue !== changes['isTurboControl']?.previousValue) {
       this.handleTurboControl();
+    }
+
+    if (this.index === this.tankMovementService.playerTankIndex && !this.isPlayer) {
+      this.isPlayer = true;
+      this.showPlayerIndicator();
     }
   }
 
@@ -540,6 +548,10 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
     this.top = this.top * this.size/previousSize;
     this.left = this.left * this.size/previousSize;
+  }
+
+  private showPlayerIndicator(): void {
+    this.isPlayerIndicatorVisible = !!this.isPlayer;
   }
 
   private slowDown(

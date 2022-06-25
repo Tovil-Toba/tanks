@@ -21,6 +21,13 @@
     class="absolute w-full h-full z-5"
   ></div>
 
+  <!-- Индикация игрока -->
+  <app-player-indicator
+    *ngIf="isPlayerIndicatorVisible"
+    [(isVisible)]="isPlayerIndicatorVisible"
+    [tankDirection]="direction"
+  ></app-player-indicator>
+
   <!-- Корпус -->
   <app-hull
     [color]="hullColor"

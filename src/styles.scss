@@ -5,6 +5,14 @@ body {
   margin: 0;
 }
 
+.rotate-135 {
+  transform: rotate(135deg) !important;
+}
+
+.-rotate-135 {
+  transform: rotate(-135deg) !important;
+}
+
 .z-6 {
   z-index: 6 !important;
 }

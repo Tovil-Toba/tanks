@@ -53,10 +53,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   readonly gunType: GunTypeEnum;
   readonly hullType: HullTypeEnum;
   isFireControls: Array<boolean | undefined>;
-  isPauseMaskActive?: boolean;
+  isInfoVisible?: boolean;
   isStartTimerActive?: boolean;
   isTurboControls: Array<boolean | undefined>;
-  readonly millisecondsPerFrame: number;
+  // readonly millisecondsPerFrame: number;
   readonly shellType: ShellTypeEnum;
   readonly shellImpactType: ShellImpactTypeEnum;
   readonly speed: number;
@@ -70,7 +70,6 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   tick$: Observable<number>;
   worldNumber$: Observable<number>;
 
-  private isPauseActive?: boolean;
   private readonly subscription: Subscription;
 
   constructor(
@@ -88,7 +87,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
     this.isStartTimerActive = true;
-    this.millisecondsPerFrame = 1000 / settings.fps;
+    // this.millisecondsPerFrame = 1000 / settings.fps;
     this.resetWorld = new EventEmitter<void>();
     this.shellType = settings.tank.shellType;
     this.shellImpactType = settings.tank.shellImpactType;
@@ -107,10 +106,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.trackType = settings.tank.trackType;
 
     if (settings.isDebugMode) {
-      console.log('Milliseconds in 1 frame', this.millisecondsPerFrame);
+      console.log('Milliseconds in 1 frame', settings.millisecondsPerFrame);
     }
 
-    this.tick$ = interval(this.millisecondsPerFrame);
+    this.tick$ = interval(settings.millisecondsPerFrame);
     this.type = WorldTypeEnum.A;
     this.worldNumber$ = store.select(selectWorldNumber);
     // todo: сделать рандомную генерацию 4 танков
@@ -131,7 +130,8 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
     if (this.playerTankIndex === undefined ||
-      this.worldService.isTankDestroyed(this.playerTankIndex)
+      this.worldService.isTankDestroyed(this.playerTankIndex) ||
+      this.worldService.isPauseActive
     ) {
       return;
     }
@@ -156,9 +156,13 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   @HostListener('window:keyup', ['$event'])
   handleKeyUp(event: KeyboardEvent): void {
     if (this.controlsService.isPauseButton(event)) {
-      this.isPauseActive = !this.isPauseActive;
-      this.isPauseMaskActive = this.isPauseActive;
+      this.worldService.isPauseActive = !this.worldService.isPauseActive;
+      this.worldService.isPauseMaskActive = this.worldService.isPauseActive;
     }
+
+    /*if (this.worldService.isPauseMaskActive) {
+      return;
+    }*/
 
     if (!this.settings.isPlayerActive && this.controlsService.isFireButton(event)) {
       this.initPlayer();
@@ -213,13 +217,15 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
-        if (this.isPauseActive) {
+        if (this.worldService.isPauseActive) {
           return;
         }
 
         if (tick % this.settings.fps === 0) {
           timer++;
           // console.log(timer);
+
+          this.isInfoVisible = !this.isInfoVisible;
 
           if ((timer > worldStartTimeout - countdown - 2) &&
             (timer < worldStartTimeout - countdown)
@@ -231,7 +237,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
           }
         }
 
-        this.isStartTimerActive = !this.isPauseMaskActive && timer <= worldStartTimeout;
+        this.isStartTimerActive = !this.worldService.isPauseMaskActive && timer <= worldStartTimeout;
 
         if (this.isStartTimerActive) {
           return;
@@ -247,12 +253,12 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
         if (worldResetTimeout > 0 &&
           !isWorldResetStarted &&
           this.worldService.destroyedTankIndexes.size >= TANKS_INDEXES.length - 1 &&
-          !this.isPauseActive
+          !this.worldService.isPauseActive
         ) {
           isWorldResetStarted = true;
 
           const timeoutId = setTimeout(() => {
-            if (!this.isPauseActive) {
+            if (!this.worldService.isPauseActive) {
               this.resetWorld.emit();
             }
 
