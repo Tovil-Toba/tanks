@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { map, Observable, of, take, timer } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import {
   BLAST_TRAIL_IMAGE_PATH,
@@ -9,6 +10,7 @@ import {
 } from '../../core/images.constants';
 import { ExplosionTypeEnum } from './explosion-type.enum';
 import { randomIntFromInterval } from '../../shared/utils';
+import { selectTick } from '../../store/tick.selectors';
 import { SettingsService } from '../../core/settings.service';
 import { WorldTypeEnum } from '../world-type.enum';
 
@@ -17,20 +19,26 @@ import { WorldTypeEnum } from '../world-type.enum';
   templateUrl: './explosion.component.html',
   styleUrls: ['./explosion.component.scss']
 })
-export class ExplosionComponent implements OnInit {
+export class ExplosionComponent implements OnDestroy, OnInit {
   @Input() interval: number;
   @Input() type?: ExplosionTypeEnum;
   @Input() showBlastTrail?: boolean;
   @Input() worldType?: WorldTypeEnum;
 
   readonly blastTrailType: number;
-  frame$: Observable<number | null>;
+  frame: number;
   readonly framesCount = 5;
   readonly rotationRandomMultiplier: number;
 
-  constructor(private settings: SettingsService) {
+  private subscription?: Subscription;
+  private readonly tick$: Observable<number>;
+
+  constructor(
+    private settings: SettingsService,
+    private store: Store
+  ) {
     this.blastTrailType = randomIntFromInterval(1, 3);
-    this.frame$ = of(null);
+    this.frame = 0;
     this.interval = settings.interval;
     this.rotationRandomMultiplier = settings.world.isAssetsRandomRotationEnabled
       ? randomIntFromInterval(0, 3)
@@ -38,6 +46,8 @@ export class ExplosionComponent implements OnInit {
     ;
     this.type = settings.tank.explosionType;
     this.worldType = settings.world.type;
+
+    this.tick$ = store.select(selectTick);
   }
 
   get collisionImage(): string | null {
@@ -68,10 +78,20 @@ export class ExplosionComponent implements OnInit {
     ;
   }
 
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
   ngOnInit(): void {
-    this.frame$ = timer(0, this.interval).pipe(
-      take(this.framesCount + 1),
-      map((n) => n + 1)
-    );
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    this.subscription = this.tick$.subscribe((tick) => {
+      if (tick % (this.settings.fps / 10) === 0) {
+        if (this.frame <= this.framesCount) {
+          this.frame++;
+        } else {
+          this.subscription?.unsubscribe();
+        }
+      }
+    });
   }
 }

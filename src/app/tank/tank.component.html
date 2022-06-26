@@ -55,7 +55,7 @@
   <!-- Взрыв -->
   <app-explosion
     *ngIf="isExplode"
-    (frame)="explosionFrame = $event"
+    (frameChange)="explosionFrame = $event"
     [showBlastTrail]="settings.world.showBlastTrail"
   ></app-explosion>
 </div>

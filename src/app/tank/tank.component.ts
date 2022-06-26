@@ -294,6 +294,10 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   private fire(): void {
+    if (this.isShellVisible) {
+      return;
+    }
+
     this.isShellVisible = true;
     this.isReloading = true;
     const timerId = setTimeout(() => {
@@ -419,6 +423,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
   private handleFireControl(): void {
     if (this.isFireControl &&
+      !this.isShellVisible &&
       !this.isReloading &&
       !this.isRotating &&
       !this.isTurboActive

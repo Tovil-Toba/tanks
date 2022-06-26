@@ -1,7 +1,7 @@
 <img
   src="{{trackImagePath}}/Track_{{type}}_A.png"
   class="absolute"
-  [class.hidden]="speed > 0 && tick && tick % 2 === 0"
+  [class.hidden]="speed > 0 && trigger"
   [style]="{ height: style.height, bottom: style.bottom }"
   [style.left]="side === trackSide.Left && style.offset"
   [style.right]="side === trackSide.Right && style.offset"
@@ -10,7 +10,7 @@
 <img
   src="{{trackImagePath}}/Track_{{type}}_B.png"
   class="absolute"
-  [class.hidden]="speed > 0 && tick && tick % 2 === 1"
+  [class.hidden]="speed > 0 && !trigger"
   [style]="{ height: style.height, bottom: style.bottom }"
   [style.left]="side === trackSide.Left && style.offset"
   [style.right]="side === trackSide.Right && style.offset"

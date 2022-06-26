@@ -22,10 +22,10 @@ export class TrackComponent implements OnDestroy, OnInit {
   // @Input() tick!: number | null;
   @Input() type?: TrackTypeEnum;
 
-  tick: number;
   readonly trackImagePath = TRACK_IMAGE_PATH;
   readonly trackSide: typeof TrackSideEnum;
   readonly trackStyles: TrackStyles;
+  trigger: boolean;
 
   private readonly subscription: Subscription;
   private readonly tick$: Observable<number>;
@@ -34,7 +34,6 @@ export class TrackComponent implements OnDestroy, OnInit {
     private readonly settings: SettingsService,
     private readonly store: Store
   ) {
-    this.tick = 0;
     this.hullType = settings.tank.hullType;
     this.trackSide = TrackSideEnum;
     this.trackStyles = TRACK_STYLES;
@@ -42,6 +41,7 @@ export class TrackComponent implements OnDestroy, OnInit {
 
     this.subscription = new Subscription();
     this.tick$ = store.select(selectTick);
+    this.trigger = false;
   }
 
   get style(): TrackStyle {
@@ -56,7 +56,9 @@ export class TrackComponent implements OnDestroy, OnInit {
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
-        this.tick = tick;
+        if (tick % (this.settings.fps / 10) === 0) { // todo: привязать скорость
+          this.trigger = !this.trigger;
+        }
       })
     );
   }

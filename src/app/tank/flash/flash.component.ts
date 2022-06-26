@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { map, Observable, of, take, timer } from 'rxjs';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { FlashTypeEnum } from './flash-type.enum';
 import { FLASH_IMAGE_PATH } from '../../core/images.constants';
+import { selectTick } from '../../store/tick.selectors';
 import { SettingsService } from '../../core/settings.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { SettingsService } from '../../core/settings.service';
   templateUrl: './flash.component.html',
   styleUrls: ['./flash.component.scss']
 })
-export class FlashComponent implements OnChanges {
+export class FlashComponent implements OnChanges, OnDestroy {
   @Input() interval: number;
   @Input() height?: string;
   @Input() left?: string;
@@ -20,19 +22,27 @@ export class FlashComponent implements OnChanges {
   @Input() width?: string;
 
   readonly flashImagePath = FLASH_IMAGE_PATH;
-  frame$: Observable<number | null>;
+  frame: number;
   readonly framesCount = 4;
 
-  constructor(private settings: SettingsService) {
+  private subscription?: Subscription;
+  private readonly tick$: Observable<number>;
+
+  constructor(
+    private settings: SettingsService,
+    private store: Store
+  ) {
     // todo: оптимизировать пропсы
     this.type = settings.tank.flashType;
-    this.frame$ = of(null);
+    this.frame = -1;
     this.interval = settings.interval;
     this.height = '100%';
     this.left = '0';
     this.trigger = 0;
     this.top = '-70%';
     this.width = '100%';
+
+    this.tick$ = store.select(selectTick);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -43,10 +53,21 @@ export class FlashComponent implements OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
   private fire(): void {
-    this.frame$ = timer(0, this.interval).pipe(
-      take(this.framesCount + 1),
-      map((n) => n)
-    );
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    this.subscription = this.tick$.subscribe((tick) => {
+      if (tick % (this.settings.fps / 10) === 0) {
+        if (this.frame < this.framesCount) {
+          this.frame++;
+        } else {
+          this.subscription?.unsubscribe();
+          this.frame = -1;
+        }
+      }
+    });
   }
 }

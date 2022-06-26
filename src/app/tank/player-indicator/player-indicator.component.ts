@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
-import { Store } from '@ngrx/store';
 
 import { DirectionEnum } from '../../shared/direction.enum';
 import { SettingsService } from '../../core/settings.service';
@@ -24,7 +23,6 @@ export class PlayerIndicatorComponent implements OnDestroy, OnInit {
 
   constructor(
     private settings: SettingsService,
-    private store: Store,
     private worldService: WorldService
   ) {
     this.directionEnum = DirectionEnum;

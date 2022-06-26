@@ -217,7 +217,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
-        if (this.worldService.isPauseActive) {
+        if (this.worldService.isPauseActive || this.worldService.isPauseMaskActive) {
           return;
         }
 

@@ -1,21 +1,15 @@
-<ng-template
-  [ngTemplateOutlet]="explosion"
-  [ngTemplateOutletContext]="{ frame: frame$ | async }"
-></ng-template>
-<ng-template #explosion let-frame=frame>
-  <img
-    *ngIf="frame !== null && frame < framesCount"
-    src="{{explosionImagePath}}/Sprite_Effects_Explosion_00{{frame}}.png"
-    class="w-full h-full z-6 absolute"
-    alt=""
-  >
-  <img
-    *ngIf="showBlastTrail && frame >= 4"
-    src="{{blastTrailImagePath}}/Blast_Trail_0{{blastTrailType}}.png"
-    class="w-full h-full z-5 absolute"
-    [class.rotate-90]="rotationRandomMultiplier === 1"
-    [class.rotate-180]="rotationRandomMultiplier === 2"
-    [class.-rotate-90]="rotationRandomMultiplier === 3"
-    alt=""
-  >
-</ng-template>
+<img
+  *ngIf="frame >= 0 && frame < framesCount"
+  src="{{explosionImagePath}}/Sprite_Effects_Explosion_00{{frame}}.png"
+  class="w-full h-full z-6 absolute"
+  alt=""
+>
+<img
+  *ngIf="showBlastTrail && frame >= 4"
+  src="{{blastTrailImagePath}}/Blast_Trail_0{{blastTrailType}}.png"
+  class="w-full h-full z-5 absolute"
+  [class.rotate-90]="rotationRandomMultiplier === 1"
+  [class.rotate-180]="rotationRandomMultiplier === 2"
+  [class.-rotate-90]="rotationRandomMultiplier === 3"
+  alt=""
+>
