@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
@@ -12,7 +12,7 @@ import { SettingsService } from '../../core/settings.service';
   templateUrl: './flash.component.html',
   styleUrls: ['./flash.component.scss']
 })
-export class FlashComponent implements OnChanges, OnDestroy {
+export class FlashComponent implements OnChanges, OnDestroy, OnInit {
   @Input() interval: number;
   @Input() height?: string;
   @Input() left?: string;
@@ -25,7 +25,8 @@ export class FlashComponent implements OnChanges, OnDestroy {
   frame: number;
   readonly framesCount = 4;
 
-  private subscription?: Subscription;
+  private isActive: boolean;
+  private subscription: Subscription;
   private readonly tick$: Observable<number>;
 
   constructor(
@@ -42,6 +43,8 @@ export class FlashComponent implements OnChanges, OnDestroy {
     this.top = '-70%';
     this.width = '100%';
 
+    this.isActive = false;
+    this.subscription = new Subscription();
     this.tick$ = store.select(selectTick);
   }
 
@@ -49,7 +52,7 @@ export class FlashComponent implements OnChanges, OnDestroy {
     if (changes['trigger']?.currentValue &&
       changes['trigger'].currentValue !== changes['trigger']?.previousValue
     ) {
-      this.fire();
+      this.isActive = true;
     }
   }
 
@@ -57,17 +60,23 @@ export class FlashComponent implements OnChanges, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
-  private fire(): void {
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    this.subscription = this.tick$.subscribe((tick) => {
-      if (tick % (this.settings.fps / 10) === 0) {
-        if (this.frame < this.framesCount) {
+  ngOnInit(): void {
+    this.subscription.add(
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      this.tick$.subscribe((tick) => {
+        if (!this.isActive) {
+          return;
+        }
+
+        if (this.isActive && this.frame < this.framesCount && tick % (this.settings.fps / 10) === 0) {
           this.frame++;
-        } else {
-          this.subscription?.unsubscribe();
+        }
+
+        if (this.frame >= this.framesCount) {
+          this.isActive = false;
           this.frame = -1;
         }
-      }
-    });
+      })
+    );
   }
 }

@@ -1,9 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { map, take, timer, of, Observable } from 'rxjs';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { CRAFT_PIX_IMAGES_PATH } from '../../core/images.constants';
 import { FlashTypeEnum } from '../flash/flash-type.enum';
 import { GunTypeEnum } from './gun-type.enum';
+import { selectTick } from '../../store/tick.selectors';
 import { SettingsService } from '../../core/settings.service';
 import { TankColorEnum } from '../tank-color.enum';
 
@@ -12,7 +14,7 @@ import { TankColorEnum } from '../tank-color.enum';
   templateUrl: './gun.component.html',
   styleUrls: ['./gun.component.scss']
 })
-export class GunComponent implements OnChanges {
+export class GunComponent implements OnChanges, OnDestroy, OnInit {
   @Input() color?: TankColorEnum;
   @Input() flashType?: FlashTypeEnum;
   @Input() interval: number;
@@ -20,30 +22,63 @@ export class GunComponent implements OnChanges {
   @Input() type?: GunTypeEnum;
 
   readonly craftPixImagesPath = CRAFT_PIX_IMAGES_PATH;
-  top$: Observable<number>;
+  top: number;
 
-  constructor(private settings: SettingsService) {
+  private isActive: boolean;
+  private subscription: Subscription;
+  private readonly tick$: Observable<number>;
+  private readonly tops: number[];
+
+  constructor(
+    private settings: SettingsService,
+    private store: Store
+  ) {
     this.color = settings.tank.color;
     this.flashType = settings.tank.flashType;
     this.interval = settings.interval;
     this.trigger = null;
-    this.top$ = of(0);
+    this.top = 0;
     this.type = settings.tank.gunType;
+
+    this.isActive = false;
+    this.subscription = new Subscription();
+    this.tick$ = store.select(selectTick);
+    this.tops = [10, 5, 0];
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['trigger']?.currentValue &&
       changes['trigger'].currentValue !== changes['trigger']?.previousValue
     ) {
-      this.fire();
+      this.isActive = true;
     }
   }
 
-  private fire(): void {
-    const tops = [10, 5, 0];
-    this.top$ = timer(0, this.interval).pipe(
-      take(3),
-      map((i) => tops[i])
+  ngOnInit(): void {
+    let index = -1;
+
+    this.subscription.add(
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      this.tick$.subscribe((tick) => {
+        if (!this.isActive) {
+          return;
+        }
+
+        if (this.isActive && index < this.tops.length && tick % (this.settings.fps / 10) === 0) {
+          index++;
+          this.top = this.tops[index];
+        }
+
+        if (index >= this.tops.length - 1) {
+          this.isActive = false;
+          this.top = 0;
+          index = -1;
+        }
+      })
     );
   }
 }
