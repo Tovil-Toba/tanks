@@ -18,6 +18,7 @@ const settings: Settings = {
     fire: ['Enter', 'Space'],
     left: ['KeyA', 'ArrowLeft'],
     pause: ['Escape', 'KeyP'],
+    playerDisconnect: ['Backspace'],
     right: ['KeyD', 'ArrowRight'],
     turbo: ['ShiftLeft', 'ShiftRight'],
     up: ['KeyW', 'ArrowUp'],
@@ -38,8 +39,8 @@ const settings: Settings = {
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
     shellSpeed: 10,
-    speed: 1, // 1 - тяжелый, 1.5 - средний, 2 - легкий. За единицу скорости принято количество миллисекунд в
-              // одном кадре. Т.е. при 30 кадрах в секунду скорость 1 будет преобразована в 1/30 = 0.033.
+    speed: 0.75, // 0.75 - тяжелый, 1 - средний, 1.25 - легкий. За единицу скорости принято количество миллисекунд в
+                 // одном кадре. Т.е. при 30 кадрах в секунду скорость 1 будет преобразована в 1/30 = 0.033.
     turboMultiplier: 1.5,
     turretType: TurretTypeEnum.One,
     trackType: TrackTypeEnum.One,

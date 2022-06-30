@@ -4,6 +4,7 @@
     "fire": ["Enter", "Space"],
     "left": ["KeyA", "ArrowLeft"],
     "pause": ["Escape", "KeyP"],
+    "playerDisconnect": ["Backspace"],
     "right": ["KeyD", "ArrowRight"],
     "turbo": ["ShiftLeft", "ShiftRight"],
     "up": ["KeyW", "ArrowUp"]

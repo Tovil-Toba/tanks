@@ -3,6 +3,7 @@ export interface Controls {
   fire: string[];
   left: string[];
   pause: string[];
+  playerDisconnect: string[];
   right: string[];
   turbo: string[];
   up: string[];

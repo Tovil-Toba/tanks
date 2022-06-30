@@ -71,6 +71,12 @@ export class TankMovementService {
     return squares;
   }
 
+  get randomDirection(): DirectionEnum {
+    const randomDirectionIndex = randomIntFromInterval(0, 3);
+
+    return this.movementDirections[randomDirectionIndex];
+  }
+
   get tanksCoordinatesArray(): Array<Coordinates> {
     const coordinates = new Array<Coordinates>();
 

@@ -66,6 +66,11 @@ export class SettingsService {
       this._controls.pause = pause;
     }
 
+    const playerDisconnect : string[] | undefined = (controls as Controls)?.playerDisconnect;
+    if (isNonEmptyArrayOfStrings(playerDisconnect)) {
+      this._controls.playerDisconnect = playerDisconnect;
+    }
+
     const right: string[] | undefined = (controls as Controls)?.right;
     if (isNonEmptyArrayOfStrings(right)) {
       this._controls.right = right;

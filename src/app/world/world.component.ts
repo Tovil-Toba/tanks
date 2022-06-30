@@ -1,35 +1,20 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { interval, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { ControlsService } from '../core/controls.service';
 import { DirectionEnum } from '../shared/direction.enum';
-import { ExplosionTypeEnum } from './explosion/explosion-type.enum';
-import { FlashTypeEnum } from '../tank/flash/flash-type.enum';
-import { GunTypeEnum } from '../tank/gun/gun-type.enum';
-import { HullTypeEnum } from '../tank/hull/hull-type.enum';
 import { randomIntFromInterval } from '../shared/utils';
 import { selectWorldNumber } from '../store/world-number.selectors';
 import { SettingsService } from '../core/settings.service';
 import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
-import { ShellTypeEnum } from '../tank/shell/shell-type.enum';
-import { ShellImpactTypeEnum } from '../tank/shell/shell-impact/shell-impact-type.enum';
+import { Tank } from '../tank/tank.model';
 import { TankColorEnum } from '../tank/tank-color.enum';
 import { TankIndex, TANKS_INDEXES } from '../tank/tank-index.model';
 import { TankMovementService } from '../core/tank-movement.service';
+import { TankNumber } from '../core/tanks-roster.model';
+import { TANKS_ROSTER } from '../core/tanks-roster';
 import * as TickActions from '../store/tick.actions';
-import { TrackTypeEnum } from '../tank/track/track-type.enum';
-import { TurretTypeEnum } from '../tank/turret/turret-type.enum';
 import { WORLD_COLORS } from './world-colors';
 import * as WorldNumberActions from '../store/world-number.actions';
 import { WorldService } from './world.service';
@@ -48,24 +33,14 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   @Output() readonly resetWorld: EventEmitter<void>;
 
   directionControls: Record<TankIndex, DirectionEnum | undefined>;
-  readonly explosionType: ExplosionTypeEnum;
-  readonly flashType: FlashTypeEnum;
-  readonly gunType: GunTypeEnum;
-  readonly hullType: HullTypeEnum;
   isFireControls: Array<boolean | undefined>;
   isInfoVisible?: boolean;
   isStartTimerActive?: boolean;
   isTurboControls: Array<boolean | undefined>;
-  // readonly millisecondsPerFrame: number;
-  readonly shellType: ShellTypeEnum;
-  readonly shellImpactType: ShellImpactTypeEnum;
-  readonly speed: number;
   startTimerText?: string;
+  readonly tanks: Record<TankIndex, Tank>;
   readonly tankColors: Array<TankColorEnum>;
   readonly tankIndexes: Array<TankIndex>;
-  readonly turboMultiplier: number;
-  readonly turretType: TurretTypeEnum;
-  readonly trackType: TrackTypeEnum;
 
   tick$: Observable<number>;
   worldNumber$: Observable<number>;
@@ -80,20 +55,19 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     public worldService: WorldService
   ) {
     this.directionControls = tankMovementService.directionControls;
-    this.explosionType = settings.tank.explosionType;
-    this.flashType = settings.tank.flashType;
-    this.gunType = settings.tank.gunType;
-    this.hullType = settings.tank.hullType;
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
     this.isStartTimerActive = true;
     // this.millisecondsPerFrame = 1000 / settings.fps;
     this.resetWorld = new EventEmitter<void>();
-    this.shellType = settings.tank.shellType;
-    this.shellImpactType = settings.tank.shellImpactType;
     this.size = settings.world.size;
-    this.speed = settings.tank.speed;
     this.subscription = new Subscription();
+    this.tanks = {
+      0: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
+      1: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
+      2: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
+      3: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
+    };
     this.tankColors = [
       TankColorEnum.A,
       TankColorEnum.B,
@@ -101,9 +75,6 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
       TankColorEnum.D
     ];
     this.tankIndexes = [0, 1, 2, 3];
-    this.turboMultiplier = settings.tank.turboMultiplier;
-    this.turretType = settings.tank.turretType;
-    this.trackType = settings.tank.trackType;
 
     if (settings.isDebugMode) {
       console.log('Milliseconds in 1 frame', settings.millisecondsPerFrame);
@@ -112,7 +83,6 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.tick$ = interval(settings.millisecondsPerFrame);
     this.type = WorldTypeEnum.A;
     this.worldNumber$ = store.select(selectWorldNumber);
-    // todo: сделать рандомную генерацию 4 танков
   }
 
   get backgroundColor(): string {
@@ -155,6 +125,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
 
   @HostListener('window:keyup', ['$event'])
   handleKeyUp(event: KeyboardEvent): void {
+    if (this.controlsService.isPlayerDisconnectButton(event)) {
+      this.disconnectPlayer();
+    }
+
     if (this.controlsService.isPauseButton(event)) {
       this.worldService.isPauseActive = !this.worldService.isPauseActive;
       this.worldService.isPauseMaskActive = this.worldService.isPauseActive;
@@ -267,6 +241,17 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
         }
       })
     );
+  }
+
+  private disconnectPlayer(): void {
+    this.settings.isPlayerActive = false;
+
+    if (this.playerTankIndex !== undefined) {
+      this.directionControls[this.playerTankIndex] = this.tankMovementService.randomDirection;
+      this.isFireControls[this.playerTankIndex] = false;
+      this.isTurboControls[this.playerTankIndex] = false;
+      this.tankMovementService.playerTankIndex = undefined;
+    }
   }
 
   private initPlayer(): void {

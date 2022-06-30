@@ -32,6 +32,10 @@ export class ControlsService {
     return this.settings.controls.pause.includes(event.code);
   }
 
+  isPlayerDisconnectButton(event: KeyboardEvent): boolean {
+    return this.settings.controls.playerDisconnect.includes(event.code);
+  }
+
   isRightButton(event: KeyboardEvent): boolean {
     return this.settings.controls.right.includes(event.code);
   }
