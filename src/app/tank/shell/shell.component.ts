@@ -185,20 +185,13 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
       const tankCoordinates: Coordinates = this.tankMovementService.getTankCoordinates(tankIndex);
 
       if (this.checkImpact(tankCoordinates)) {
-        const shellsImpactWithTank = this.worldService
-          .getShellsImpactByTankIndex(tankIndex)
-          .filter((shellImpact) => shellImpact.parentTankIndex !== this.tankIndex)
-        ;
+        const shellImpactWithTank: ShellImpactWithTank = {
+          parentTankIndex: this.tankIndex,
+          shellType: this.type,
+          targetTankIndex: tankIndex
+        };
 
-        if (!shellsImpactWithTank.length) {
-          const shellImpactWithTank: ShellImpactWithTank = {
-            parentTankIndex: this.tankIndex,
-            shellType: this.type,
-            targetTankIndex: tankIndex
-          };
-
-          this.worldService.addShellImpactWithTank(shellImpactWithTank);
-        }
+        this.worldService.addShellImpactWithTank(shellImpactWithTank);
 
         if (this.settings.isDebugMode) {
           console.log('Shells impact tank', this.worldService.getShellsImpactByTankIndex(tankIndex));

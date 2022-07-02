@@ -14,7 +14,7 @@
   "isDebugMode": false,
   "isPlayerActive": false,
   "tank": {
-    "armor": "HEAVY",
+    "armorType": "HEAVY",
     "color": "A",
     "explosionType": "A",
     "flashType": "A",

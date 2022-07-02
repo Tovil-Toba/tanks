@@ -21,6 +21,12 @@
     class="absolute w-full h-full z-5"
   ></div>
 
+  <!-- Информация (броня) -->
+  <app-info
+    [armor]="armor"
+    [tankDirection]="direction"
+  ></app-info>
+
   <!-- Индикация игрока -->
   <app-player-indicator
     *ngIf="isPlayerIndicatorVisible"

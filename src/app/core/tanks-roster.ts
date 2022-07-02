@@ -14,7 +14,7 @@ import { TurretTypeEnum } from '../tank/turret/turret-type.enum';
 
 export const TANKS_ROSTER: TanksRoster = {
   1: {
-    armor: ArmorTypeEnum.Heavy,
+    armorType: ArmorTypeEnum.Heavy,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -32,7 +32,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Heavy
   },
   2: {
-    armor: ArmorTypeEnum.Heavy,
+    armorType: ArmorTypeEnum.Heavy,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -50,7 +50,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Heavy
   },
   3: {
-    armor: ArmorTypeEnum.Medium,
+    armorType: ArmorTypeEnum.Medium,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -68,7 +68,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Medium
   },
   4: {
-    armor: ArmorTypeEnum.Light,
+    armorType: ArmorTypeEnum.Light,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -86,7 +86,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Light
   },
   5: {
-    armor: ArmorTypeEnum.Heavy,
+    armorType: ArmorTypeEnum.Heavy,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -104,7 +104,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Heavy
   },
   6: {
-    armor: ArmorTypeEnum.Heavy,
+    armorType: ArmorTypeEnum.Heavy,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -122,7 +122,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Heavy
   },
   7: {
-    armor: ArmorTypeEnum.Medium,
+    armorType: ArmorTypeEnum.Medium,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,
@@ -140,7 +140,7 @@ export const TANKS_ROSTER: TanksRoster = {
     type: TankTypeEnum.Medium
   },
   8: {
-    armor: ArmorTypeEnum.Light,
+    armorType: ArmorTypeEnum.Light,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,

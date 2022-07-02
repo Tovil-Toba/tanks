@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, S
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
+import { ArmorTypeEnum } from './armor-type.enum';
+import { ARMOR_UNITS } from '../core/armor-units';
 import { Coordinates } from '../shared/coordinates.model';
 import { DirectionEnum } from '../shared/direction.enum';
 import {
@@ -44,7 +46,7 @@ import { WorldService } from '../world/world.service';
   providers: [TankFireService]
 })
 export class TankComponent implements OnChanges, OnDestroy, OnInit {
-  @Input() armor?;
+  @Input() armor: number;
   @Input() color: TankColorEnum;
   @Input() directionControl?: DirectionEnum;
   @Input() explosionType: ExplosionTypeEnum;
@@ -53,7 +55,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   @Input() gunType: GunTypeEnum;
   @Input() hullColor?: TankColorEnum;
   @Input() index!: TankIndex;
-  @Input() isExplode?: boolean;
+  // @Input() isExplode?: boolean;
   @Input() isFireControl?: boolean;
   @Input() isTurboControl?: boolean;
   @Input() hullType: HullTypeEnum;
@@ -102,7 +104,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     private tankMovementService: TankMovementService,
     private worldService: WorldService
   ) {
-    this.armor = settings.tank.armor;
+    this.armor = ARMOR_UNITS[ArmorTypeEnum.Heavy];
     this.moving = new EventEmitter<TankMovement>();
     this.color = settings.tank.color;
     this.currentSpeed = 0;
@@ -138,6 +140,10 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.subscription = new Subscription();
     this.tick = 0;
     this.tick$ = this.store.select(selectTick);
+  }
+
+  get isExplode(): boolean {
+    return this.armor <= 0;
   }
 
   get movementDelta(): number {

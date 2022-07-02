@@ -28,7 +28,7 @@ const settings: Settings = {
   isDebugMode: false,
   isPlayerActive: true,
   tank: {
-    armor: ArmorTypeEnum.Heavy,
+    armorType: ArmorTypeEnum.Heavy,
     color: TankColorEnum.A,
     explosionType: ExplosionTypeEnum.A,
     flashType: FlashTypeEnum.A,

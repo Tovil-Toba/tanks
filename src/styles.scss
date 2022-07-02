@@ -5,12 +5,36 @@ body {
   margin: 0;
 }
 
+.h-05rem {
+  height: 0.875rem !important;
+}
+
+.m-05 {
+  margin: 0.125rem !important;
+}
+
+.mr-05 {
+  margin-right: 0.125rem !important;
+}
+
+.mt-05 {
+  margin-top: 0.125rem !important;
+}
+
 .rotate-135 {
   transform: rotate(135deg) !important;
 }
 
 .-rotate-135 {
   transform: rotate(-135deg) !important;
+}
+
+.text-xxs {
+  font-size: 0.5rem !important;
+}
+
+.w-05rem {
+  width: 0.875rem !important;
 }
 
 .z-6 {

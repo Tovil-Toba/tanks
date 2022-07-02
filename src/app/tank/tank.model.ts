@@ -11,7 +11,7 @@ import { TrackTypeEnum } from './track/track-type.enum';
 import { TurretTypeEnum } from './turret/turret-type.enum';
 
 export interface Tank {
-  armor: ArmorTypeEnum; // todo: не нужно, достаточно type: TankTypeEnum
+  armorType: ArmorTypeEnum; // todo: не нужно, достаточно type: TankTypeEnum
   color: TankColorEnum;
   explosionType: ExplosionTypeEnum;
   flashType: FlashTypeEnum;

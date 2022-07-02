@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 
+import { ArmorTypeEnum } from '../tank/armor-type.enum';
+import { ARMOR_UNITS } from '../core/armor-units';
 import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
 import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
+import { SHELL_UNITS } from '../core/shell-units';
 import { Square } from './square/square.model';
 import { SquareTypeEnum } from './square/square-type.enum';
+import { TankArmors } from '../core/tank-armors.model';
 import { TankIndex } from '../tank/tank-index.model';
 
 @Injectable()
@@ -15,6 +19,7 @@ export class WorldService {
   shellImpactSquares?: Array<Square>;
   readonly shellsImpactWithTanks: Array<ShellImpactWithTank>;
   readonly squares: Array<Square>;
+  tankArmors: TankArmors;
 
   private readonly squareTypes: Array<SquareTypeEnum> = [
     // SquareTypeEnum.Barrel,
@@ -37,6 +42,12 @@ export class WorldService {
     this.isPauseMaskActive = false;
     this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
+    this.tankArmors = {
+      0: ARMOR_UNITS[ArmorTypeEnum.Heavy],
+      1: ARMOR_UNITS[ArmorTypeEnum.Heavy],
+      2: ARMOR_UNITS[ArmorTypeEnum.Heavy],
+      3: ARMOR_UNITS[ArmorTypeEnum.Heavy]
+    };
   }
 
   get undestroyableBlocks(): Array<Square> {
@@ -46,7 +57,9 @@ export class WorldService {
   }
 
   addShellImpactWithTank(shellImpact: ShellImpactWithTank): void {
+    console.log('addShellImpactWithTank', SHELL_UNITS[shellImpact.shellType]);
     this.shellsImpactWithTanks.push(shellImpact);
+    this.tankArmors[shellImpact.targetTankIndex] -= SHELL_UNITS[shellImpact.shellType];
   }
 
   getRandomType(): SquareTypeEnum {
@@ -60,6 +73,10 @@ export class WorldService {
     return this.shellsImpactWithTanks.filter((shellImpactWithTank) => (
       shellImpactWithTank.targetTankIndex === targetTankIndex
     ));
+  }
+
+  getTankArmor(tankIndex: TankIndex): number {
+    return this.tankArmors[tankIndex];
   }
 
   initSquares(size: number): void {

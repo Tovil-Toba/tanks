@@ -6,6 +6,8 @@
     [style.height.px]="size"
     [style.background-color]="backgroundColor"
   >
+    <!--<div class="absolute" style="color: red; z-index: 999;"><pre>{{worldService.tankArmors|json}}</pre></div>-->
+
     <!-- Маска паузы -->
     <div
       *ngIf="worldService.isPauseMaskActive"
@@ -39,6 +41,7 @@
     <div class="w-full h-full flex flex-wrap align-content-start">
       <app-tank
         *ngFor="let index of tankIndexes"
+        [armor]="worldService.getTankArmor(index)"
         [index]="index"
         (moving)="tankMovementService.tankMovingHandler(index, $event)"
         [color]="tankColors[index]"
@@ -47,7 +50,6 @@
         [gunType]="tanks[index].gunType"
         [flashType]="tanks[index].flashType"
         [hullType]="tanks[index].hullType"
-        [isExplode]="getShellsImpactByTankIndex(index).length > 0"
         [isFireControl]="isFireControls[index]"
         [isTurboControl]="isTurboControls[index]"
         [shellType]="tanks[index].shellType"

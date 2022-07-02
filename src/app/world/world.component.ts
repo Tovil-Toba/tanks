@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnI
 import { interval, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import { ARMOR_UNITS } from '../core/armor-units';
 import { ControlsService } from '../core/controls.service';
 import { DirectionEnum } from '../shared/direction.enum';
 import { randomIntFromInterval } from '../shared/utils';
@@ -67,6 +68,12 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
       1: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
       2: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
       3: TANKS_ROSTER[randomIntFromInterval(1, 8) as TankNumber],
+    };
+    worldService.tankArmors = {
+      0: ARMOR_UNITS[this.tanks[0].armorType],
+      1: ARMOR_UNITS[this.tanks[1].armorType],
+      2: ARMOR_UNITS[this.tanks[2].armorType],
+      3: ARMOR_UNITS[this.tanks[3].armorType],
     };
     this.tankColors = [
       TankColorEnum.A,

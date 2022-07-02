@@ -6,6 +6,7 @@ import { ExplosionComponent } from './explosion/explosion.component';
 import { FlashComponent } from './flash/flash.component';
 import { GunComponent } from './gun/gun.component';
 import { HullComponent } from './hull/hull.component';
+import { InfoComponent } from './info/info.component';
 import { PlayerIndicatorComponent } from './player-indicator/player-indicator.component';
 import { ShellComponent } from './shell/shell.component';
 import { ShellImpactComponent } from './shell/shell-impact/shell-impact.component';
@@ -20,6 +21,7 @@ import { TurretComponent } from './turret/turret.component';
     FlashComponent,
     GunComponent,
     HullComponent,
+    InfoComponent,
     PlayerIndicatorComponent,
     ShellComponent,
     ShellImpactComponent,
