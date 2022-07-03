@@ -23,6 +23,7 @@
 
   <!-- Информация (броня) -->
   <app-info
+    *ngIf="explosionFrame < 6"
     [armor]="armor"
     [tankDirection]="direction"
   ></app-info>
