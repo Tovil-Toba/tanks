@@ -23,12 +23,42 @@
     "hullColor": "A",
     "hullType": 1,
     "shellType": "HEAVY",
-    "shellSpeed": 10,
+    "shellSpeed": 5,
     "shellImpactType": "A",
-    "speed": 1,
+    "speed": 0.75,
     "trackType": 1,
     "turretType": 1,
     "type": "HEAVY"
+  },
+  "units": {
+    "shellDamage": {
+      "LIGHT": 1,
+      "HEAVY": 3,
+      "GRENADE": 3,
+      "MEDIUM": 2,
+      "LASER": 3,
+      "PLASMA": 3,
+      "SHOTGUN": 3
+    },
+    "shellSpeed": {
+      "LIGHT": 10,
+      "HEAVY": 5,
+      "GRENADE": 5,
+      "MEDIUM": 7.5,
+      "LASER": 20,
+      "PLASMA": 7.5,
+      "SHOTGUN": 5
+    },
+    "tankArmor": {
+      "LIGHT": 1,
+      "HEAVY": 3,
+      "MEDIUM": 2
+    },
+    "tankSpeed": {
+      "LIGHT": 1.25,
+      "HEAVY": 0.75,
+      "MEDIUM": 1
+    }
   },
   "world": {
     "isAssetsRandomRotationEnabled": true,

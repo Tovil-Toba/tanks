@@ -24,8 +24,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.One,
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed,
-    speed: defaultSettings.tank.speed,
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Heavy],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Heavy],
     turboMultiplier: defaultSettings.tank.turboMultiplier,
     trackType: TrackTypeEnum.One,
     turretType: TurretTypeEnum.One,
@@ -42,8 +42,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Two,
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed,
-    speed: defaultSettings.tank.speed,
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Heavy],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Heavy],
     turboMultiplier: defaultSettings.tank.turboMultiplier,
     trackType: TrackTypeEnum.Two,
     turretType: TurretTypeEnum.Two,
@@ -60,8 +60,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Three,
     shellType: ShellTypeEnum.Medium,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed, // todo: скорость среднего выстрела
-    speed: 1, // todo: скорость среднего танка
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Medium],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Medium],
     turboMultiplier: defaultSettings.tank.turboMultiplier, // todo: ускорение среднего танка
     trackType: TrackTypeEnum.Three,
     turretType: TurretTypeEnum.Three,
@@ -78,8 +78,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Four,
     shellType: ShellTypeEnum.Light,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed, // todo: скорость легкого выстрела
-    speed: 1.25, // todo: скорость легкого танка
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Light],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Light],
     turboMultiplier: defaultSettings.tank.turboMultiplier, // todo: ускорение легкого танка
     trackType: TrackTypeEnum.Four,
     turretType: TurretTypeEnum.Four,
@@ -96,8 +96,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Five,
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed,
-    speed: defaultSettings.tank.speed,
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Heavy],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Heavy],
     turboMultiplier: defaultSettings.tank.turboMultiplier,
     trackType: TrackTypeEnum.One,
     turretType: TurretTypeEnum.Five,
@@ -114,8 +114,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Six,
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed,
-    speed: defaultSettings.tank.speed,
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Heavy],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Heavy],
     turboMultiplier: defaultSettings.tank.turboMultiplier,
     trackType: TrackTypeEnum.Two,
     turretType: TurretTypeEnum.Six,
@@ -132,8 +132,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Seven,
     shellType: ShellTypeEnum.Medium,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed, // todo: скорость среднего выстрела
-    speed: 1, // todo: скорость среднего танка
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Medium],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Medium],
     turboMultiplier: defaultSettings.tank.turboMultiplier, // todo: ускорение среднего танка
     trackType: TrackTypeEnum.Three,
     turretType: TurretTypeEnum.Seven,
@@ -150,8 +150,8 @@ export const TANKS_ROSTER: TanksRoster = {
     hullType: HullTypeEnum.Eight,
     shellType: ShellTypeEnum.Light,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: defaultSettings.tank.shellSpeed, // todo: скорость легкого выстрела
-    speed: 1.25, // todo: скорость легкого танка
+    shellSpeed: defaultSettings.units.shellSpeed[ShellTypeEnum.Light],
+    speed: defaultSettings.units.tankSpeed[TankTypeEnum.Light],
     turboMultiplier: defaultSettings.tank.turboMultiplier, // todo: ускорение легкого танка
     trackType: TrackTypeEnum.Four,
     turretType: TurretTypeEnum.Eight,

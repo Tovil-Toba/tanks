@@ -52,6 +52,7 @@ export class AppComponent implements OnDestroy, OnInit {
         this.settings.isDebugMode = settings.isDebugMode;
         this.settings.isPlayerActive = settings.isPlayerActive;
         this.settings.tank = settings.tank;
+        this.settings.units = settings.units;
         this.settings.world = settings.world;
         this.settings.world.type = this.worldType;
       })

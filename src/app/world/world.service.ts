@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { ArmorTypeEnum } from '../tank/armor-type.enum';
-import { ARMOR_UNITS } from '../core/armor-units';
 import { randomIntFromInterval } from '../shared/utils';
 import { SettingsService } from '../core/settings.service';
 import { ShellImpactWithTank } from './shared/shell-impact-with-tank';
-import { SHELL_UNITS } from '../core/shell-units';
 import { Square } from './square/square.model';
 import { SquareTypeEnum } from './square/square-type.enum';
 import { TankArmors } from '../core/tank-armors.model';
 import { TankIndex } from '../tank/tank-index.model';
+import { TankTypeEnum } from '../tank/tank-type';
 
 @Injectable()
 export class WorldService {
@@ -43,10 +41,10 @@ export class WorldService {
     this.shellsImpactWithTanks = new Array<ShellImpactWithTank>();
     this.squares = new Array<Square>();
     this.tankArmors = {
-      0: ARMOR_UNITS[ArmorTypeEnum.Heavy],
-      1: ARMOR_UNITS[ArmorTypeEnum.Heavy],
-      2: ARMOR_UNITS[ArmorTypeEnum.Heavy],
-      3: ARMOR_UNITS[ArmorTypeEnum.Heavy]
+      0: settings.units.tankArmor[TankTypeEnum.Heavy],
+      1: settings.units.tankArmor[TankTypeEnum.Heavy],
+      2: settings.units.tankArmor[TankTypeEnum.Heavy],
+      3: settings.units.tankArmor[TankTypeEnum.Heavy]
     };
   }
 
@@ -57,9 +55,8 @@ export class WorldService {
   }
 
   addShellImpactWithTank(shellImpact: ShellImpactWithTank): void {
-    console.log('addShellImpactWithTank', SHELL_UNITS[shellImpact.shellType]);
     this.shellsImpactWithTanks.push(shellImpact);
-    this.tankArmors[shellImpact.targetTankIndex] -= SHELL_UNITS[shellImpact.shellType];
+    this.tankArmors[shellImpact.targetTankIndex] -= this.settings.units.shellDamage[shellImpact.shellType];
   }
 
   getRandomType(): SquareTypeEnum {

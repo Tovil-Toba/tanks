@@ -9,6 +9,7 @@ import { FlashTypeEnum } from '../tank/flash/flash-type.enum';
 import { GunTypeEnum } from '../tank/gun/gun-type.enum';
 import { isNonEmptyArrayOfStrings } from '../shared/utils';
 import { HullTypeEnum } from '../tank/hull/hull-type.enum';
+import { ShellDamageUnits, ShellSpeedUnits, TankArmorUnits, TankSpeedUnits, Units } from './units.model';
 import { ShellTypeEnum } from '../tank/shell/shell-type.enum';
 import { ShellImpactTypeEnum } from '../tank/shell/shell-impact/shell-impact-type.enum';
 import { Tank } from '../tank/tank.model';
@@ -29,6 +30,7 @@ export class SettingsService {
   private _isDebugMode: boolean;
   private _isPlayerActive: boolean;
   private readonly _tank: Tank;
+  private readonly _units: Units;
   private readonly _world: World;
 
   constructor() {
@@ -38,6 +40,7 @@ export class SettingsService {
     this._isDebugMode = false;
     this._isPlayerActive = true;
     this._tank = defaultSettings.tank;
+    this._units = defaultSettings.units;
     this._world = defaultSettings.world;
   }
 
@@ -210,6 +213,48 @@ export class SettingsService {
     const type: string | undefined = (tank as Tank)?.type?.toUpperCase();
     if (type && Object.values(TankTypeEnum).includes(type as TankTypeEnum)) {
       this._tank.type = type as TankTypeEnum;
+    }
+  }
+
+  get units(): Units {
+    return this._units;
+  }
+
+  set units(units: unknown) {
+    const shellDamage: ShellDamageUnits | undefined = (units as Units)?.shellDamage;
+    if (shellDamage) {
+      Object.values(ShellTypeEnum).forEach((type) => {
+        if (typeof shellDamage[type] === 'number') {
+          this._units.shellDamage[type] = shellDamage[type];
+        }
+      });
+    }
+
+    const shellSpeed: ShellSpeedUnits | undefined = (units as Units)?.shellSpeed;
+    if (shellSpeed) {
+      Object.values(ShellTypeEnum).forEach((type) => {
+        if (typeof shellSpeed[type] === 'number') {
+          this._units.shellSpeed[type] = shellSpeed[type];
+        }
+      });
+    }
+
+    const tankArmor: TankArmorUnits | undefined = (units as Units)?.tankArmor;
+    if (tankArmor) {
+      Object.values(TankTypeEnum).forEach((type) => {
+        if (typeof tankArmor[type] === 'number') {
+          this._units.tankArmor[type] = tankArmor[type];
+        }
+      });
+    }
+
+    const tankSpeed: TankSpeedUnits | undefined = (units as Units)?.tankSpeed;
+    if (tankSpeed) {
+      Object.values(TankTypeEnum).forEach((type) => {
+        if (typeof tankSpeed[type] === 'number') {
+          this._units.tankSpeed[type] = tankSpeed[type];
+        }
+      });
     }
   }
 

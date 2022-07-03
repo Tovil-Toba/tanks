@@ -1,5 +1,6 @@
 import { Controls } from './controls.model';
 import { Tank } from '../tank/tank.model';
+import { Units } from './units.model';
 import { World } from '../world/world.model';
 
 export interface Settings {
@@ -9,5 +10,6 @@ export interface Settings {
   fps: number;
   interval: number;
   tank: Tank;
+  units: Units;
   world: World;
 }

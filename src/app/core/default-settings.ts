@@ -38,13 +38,43 @@ const settings: Settings = {
     hullType: HullTypeEnum.One,
     shellType: ShellTypeEnum.Heavy,
     shellImpactType: ShellImpactTypeEnum.A,
-    shellSpeed: 10,
+    shellSpeed: 5, // 5 - тяжелый, 7.5 - средний, 10 - легкий
     speed: 0.75, // 0.75 - тяжелый, 1 - средний, 1.25 - легкий. За единицу скорости принято количество миллисекунд в
                  // одном кадре. Т.е. при 30 кадрах в секунду скорость 1 будет преобразована в 1/30 = 0.033.
     turboMultiplier: 1.5,
     turretType: TurretTypeEnum.One,
     trackType: TrackTypeEnum.One,
     type: TankTypeEnum.Heavy
+  },
+  units: {
+    shellDamage: {
+      [ShellTypeEnum.Light]: 1,
+      [ShellTypeEnum.Heavy]: 3,
+      [ShellTypeEnum.Grenade]: 3,
+      [ShellTypeEnum.Medium]: 2,
+      [ShellTypeEnum.Laser]: 3,
+      [ShellTypeEnum.Plasma]: 3,
+      [ShellTypeEnum.Shotgun]: 3
+    },
+    shellSpeed: {
+      [ShellTypeEnum.Light]: 10,
+      [ShellTypeEnum.Heavy]: 5,
+      [ShellTypeEnum.Grenade]: 5,
+      [ShellTypeEnum.Medium]: 7.5,
+      [ShellTypeEnum.Laser]: 20,
+      [ShellTypeEnum.Plasma]: 7.5,
+      [ShellTypeEnum.Shotgun]: 5
+    },
+    tankArmor: {
+      [TankTypeEnum.Heavy]: 3,
+      [TankTypeEnum.Light]: 1,
+      [TankTypeEnum.Medium]: 2
+    },
+    tankSpeed: {
+      [TankTypeEnum.Heavy]: 0.75,
+      [TankTypeEnum.Light]: 1.25,
+      [TankTypeEnum.Medium]: 1
+    }
   },
   world: {
     isAssetsRandomRotationEnabled: true,

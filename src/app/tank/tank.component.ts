@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
 import { ArmorTypeEnum } from './armor-type.enum';
-import { ARMOR_UNITS } from '../core/armor-units';
 import { Coordinates } from '../shared/coordinates.model';
 import { DirectionEnum } from '../shared/direction.enum';
 import {
@@ -104,7 +103,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     private tankMovementService: TankMovementService,
     private worldService: WorldService
   ) {
-    this.armor = ARMOR_UNITS[ArmorTypeEnum.Heavy];
+    this.armor = settings.units.tankArmor[ArmorTypeEnum.Heavy];
     this.moving = new EventEmitter<TankMovement>();
     this.color = settings.tank.color;
     this.currentSpeed = 0;
