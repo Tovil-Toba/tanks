@@ -187,9 +187,9 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.worldService.initSquares(this.squareSize);
 
     let isDirectionControlsInitialized = false;
-    let isWorldResetStarted = false;
     const worldStartTimeout = this.settings.world.startTimeout;
     const worldResetTimeout = this.settings.world.resetTimeout;
+    let worldResetTimeoutMs = this.settings.world.resetTimeout * 1000;
 
     let countdown = 3;
     let timer = 0;
@@ -231,19 +231,13 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
         this.store.dispatch(TickActions.increment());
 
         if (worldResetTimeout > 0 &&
-          !isWorldResetStarted &&
-          this.worldService.destroyedTankIndexes.size >= TANKS_INDEXES.length - 1 &&
-          !this.worldService.isPauseActive
+          this.worldService.destroyedTankIndexes.size >= TANKS_INDEXES.length - 1
         ) {
-          isWorldResetStarted = true;
+          worldResetTimeoutMs -= this.settings.millisecondsPerFrame;
+        }
 
-          const timeoutId = setTimeout(() => {
-            if (!this.worldService.isPauseActive) {
-              this.resetWorld.emit();
-            }
-
-            clearTimeout(timeoutId);
-          }, worldResetTimeout * 1000);
+        if (worldResetTimeoutMs <= 0) {
+          this.resetWorld.emit();
         }
       })
     );
