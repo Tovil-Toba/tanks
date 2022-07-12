@@ -48,29 +48,29 @@ export class TankFireService {
 
     const getSize = (coordinates: Coordinates): number => coordinates.right - coordinates.left;
 
-    const compareCoordinates = (target: Coordinates, tankOrBlock: Coordinates): boolean => {
+    const isTargetInSight = (target: Coordinates): boolean => {
       const targetSize = getSize(target);
 
       switch(direction) {
         case DirectionEnum.Up:
-          return target.bottom <= tankOrBlock.top + targetSize/2 &&
-            target.left >= tankOrBlock.left - targetSize/2 &&
-            target.right <= tankOrBlock.right + targetSize/2
+          return target.bottom <= currentTank.top + targetSize/2 &&
+            target.left >= currentTank.left - targetSize/2 &&
+            target.right <= currentTank.right + targetSize/2
           ;
         case DirectionEnum.Right:
-          return target.left >= tankOrBlock.right - targetSize/2 &&
-            target.top >= tankOrBlock.top - targetSize/2 &&
-            target.bottom <= tankOrBlock.bottom + targetSize/2
+          return target.left >= currentTank.right - targetSize/2 &&
+            target.top >= currentTank.top - targetSize/2 &&
+            target.bottom <= currentTank.bottom + targetSize/2
           ;
         case DirectionEnum.Down:
-          return target.top >= tankOrBlock.bottom - targetSize/2 &&
-            target.left >= tankOrBlock.left - targetSize/2 &&
-            target.right <= tankOrBlock.right + targetSize/2
+          return target.top >= currentTank.bottom - targetSize/2 &&
+            target.left >= currentTank.left - targetSize/2 &&
+            target.right <= currentTank.right + targetSize/2
           ;
         case DirectionEnum.Left:
-          return target.right <= tankOrBlock.left + targetSize/2  &&
-            target.top >= tankOrBlock.top - targetSize/2 &&
-            target.bottom <= tankOrBlock.bottom + targetSize/2
+          return target.right <= currentTank.left + targetSize/2  &&
+            target.top >= currentTank.top - targetSize/2 &&
+            target.bottom <= currentTank.bottom + targetSize/2
           ;
         default:
           return  false;
@@ -80,17 +80,57 @@ export class TankFireService {
     const targets: Array<Coordinates> = this.tankMovementService.tanksCoordinatesArray
       .filter((target, index) => (
         !this.worldService.isTankDestroyed(index as TankIndex) &&
-        compareCoordinates(target, currentTank))
+        isTargetInSight(target))
       )
     ;
+
+    const currentTankSize = getSize(currentTank);
+
+    const isBlockInSight = (target: Coordinates, block: Coordinates): boolean => {
+      const targetSize = getSize(target);
+
+      switch(direction) {
+        case DirectionEnum.Up:
+          return target.bottom <= block.top + targetSize/2 &&
+            block.bottom <= currentTank.top + currentTankSize/2 &&
+            block.left >= currentTank.left - currentTankSize/2 &&
+            block.right <= currentTank.right + currentTankSize/2
+          ;
+        case DirectionEnum.Right:
+          return target.left >= block.right - targetSize/2 &&
+            block.left >= currentTank.right - currentTankSize/2 &&
+            block.top >= currentTank.top - currentTankSize/2 &&
+            block.bottom <= currentTank.bottom + currentTankSize/2
+          ;
+        case DirectionEnum.Down:
+          return target.top >= block.bottom - targetSize/2 &&
+            block.top >= currentTank.bottom - currentTankSize/2 &&
+            block.left >= currentTank.left - currentTankSize/2 &&
+            block.right <= currentTank.right + currentTankSize/2
+          ;
+        case DirectionEnum.Left:
+          return target.right <= block.left + targetSize/2 &&
+            block.right <= currentTank.left + currentTankSize/2 &&
+            block.top >= currentTank.top - currentTankSize/2 &&
+            block.bottom <= currentTank.bottom + currentTankSize/2
+          ;
+        default:
+          return  false;
+      }
+    };
 
     let isTargetInDirection = false;
 
     targets.forEach((target) => {
       const undestroyableBlocks: Array<Coordinates> = this.worldService.undestroyableBlocks
-        .filter((square) => compareCoordinates(target, square));
+        .filter((square) => isBlockInSight(target, square))
+      ;
+      const destroyedTanks: Array<Coordinates> = this.tankMovementService.tanksCoordinatesArray
+        .filter((tank, index) => this.worldService.isTankDestroyed(index as TankIndex))
+        .filter((destroyedTank) => isBlockInSight(target, destroyedTank))
+      ;
 
-      if (!undestroyableBlocks.length) {
+      if (!undestroyableBlocks.length && !destroyedTanks.length) {
         isTargetInDirection = true;
       }
     });
