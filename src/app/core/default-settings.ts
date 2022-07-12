@@ -18,7 +18,7 @@ const settings: Settings = {
     fire: ['Enter', 'Space'],
     left: ['KeyA', 'ArrowLeft'],
     pause: ['Escape', 'KeyP'],
-    playerDisconnect: ['Backspace'],
+    playerDisconnect: ['Backquote', 'Backspace'],
     right: ['KeyD', 'ArrowRight'],
     turbo: ['ShiftLeft', 'ShiftRight'],
     up: ['KeyW', 'ArrowUp'],
