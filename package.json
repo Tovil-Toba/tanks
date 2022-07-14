@@ -20,7 +20,7 @@
     "@angular/platform-browser-dynamic": "^14.0.6",
     "@angular/router": "^14.0.6",
     "@fortawesome/fontawesome-free": "^6.1.1",
-    "@ngrx/store": "^13.2.0",
+    "@ngrx/store": "^14.0.2",
     "angular-resize-event": "^3.1.1",
     "primeflex": "^3.1.3",
     "primeicons": "^5.0.0",
