@@ -1,16 +1,65 @@
-<div class="flex flex-column align-items-stretch m-3">
-  <h1 class="mt-0">Танчики</h1>
-  <ng-container *ngIf="settings$ | async as settings">
-    <!--World size: {{worldSize}}-->
-    <div class="flex w-full h-full align-items-center justify-content-center">
-      <div style="width: 80vh;" (resized)="onWorldResize($event)"><!-- 100vh; -->
+<div class="flex justify-content-center align-items-center">
+  <div
+    *ngIf="settings$ | async as settings"
+    [style]="{ width: isLandscape ? 'calc(100vh - 6rem)' : '100vw' }"
+  >
+    <div
+      #header
+      class="h-3rem flex justify-content-between align-items-center pl-2 pr-3"
+    >
+      <span class="text-2xl font-medium">Танки</span>
+      <span>
+        <i class="fa-solid fa-bars cursor-pointer" (click)="toggleMenuDialog()"></i>
+        <!--<i class="fa-solid fa-gamepad mr-3"></i>-->
+        <!--<i class="fa-solid fa-gear"></i>-->
+        <!--<i class="fa-solid fa-moon"></i>-->
+      </span>
+    </div>
+
+    <div class="flex overflow-hidden justify-content-center align-items-center">
+      <div
+        class="h-full w-full border-1"
+        (resized)="onWorldResize($event)"
+      >
         <app-world
           *ngIf="isWorldExists"
+          [(isPauseActive)]="isWorldPauseActive"
           (resetWorld)="resetWorld()"
           [size]="worldSize"
           [type]="worldType"
         ></app-world>
       </div>
     </div>
-  </ng-container>
+
+    <div
+      #footer
+      class="footer h-3rem flex justify-content-between align-items-center px-2"
+    >
+      <span>2022</span>
+      <span class="logos flex align-items-center">
+        <img
+          src="assets/images/logos/angular.svg"
+          height="24"
+          class="cursor-pointer mr-2"
+          alt="Angular"
+          (click)="window?.open('https://angular.io/')"
+        >
+        <img
+          src="assets/images/logos/craftpix.svg"
+          height="24"
+          class="cursor-pointer mr-2"
+          alt="CraftPix"
+          (click)="window?.open('https://craftpix.net/')"
+        >
+
+        <img
+          src="assets/images/logos/primeng.svg"
+          height="24"
+          class="cursor-pointer"
+          alt="PrimeNG"
+          (click)="window?.open('https://www.primefaces.org/primeng/')"
+        >
+      </span>
+    </div>
+  </div>
 </div>

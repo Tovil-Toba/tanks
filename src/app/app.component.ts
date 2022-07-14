@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
 import { ResizedEvent } from 'angular-resize-event';
@@ -14,9 +15,15 @@ import { WorldTypeEnum } from './world/world-type.enum';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnDestroy, OnInit {
+  @ViewChild('header') headerRef?: ElementRef<HTMLElement>;
+  @ViewChild('footer') footerRef?: ElementRef<HTMLElement>;
+
+  isMenuDialogVisible: boolean;
   isWorldExists: boolean;
+  isWorldPauseActive: boolean;
   readonly settings$: Observable<Settings>;
   title = 'Tanks';
+  readonly window: (Window & typeof globalThis) | null;
   worldType: WorldTypeEnum;
   worldSize: number;
 
@@ -24,12 +31,14 @@ export class AppComponent implements OnDestroy, OnInit {
   private readonly worldTypes: Array<WorldTypeEnum>;
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private httpClient: HttpClient,
     private settings: SettingsService
   ) {
+    this.isMenuDialogVisible = false;
     this.isWorldExists = true;
+    this.isWorldPauseActive = false;
     this.settings$ = this.httpClient.get<Settings>('assets/settings.json');
-    this.subscription = new Subscription();
     this.worldSize = settings.world.size;
     this.worldTypes = [
       WorldTypeEnum.A,
@@ -37,6 +46,29 @@ export class AppComponent implements OnDestroy, OnInit {
       WorldTypeEnum.C
     ];
     this.worldType = this.worldTypes[randomIntFromInterval(0, 2)];
+
+    this.subscription = new Subscription();
+    this.window = this.document.defaultView;
+  }
+
+  get isLandscape(): boolean {
+    if (!this.window) {
+      return true;
+    }
+
+    return this.window.innerWidth > (this.window.innerHeight - this.headerHeight - this.footerHeight);
+  }
+
+  get isPortrait(): boolean {
+    return !this.isLandscape;
+  }
+
+  private get headerHeight(): number {
+    return this.headerRef?.nativeElement.offsetHeight ?? 0;
+  }
+
+  private get footerHeight(): number {
+    return this.footerRef?.nativeElement.offsetHeight ?? 0;
   }
 
   ngOnDestroy(): void {
@@ -70,6 +102,11 @@ export class AppComponent implements OnDestroy, OnInit {
       this.isWorldExists = true;
       clearTimeout(timeoutId);
     }, 100);
+  }
+
+  toggleMenuDialog(): void {
+    this.isWorldPauseActive = !this.isWorldPauseActive;
+    this.isMenuDialogVisible = !this.isMenuDialogVisible;
   }
 
   private setRandomWorldType(): void {

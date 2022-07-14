@@ -27,9 +27,11 @@ import { WorldTypeEnum } from './world-type.enum';
   providers: [TankMovementService, WorldService]
 })
 export class WorldComponent implements OnChanges, OnDestroy, OnInit {
+  @Input() isPauseActive: boolean;
   @Input() size!: number;
   @Input() type: WorldTypeEnum;
 
+  @Output() readonly isPauseActiveChange: EventEmitter<boolean>;
   @Output() readonly resetWorld: EventEmitter<void>;
 
   directionControls: Record<TankIndex, DirectionEnum | undefined>;
@@ -57,6 +59,8 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.directionControls = tankMovementService.directionControls;
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
+    this.isPauseActive = worldService.isPauseActive;
+    this.isPauseActiveChange = new EventEmitter<boolean>();
     this.isStartTimerActive = true;
     // this.millisecondsPerFrame = 1000 / settings.fps;
     this.resetWorld = new EventEmitter<void>();
@@ -138,6 +142,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     if (this.controlsService.isPauseButton(event)) {
       this.worldService.isPauseActive = !this.worldService.isPauseActive;
       this.worldService.isPauseMaskActive = this.worldService.isPauseActive;
+      this.isPauseActiveChange.emit(this.worldService.isPauseActive);
     }
 
     /*if (this.worldService.isPauseMaskActive) {
@@ -175,6 +180,11 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
         changes['size']?.currentValue as number,
         changes['size']?.previousValue as number
       );
+    }
+
+    if (changes['isPauseActive']?.currentValue !== changes['isPauseActive']?.previousValue) {
+      this.worldService.isPauseActive = this.isPauseActive;
+      this.worldService.isPauseMaskActive = this.isPauseActive;
     }
   }
 
