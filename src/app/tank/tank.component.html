@@ -1,5 +1,5 @@
 <div
-  class="absolute z-3"
+  class="absolute"
   [class.rotate-0]="direction === directionEnum.Up"
   [class.rotate-45]="direction === directionEnum.UpRight"
   [class.-rotate-45]="direction === directionEnum.UpLeft"
@@ -8,6 +8,8 @@
   [class.rotate-135]="direction === directionEnum.DownRight"
   [class.-rotate-135]="direction === directionEnum.DownLeft"
   [class.rotate-180]="direction === directionEnum.Down"
+  [class.z-3]="isExplode"
+  [class.z-4]="!isExplode"
   [style.filter]="isExplode && explosionFrame >= 6 ? 'brightness(40%)' : ''"
   [style.height.px]="size"
   [style.width.px]="size"

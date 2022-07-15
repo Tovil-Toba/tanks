@@ -13,8 +13,8 @@
 >
   <span *ngIf="initialArmor" class="text-xxs m-05">
     <ng-container *ngFor="let shield of [].constructor(initialArmor); let index=index">
-      <i class="fa-solid fa-shield mr-05" [class.hidden]="armor <= index"></i>
-      <i class="pi pi-shield mr-05" [class.hidden]="armor > index"></i>
+      <i class="fa-solid fa-shield text-xxs mr-05" [class.hidden]="armor <= index"></i>
+      <i class="pi pi-shield text-xxs mr-05" [class.hidden]="armor > index"></i>
       <!--<img src="assets/images/craftpix/Bonus_Items/HP_Icon.png" class="w-05rem h-05rem" [class.hidden]="armor <= index"/>-->
     </ng-container>
   </span>
