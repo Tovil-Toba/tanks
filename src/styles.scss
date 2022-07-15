@@ -1,7 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 body {
-  background-color: #222222;
-  color: gray;
   margin: 0;
 }
 
@@ -27,6 +25,10 @@ body {
 
 .-rotate-135 {
   transform: rotate(-135deg) !important;
+}
+
+.text-color {
+  color: var(--text-color) !important;
 }
 
 .text-xxs {

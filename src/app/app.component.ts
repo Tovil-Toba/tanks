@@ -1,8 +1,8 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DoCheck, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
-import { ResizedEvent } from 'angular-resize-event';
+import { PrimeNGConfig } from 'primeng/api';
 
 import { randomIntFromInterval } from './shared/utils';
 import { Settings } from './core/settings.model';
@@ -14,10 +14,12 @@ import { WorldTypeEnum } from './world/world-type.enum';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnDestroy, OnInit {
+export class AppComponent implements DoCheck, OnDestroy, OnInit {
   @ViewChild('header') headerRef?: ElementRef<HTMLElement>;
+  @ViewChild('worldCont') worldContRef?: ElementRef<HTMLElement>;
   @ViewChild('footer') footerRef?: ElementRef<HTMLElement>;
 
+  isLoading: boolean;
   isMenuDialogVisible: boolean;
   isWorldExists: boolean;
   isWorldPauseActive: boolean;
@@ -33,8 +35,10 @@ export class AppComponent implements OnDestroy, OnInit {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private httpClient: HttpClient,
+    private primengConfig: PrimeNGConfig,
     private settings: SettingsService
   ) {
+    this.isLoading = true;
     this.isMenuDialogVisible = false;
     this.isWorldExists = true;
     this.isWorldPauseActive = false;
@@ -71,11 +75,21 @@ export class AppComponent implements OnDestroy, OnInit {
     return this.footerRef?.nativeElement.offsetHeight ?? 0;
   }
 
+  ngDoCheck(): void {
+    if (this.worldContRef?.nativeElement.clientWidth &&
+      this.worldSize !== this.worldContRef.nativeElement.clientWidth
+    ) {
+      this.worldSize = this.worldContRef.nativeElement.clientWidth;
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
   ngOnInit(): void {
+    this.primengConfig.ripple = true;
+
     this.subscription.add(
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.settings$.subscribe((settings) => {
@@ -87,12 +101,9 @@ export class AppComponent implements OnDestroy, OnInit {
         this.settings.units = settings.units;
         this.settings.world = settings.world;
         this.settings.world.type = this.worldType;
+        this.isLoading = false;
       })
     );
-  }
-
-  onWorldResize(event: ResizedEvent): void {
-    this.worldSize = event.newRect.width;
   }
 
   resetWorld(): void {
