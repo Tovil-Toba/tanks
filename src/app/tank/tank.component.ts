@@ -195,10 +195,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
       this.handleTurboControl();
     }
 
-    if (this.index === this.tankMovementService.playerTankIndex && !this.isPlayer) {
-      this.isPlayer = true;
-      this.showPlayerIndicator();
-    }
+    this.checkPlayer();
   }
 
   ngOnDestroy(): void {
@@ -284,6 +281,16 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
   private checkUpDirection(coordinates: Coordinates, isStrictImpact = false): boolean {
     return this.checkDirection(DirectionEnum.Up, coordinates, isStrictImpact);
+  }
+
+  private checkPlayer(): void {
+    if (this.index === this.tankMovementService.playerTankIndex && !this.isPlayer) {
+      this.isPlayer = true;
+      this.isPlayerIndicatorVisible = true;
+    } else if (this.isPlayer && this.index !== this.tankMovementService.playerTankIndex) {
+      this.isPlayer = false;
+      this.isPlayerIndicatorVisible = false;
+    }
   }
 
   private checkTargets(): void {
@@ -558,10 +565,6 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
     this.top = this.top * this.size/previousSize;
     this.left = this.left * this.size/previousSize;
-  }
-
-  private showPlayerIndicator(): void {
-    this.isPlayerIndicatorVisible = !!this.isPlayer;
   }
 
   private slowDown(
