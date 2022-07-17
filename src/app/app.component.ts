@@ -20,7 +20,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   @ViewChild('footer') footerRef?: ElementRef<HTMLElement>;
 
   isLoading: boolean;
-  isMenuDialogVisible: boolean;
+  isMenuVisible: boolean;
   isWorldExists: boolean;
   isWorldPauseActive: boolean;
   readonly settings$: Observable<Settings>;
@@ -28,6 +28,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   readonly window: (Window & typeof globalThis) | null;
   worldType: WorldTypeEnum;
   worldSize: number;
+  year: number;
 
   private readonly subscription: Subscription;
   private readonly worldTypes: Array<WorldTypeEnum>;
@@ -39,7 +40,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     private settings: SettingsService
   ) {
     this.isLoading = true;
-    this.isMenuDialogVisible = false;
+    this.isMenuVisible = false;
     this.isWorldExists = true;
     this.isWorldPauseActive = false;
     this.settings$ = this.httpClient.get<Settings>('assets/settings.json');
@@ -50,6 +51,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
       WorldTypeEnum.C
     ];
     this.worldType = this.worldTypes[randomIntFromInterval(0, 2)];
+    this.year = new Date().getFullYear();
 
     this.subscription = new Subscription();
     this.window = this.document.defaultView;
@@ -73,6 +75,15 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
 
   private get footerHeight(): number {
     return this.footerRef?.nativeElement.offsetHeight ?? 0;
+  }
+
+  closeMenu(): void {
+    this.isMenuVisible = false;
+    this.isWorldPauseActive = false;
+  }
+
+  onMenuHide(): void {
+    this.isWorldPauseActive = false;
   }
 
   ngDoCheck(): void {
@@ -106,18 +117,31 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     );
   }
 
-  resetWorld(): void {
+  openMenu(): void {
+    this.isMenuVisible = true;
+    this.isWorldPauseActive = true;
+  }
+
+  resetWorld(worldType?: WorldTypeEnum): void {
     this.isWorldExists = false;
     const timeoutId = setTimeout(() => {
-      this.setRandomWorldType();
+      if (worldType) {
+        this.worldType = worldType;
+      } else {
+        this.setRandomWorldType();
+      }
+
       this.isWorldExists = true;
       clearTimeout(timeoutId);
     }, 100);
   }
 
-  toggleMenuDialog(): void {
-    this.isWorldPauseActive = !this.isWorldPauseActive;
-    this.isMenuDialogVisible = !this.isMenuDialogVisible;
+  toggleMenu(): void {
+    if (this.isMenuVisible) {
+      this.closeMenu();
+    } else {
+      this.openMenu();
+    }
   }
 
   private setRandomWorldType(): void {

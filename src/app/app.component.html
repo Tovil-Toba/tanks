@@ -1,65 +1,93 @@
-<div class="flex justify-content-center align-items-center h-screen">
-  <p-progressSpinner *ngIf="isLoading"></p-progressSpinner>
-  <div
-    *ngIf="!isLoading"
-    [style]="{ width: isLandscape ? 'calc(100vh - 6rem - 2px)' : '100vw' }"
-  ><!-- минус 2px - это из-за рамки, по пикселю с каждом стороны -->
-    <div #header class="h-3rem flex justify-content-between align-items-center px-2">
-      <span class="text-2xl font-medium">Танки</span>
-      <span>
-        <button
-          pButton
-          pRipple
-          type="button"
-          icon="fa-solid fa-bars"
-          class="p-button-text p-button-plain text-color"
-          (click)="toggleMenuDialog()"
-        ></button>
-        <!--<i class="fa-solid fa-bars cursor-pointer" (click)="toggleMenuDialog()"></i>-->
-        <!--<i class="fa-solid fa-gamepad mr-3"></i>-->
-        <!--<i class="fa-solid fa-gear"></i>-->
-        <!--<i class="fa-solid fa-moon"></i>-->
-      </span>
-    </div>
+<ng-container *transloco="let t">
+  <div class="flex justify-content-center align-items-center h-screen">
+    <p-progressSpinner *ngIf="isLoading"></p-progressSpinner>
+    <div
+      *ngIf="!isLoading"
+      [style]="{ width: isLandscape ? 'calc(100vh - 6rem - 2px)' : '100vw' }"
+    ><!-- минус 2px - это из-за рамки, по пикселю с каждом стороны -->
+      <div #header class="h-3rem flex justify-content-between align-items-center pl-2 pr-1">
+        <span class="text-2xl font-medium">{{ t('tanks') }}</span>
+        <span>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="fa-solid fa-bars"
+            class="p-button-sm p-button-text p-button-plain text-color"
+            (click)="toggleMenu()"
+            [pTooltip]="t('menu')"
+            [showDelay]="1000"
+          ></button>
+        </span>
+      </div>
 
-    <div class="flex overflow-hidden justify-content-center align-items-center">
-      <div #worldCont class="h-full w-full border-1">
-        <app-world
-          *ngIf="isWorldExists"
-          [(isPauseActive)]="isWorldPauseActive"
-          (resetWorld)="resetWorld()"
-          [size]="worldSize"
-          [type]="worldType"
-        ></app-world>
+      <div class="flex overflow-hidden justify-content-center align-items-center">
+        <div #worldCont class="h-full w-full border-1">
+          <app-world
+            *ngIf="isWorldExists"
+            [(isPauseActive)]="isWorldPauseActive"
+            (resetWorld)="resetWorld()"
+            [size]="worldSize"
+            [type]="worldType"
+          ></app-world>
+        </div>
+      </div>
+
+      <div #footer class="footer h-3rem flex justify-content-between align-items-center px-2">
+        <span class="logos flex align-items-center text-sm">
+          <!--<span class="p-text-secondary">© Кондратьев И. О., {{year}}</span>-->
+          <img
+            src="assets/images/logos/telegram.svg"
+            height="24"
+            class="cursor-pointer"
+            alt="Telegram"
+            (click)="window?.open('https://t.me/IlyaKondratiev')"
+            [pTooltip]="t('contactAuthor')"
+            [showDelay]="1000"
+          >
+          <span class="mx-2">2022</span>
+          <!--<span class="text-sm">
+            2022<br>
+            0.1.0
+          </span>-->
+        </span>
+        <span class="logos flex align-items-center">
+          <img
+            src="assets/images/logos/angular.svg"
+            height="24"
+            class="cursor-pointer mr-2"
+            alt="Angular"
+            (click)="window?.open('https://angular.io/')"
+            pTooltip="Angular"
+            [showDelay]="1000"
+          >
+          <img
+            src="assets/images/logos/craftpix.svg"
+            height="24"
+            class="cursor-pointer mr-2"
+            alt="CraftPix"
+            (click)="window?.open('https://craftpix.net/')"
+            pTooltip="CraftPix"
+            [showDelay]="1000"
+          >
+          <img
+            src="assets/images/logos/primeng.svg"
+            height="24"
+            class="cursor-pointer"
+            alt="PrimeNG"
+            (click)="window?.open('https://www.primefaces.org/primeng/')"
+            pTooltip="PrimeNG"
+            [showDelay]="1000"
+          >
+        </span>
       </div>
     </div>
-
-    <div #footer class="footer h-3rem flex justify-content-between align-items-center px-2">
-      <span>2022</span>
-      <span class="logos flex align-items-center">
-        <img
-          src="assets/images/logos/angular.svg"
-          height="24"
-          class="cursor-pointer mr-2"
-          alt="Angular"
-          (click)="window?.open('https://angular.io/')"
-        >
-        <img
-          src="assets/images/logos/craftpix.svg"
-          height="24"
-          class="cursor-pointer mr-2"
-          alt="CraftPix"
-          (click)="window?.open('https://craftpix.net/')"
-        >
-
-        <img
-          src="assets/images/logos/primeng.svg"
-          height="24"
-          class="cursor-pointer"
-          alt="PrimeNG"
-          (click)="window?.open('https://www.primefaces.org/primeng/')"
-        >
-      </span>
-    </div>
   </div>
-</div>
+
+  <app-menu
+    (hide)="onMenuHide()"
+    [(isVisible)]="isMenuVisible"
+    (resetWorld)="resetWorld(worldType)"
+    [(worldType)]="worldType"
+  ></app-menu>
+</ng-container>

@@ -1,0 +1,41 @@
+{
+  "action": "Действие",
+  "actions": {
+    "disconnect": "Отключиться",
+    "down": "Вниз",
+    "fire": "Огонь",
+    "left": "Влево",
+    "pause": "Пауза",
+    "right": "Вправо",
+    "turbo": "Турбо",
+    "up": "Вверх"
+  },
+  "button": "Кнопка",
+  "contactAuthor": "Связаться с автором",
+  "controls": "Управление",
+  "language": "Язык",
+  "menu": "Меню",
+  "pause": "Пауза",
+  "pressFireButton": "Нажмите на кнопку стрельбы",
+  "settings": "Настройки",
+  "sizes": {
+    "large": "Большой",
+    "medium": "Средний",
+    "small": "Маленький"
+  },
+  "tanks": "Танки",
+  "theme": "Тема",
+  "themes": {
+    "dark": "Тёмная",
+    "light": "Светлая"
+  },
+  "world": "Мир",
+  "worldSize": "Размер мира",
+  "worldType": "Тип мира",
+  "worldTypes": {
+    "desert": "Пустыня",
+    "forest": "Лес",
+    "semiDesert": "Полупустыня"
+  },
+  "worldWillBeRestarted": "Мир будет перезапущен"
+}

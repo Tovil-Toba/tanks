@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ExplosionComponent } from './explosion/explosion.component';
 import { SquareComponent } from './square/square.component';
 import { TankModule } from '../tank/tank.module';
+import { TranslocoModule } from '@ngneat/transloco';
 import { WorldComponent } from './world.component';
 
 @NgModule({
@@ -15,6 +16,7 @@ import { WorldComponent } from './world.component';
   imports: [
     CommonModule,
     TankModule,
+    TranslocoModule,
   ],
   exports: [
     WorldComponent,

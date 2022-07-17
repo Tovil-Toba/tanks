@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
@@ -18,7 +18,7 @@ import { WorldTypeEnum } from '../world-type.enum';
   templateUrl: './square.component.html',
   styleUrls: ['./square.component.scss']
 })
-export class SquareComponent implements OnDestroy, OnInit {
+export class SquareComponent implements OnChanges, OnDestroy, OnInit {
   @Input() index!: number;
   @Input() size!: number;
   // @Input() tick!: number | null;
@@ -76,10 +76,14 @@ export class SquareComponent implements OnDestroy, OnInit {
     return this.size / 2 / 4;
   }
 
-  /*ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     // Если tick передаётся пропсом
     // this.checkSquare();
-  }*/
+
+    if (changes['worldType']?.currentValue !== changes['worldType']?.previousValue) {
+      this.initImages();
+    }
+  }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -93,8 +97,8 @@ export class SquareComponent implements OnDestroy, OnInit {
         this.checkSquare();
       })
     );
-    //this.currentType = this.type;
-    this.initImages();
+    // this.currentType = this.type;
+    // this.initImages();
   }
 
   private checkSquare(): void {

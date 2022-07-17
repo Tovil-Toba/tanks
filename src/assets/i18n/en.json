@@ -1,0 +1,41 @@
+{
+  "action": "Action",
+  "actions": {
+    "disconnect": "Disconnect",
+    "down": "Down",
+    "fire": "Fire",
+    "left": "Left",
+    "pause": "Pause",
+    "right": "Right",
+    "turbo": "Turbo",
+    "up": "Up"
+  },
+  "button": "Button",
+  "contactAuthor": "Contact author",
+  "controls": "Controls",
+  "language": "Language",
+  "menu": "Menu",
+  "pause": "Pause",
+  "pressFireButton": "Press fire button",
+  "settings": "Settings",
+  "sizes": {
+    "large": "Large",
+    "medium": "Medium",
+    "small": "Small"
+  },
+  "tanks": "Tanks",
+  "theme": "Theme",
+  "themes": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "world": "World",
+  "worldSize": "World size",
+  "worldType": "World type",
+  "worldTypes": {
+    "desert": "Desert",
+    "forest": "Forest",
+    "semiDesert": "Semi-desert"
+  },
+  "worldWillBeRestarted": "The world will be restarted"
+}
