@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { interval, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { TranslocoService } from '@ngneat/transloco';
 
 import { ControlsService } from '../core/controls.service';
 import { DirectionEnum } from '../shared/direction.enum';
@@ -54,6 +55,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     public settings: SettingsService,
     private store: Store,
     public tankMovementService: TankMovementService,
+    private translocoService: TranslocoService,
     public worldService: WorldService
   ) {
     this.directionControls = tankMovementService.directionControls;
@@ -222,7 +224,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
           ) {
             this.startTimerText = ' ';
           } else if (timer >= worldStartTimeout - countdown) {
-            this.startTimerText = countdown ? countdown.toString() : 'Бой!';
+            this.startTimerText = countdown
+              ? countdown.toString()
+              : this.translocoService.translate('fight') + '!'
+            ;
             countdown--;
           }
         }
