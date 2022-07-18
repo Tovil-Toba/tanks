@@ -14,10 +14,12 @@
   "contactAuthor": "Связаться с автором",
   "controls": "Управление",
   "fight": "Бой",
+  "game": "Игра",
   "language": "Язык",
   "menu": "Меню",
   "pause": "Пауза",
   "pressFireButton": "Нажмите на кнопку стрельбы",
+  "restartWorld": "Перезапустить мир",
   "settings": "Настройки",
   "sizes": {
     "large": "Большой",

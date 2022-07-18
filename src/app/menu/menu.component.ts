@@ -76,13 +76,15 @@ export class MenuComponent implements OnDestroy, OnInit {
     this.settings.world.type = this.worldType;
   }
 
-  close(): void {
+  close(resetWorld?: boolean): void {
     // this.worldTypeChange.emit(this.worldType);
     // this.settings.world.type = this.worldType;
 
     if (this.worldSize !== this.prevWorldSize) {
       this.prevWorldSize = this.worldSize;
       this.settings.world.squaresPerSide = WORLD_SIZES[this.worldSize];
+      this.resetWorld.emit();
+    } else if (resetWorld) {
       this.resetWorld.emit();
     }
 
@@ -145,6 +147,11 @@ export class MenuComponent implements OnDestroy, OnInit {
             action: translation['actions.turbo'] as string,
             buttonOne: formatActionButton(this.settings.controls.turbo[0]),
             buttonTwo: formatActionButton(this.settings.controls.turbo?.[1])
+          },
+          {
+            action: translation['actions.disconnect'] as string,
+            buttonOne: formatActionButton(this.settings.controls.playerDisconnect[0]),
+            buttonTwo: formatActionButton(this.settings.controls.playerDisconnect?.[1])
           },
         ];
       })

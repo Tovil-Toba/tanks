@@ -14,10 +14,12 @@
   "contactAuthor": "Contact author",
   "controls": "Controls",
   "fight": "Fight",
+  "game": "Game",
   "language": "Language",
   "menu": "Menu",
   "pause": "Pause",
   "pressFireButton": "Press fire button",
+  "restartWorld": "Restart the world",
   "settings": "Settings",
   "sizes": {
     "large": "Large",

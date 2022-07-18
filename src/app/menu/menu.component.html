@@ -7,8 +7,26 @@
     [(visible)]="isVisible"
   >
     <p-tabView>
+      <!-- Настройки -->
       <p-tabPanel [header]="t('settings')" [headerStyle]="{ width: '7.5rem' }">
         <div class="overflow-y-auto" style="height: 16.5rem; padding: 0 0.75rem;">
+          <!-- Язык -->
+          <div class="field mt-3">
+            <label>{{ t('language') }}</label>
+            <p-selectButton [options]="languages" [(ngModel)]="language" (onChange)="changeLanguage()"></p-selectButton>
+          </div>
+          <!-- Тема -->
+          <div class="field">
+            <label>{{ t('theme') }}</label>
+            <p-selectButton [options]="themes" [(ngModel)]="isDarkTheme" (onChange)="changeTheme()"></p-selectButton>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Игра -->
+      <p-tabPanel [header]="t('game')">
+        <div class="overflow-y-auto" style="height: 16.5rem; padding: 0 0.75rem;">
+          <!-- Размер мира -->
           <div class="field mt-3">
             <label>{{ t('worldSize') }}</label>
             <p-selectButton [options]="worldSizes" [(ngModel)]="worldSize" styleClass="font-normal"></p-selectButton>
@@ -16,23 +34,24 @@
               {{ t('worldWillBeRestarted') }}
             </small>
           </div>
-
+          <!-- Тип мира -->
           <div class="field">
             <label>{{ t('worldType') }}</label><!-- Природная зона -->
             <p-selectButton [options]="worldTypes" [(ngModel)]="worldType" (onChange)="changeWorldType()"></p-selectButton>
           </div>
-
-          <div class="field">
-            <label>{{ t('language') }}</label>
-            <p-selectButton [options]="languages" [(ngModel)]="language" (onChange)="changeLanguage()"></p-selectButton>
-          </div>
-
-          <div class="field">
-            <label>{{ t('theme') }}</label>
-            <p-selectButton [options]="themes" [(ngModel)]="isDarkTheme" (onChange)="changeTheme()"></p-selectButton>
-          </div>
+          <!-- Перезапустить мир -->
+          <button
+            pButton
+            pRipple
+            type="button"
+            [label]="t('restartWorld')"
+            class="p-button-secondary mt-4"
+            (click)="close(true)"
+          ></button>
         </div>
       </p-tabPanel>
+
+      <!-- Управление -->
       <p-tabPanel [header]="t('controls')" [headerStyle]="{ width: '8rem' }">
         <p-table [value]="controls" [scrollable]="true" scrollHeight="16.5rem">
           <ng-template pTemplate="header">
