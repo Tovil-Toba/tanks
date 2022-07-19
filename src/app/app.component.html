@@ -1,11 +1,16 @@
 <ng-container *transloco="let t">
-  <div class="flex justify-content-center align-items-center h-screen">
+  <div class="flex justify-content-center align-items-center h-full">
     <p-progressSpinner *ngIf="isLoading"></p-progressSpinner>
     <div
       *ngIf="!isLoading"
+      class="flex flex-column justify-content-between h-full"
       [style]="{ width: isLandscape ? 'calc(100vh - 6rem - 2px)' : '100vw' }"
     ><!-- минус 2px - это из-за рамки, по пикселю с каждом стороны -->
-      <div #header class="h-3rem flex justify-content-between align-items-center pl-2 pr-1">
+      <div
+        #header
+        class="h-3rem flex justify-content-between align-items-center pl-2 pr-1"
+        style="min-height: 3rem;"
+      >
         <span class="text-2xl font-medium">{{ t('tanks') }}</span>
         <span>
           <button
@@ -21,19 +26,21 @@
         </span>
       </div>
 
-      <div class="flex overflow-hidden justify-content-center align-items-center">
-        <div #worldCont class="h-full w-full border-1">
-          <app-world
-            *ngIf="isWorldExists"
-            [(isPauseActive)]="isWorldPauseActive"
-            (resetWorld)="resetWorld()"
-            [size]="worldSize"
-            [type]="worldType"
-          ></app-world>
-        </div>
+      <div #worldCont class="overflow-hidden border-1 border-700">
+        <app-world
+          *ngIf="isWorldExists"
+          [(isPauseActive)]="isWorldPauseActive"
+          (resetWorld)="resetWorld()"
+          [size]="worldSize"
+          [type]="worldType"
+        ></app-world>
       </div>
 
-      <div #footer class="footer h-3rem flex justify-content-between align-items-center px-2">
+      <div
+        #footer
+        class="footer h-3rem flex justify-content-between align-items-center px-2"
+        style="min-height: 3rem;"
+      >
         <span class="logos flex align-items-center text-sm">
           <!--<span class="p-text-secondary">© Кондратьев И. О., {{year}}</span>-->
           <img

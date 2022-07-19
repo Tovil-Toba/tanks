@@ -3,13 +3,13 @@
     [draggable]="false"
     [header]="t('menu')"
     (onHide)="close()"
-    styleClass="w-25rem h-25rem menu-dialog"
+    styleClass="w-24rem h-24rem menu-dialog"
     [(visible)]="isVisible"
   >
     <p-tabView>
       <!-- Настройки -->
       <p-tabPanel [header]="t('settings')" [headerStyle]="{ width: '7.5rem' }">
-        <div class="overflow-y-auto" style="height: 16.5rem; padding: 0 0.75rem;">
+        <div class="overflow-y-auto" style="height: 15.5rem; padding: 0 0.75rem;">
           <!-- Язык -->
           <div class="field mt-3">
             <label>{{ t('language') }}</label>
@@ -25,7 +25,7 @@
 
       <!-- Игра -->
       <p-tabPanel [header]="t('game')">
-        <div class="overflow-y-auto" style="height: 16.5rem; padding: 0 0.75rem;">
+        <div class="overflow-y-auto" style="height: 15.5rem; padding: 0 0.75rem;">
           <!-- Размер мира -->
           <div class="field mt-3">
             <label>{{ t('worldSize') }}</label>
@@ -45,7 +45,7 @@
             pRipple
             type="button"
             [label]="t('restartWorld')"
-            class="p-button-secondary mt-4"
+            class="p-button-secondary mt-2"
             (click)="close(true)"
           ></button>
         </div>
@@ -53,7 +53,7 @@
 
       <!-- Управление -->
       <p-tabPanel [header]="t('controls')" [headerStyle]="{ width: '8rem' }">
-        <p-table [value]="controls" [scrollable]="true" scrollHeight="16.5rem">
+        <p-table [value]="controls" [scrollable]="true" scrollHeight="15.5rem">
           <ng-template pTemplate="header">
             <tr>
               <th>{{ t('action') }}</th>
