@@ -23,6 +23,7 @@ import { ExplosionTypeEnum } from '../world/explosion/explosion-type.enum';
 import { FlashTypeEnum } from './flash/flash-type.enum';
 import { GunTypeEnum } from './gun/gun-type.enum';
 import { HullTypeEnum } from './hull/hull-type.enum';
+import { randomIntFromInterval } from '../shared/utils';
 import { selectTick } from '../store/tick.selectors';
 import { SettingsService } from '../core/settings.service';
 import { ShellTypeEnum } from './shell/shell-type.enum';
@@ -91,6 +92,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   private isPlayer?: boolean;
   private isReloading: boolean;
   private isSlowdownActive: boolean;
+  private isTargetInSight: boolean;
   private previousDirection: DirectionEnum;
   private readonly reloadingTime: number;
   private readonly subscription: Subscription;
@@ -134,6 +136,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.isReloading = false;
     this.isRotating = false;
     this.isSlowdownActive = false;
+    this.isTargetInSight = false;
     this.previousDirection = this.direction;
     this.reloadingTime = 1000;
     this.subscription = new Subscription();
@@ -301,7 +304,10 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     const targetDirections: Array<DirectionEnum> = this.tankFireService.checkTargets(this.index);
 
     if (targetDirections.includes(this.direction)) {
+      this.isTargetInSight = true;
       this.fire();
+    } else {
+      this.isTargetInSight = false;
     }
   }
 
@@ -474,10 +480,31 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     }
   }
 
+  // Случайный поворот с вероятностью 0.001%, если в зоне видимости нет цели
+  private isRandomDirectionSwitch(oneOf = 1000): boolean {
+    const randomInt = randomIntFromInterval(1, oneOf);
+
+    if (randomInt === 1 && !this.isTargetInSight) {
+      if (this.settings.isDebugMode) {
+        console.log('Switch random direction', this.index);
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
   // todo: Класс стал слишком большим, в том числе и этот метод. Попробовать разбить на части
   private move(): void {
     if (this.isRotating) {
       this.moving.emit({ direction: this.direction, canMove: true });
+
+      return;
+    }
+
+    if (this.isRandomDirectionSwitch()) {
+      this.moving.emit({ direction: this.direction, canMove: false });
 
       return;
     }
