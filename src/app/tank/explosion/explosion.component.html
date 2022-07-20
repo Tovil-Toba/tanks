@@ -3,6 +3,7 @@
   src="{{explosionImagePath}}/Sprite_Effects_Explosion_00{{frame}}.png"
   class="w-full h-full z-6 absolute"
   alt=""
+  onContextMenu="return false;"
 >
 <img
   *ngIf="showBlastTrail && frame >= 4"
@@ -12,4 +13,5 @@
   [class.rotate-180]="rotationRandomMultiplier === 2"
   [class.-rotate-90]="rotationRandomMultiplier === 3"
   alt=""
+  onContextMenu="return false;"
 >
