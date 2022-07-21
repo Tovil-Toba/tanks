@@ -19,8 +19,10 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   @ViewChild('worldCont') worldContRef?: ElementRef<HTMLElement>;
   @ViewChild('footer') footerRef?: ElementRef<HTMLElement>;
 
+  isDPadVisible: boolean;
   isLoading: boolean;
   isMenuVisible: boolean;
+  isPlayerActive: boolean;
   isWorldExists: boolean;
   isWorldPauseActive: boolean;
   readonly settings$: Observable<Settings>;
@@ -39,8 +41,10 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     private primengConfig: PrimeNGConfig,
     private settings: SettingsService
   ) {
+    this.isDPadVisible = false;
     this.isLoading = true;
     this.isMenuVisible = false;
+    this.isPlayerActive = settings.isPlayerActive;
     this.isWorldExists = true;
     this.isWorldPauseActive = false;
     this.settings$ = this.httpClient.get<Settings>('assets/settings.json');

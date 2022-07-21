@@ -38,7 +38,7 @@ export class SettingsService {
     this._fps = defaultSettings.fps;
     this._interval = defaultSettings.interval;
     this._isDebugMode = false;
-    this._isPlayerActive = true;
+    this._isPlayerActive = false;
     this._tank = defaultSettings.tank;
     this._units = defaultSettings.units;
     this._world = defaultSettings.world;

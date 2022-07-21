@@ -29,6 +29,8 @@
       <div #worldCont class="overflow-hidden border-1 border-700">
         <app-world
           *ngIf="isWorldExists"
+          [isDPadVisible]="isDPadVisible"
+          [(isPlayerActive)]="isPlayerActive"
           [(isPauseActive)]="isWorldPauseActive"
           (resetWorld)="resetWorld()"
           [size]="worldSize"
@@ -93,6 +95,8 @@
 
   <app-menu
     (hide)="onMenuHide()"
+    [(isDPadVisible)]="isDPadVisible"
+    [(isPlayerActive)]="isPlayerActive"
     [(isVisible)]="isMenuVisible"
     (resetWorld)="resetWorld(worldType)"
     [(worldType)]="worldType"

@@ -36,6 +36,14 @@
       </span>
     </div>
 
+    <!-- Управление -->
+    <app-d-pad
+      *ngIf="isDPadVisible"
+      (buttonDown)="handleDPadButtonDown($event)"
+      (buttonUp)="handleDPadButtonUp($event)"
+      [isPlayerActive]="settings.isPlayerActive"
+    ></app-d-pad>
+
     <!-- Мир -->
     <div class="w-full h-full flex flex-wrap align-content-start">
       <app-tank

@@ -5,6 +5,7 @@ import { TranslocoService } from '@ngneat/transloco';
 
 import { ControlsService } from '../core/controls.service';
 import { DirectionEnum } from '../shared/direction.enum';
+import { DPadButton } from '../d-pad/d-pad-button.enum';
 import { randomIntFromInterval } from '../shared/utils';
 import { selectWorldNumber } from '../store/world-number.selectors';
 import { SettingsService } from '../core/settings.service';
@@ -28,11 +29,14 @@ import { WorldTypeEnum } from './world-type.enum';
   providers: [TankMovementService, WorldService]
 })
 export class WorldComponent implements OnChanges, OnDestroy, OnInit {
+  @Input() isDPadVisible: boolean;
+  @Input() isPlayerActive: boolean;
   @Input() isPauseActive: boolean;
   @Input() size!: number;
   @Input() type: WorldTypeEnum;
 
   @Output() readonly isPauseActiveChange: EventEmitter<boolean>;
+  @Output() readonly isPlayerActiveChange: EventEmitter<boolean>;
   @Output() readonly resetWorld: EventEmitter<void>;
 
   directionControls: Record<TankIndex, DirectionEnum | undefined>;
@@ -61,8 +65,11 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     this.directionControls = tankMovementService.directionControls;
     this.isFireControls = new Array<boolean | undefined>(4);
     this.isTurboControls = new Array<boolean | undefined>(4);
+    this.isDPadVisible = false; // todo: сделать в зависимости от типа устройства
     this.isPauseActive = worldService.isPauseActive;
     this.isPauseActiveChange = new EventEmitter<boolean>();
+    this.isPlayerActive = settings.isPlayerActive;
+    this.isPlayerActiveChange = new EventEmitter<boolean>();
     this.isStartTimerActive = true;
     // this.millisecondsPerFrame = 1000 / settings.fps;
     this.resetWorld = new EventEmitter<void>();
@@ -174,6 +181,69 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     return this.worldService.getShellsImpactByTankIndex(tankIndex);
   }
 
+  handleDPadButtonDown(button: DPadButton): void {
+    if (this.playerTankIndex === undefined ||
+      this.worldService.isTankDestroyed(this.playerTankIndex) ||
+      this.worldService.isPauseActive
+    ) {
+      return;
+    }
+
+    switch (button) {
+      case DPadButton.Down:
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Down;
+        break;
+      case DPadButton.Left:
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Left;
+        break;
+      case DPadButton.Right:
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Right;
+        break;
+      case DPadButton.Up:
+        this.directionControls[this.playerTankIndex] = DirectionEnum.Up;
+        break;
+      case DPadButton.Fire:
+        this.isFireControls[this.playerTankIndex] = true;
+        break;
+      case DPadButton.Turbo:
+        this.isTurboControls[this.playerTankIndex] = true;
+        break;
+    }
+  }
+
+  handleDPadButtonUp(button: DPadButton): void {
+    if (button === DPadButton.Disconnect) {
+      this.disconnectPlayer();
+    } else if (button === DPadButton.Pause) {
+      this.worldService.isPauseActive = !this.worldService.isPauseActive;
+      this.worldService.isPauseMaskActive = this.worldService.isPauseActive;
+      this.isPauseActiveChange.emit(this.worldService.isPauseActive);
+    } else if (!this.isPlayerActive && button === DPadButton.Fire) {
+      this.initPlayer();
+    }
+
+    if (this.playerTankIndex === undefined ||
+      this.worldService.isTankDestroyed(this.playerTankIndex)
+    ) {
+      return;
+    }
+
+    switch (button) {
+      case DPadButton.Down:
+      case DPadButton.Left:
+      case DPadButton.Right:
+      case DPadButton.Up:
+        this.directionControls[this.playerTankIndex] = undefined;
+        break;
+      case DPadButton.Fire:
+        this.isFireControls[this.playerTankIndex] = false;
+        break;
+      case DPadButton.Turbo:
+        this.isTurboControls[this.playerTankIndex] = false;
+        break;
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['size']?.currentValue !== changes['size']?.previousValue) {
       this.settings.world.size = this.size;
@@ -187,6 +257,10 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     if (changes['isPauseActive']?.currentValue !== changes['isPauseActive']?.previousValue) {
       this.worldService.isPauseActive = this.isPauseActive;
       this.worldService.isPauseMaskActive = this.isPauseActive;
+    }
+
+    if (changes['isPlayerActive']?.previousValue === true && !this.isPlayerActive) {
+      this.disconnectPlayer();
     }
   }
 
@@ -270,6 +344,7 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   private initPlayer(): void {
+    this.isPlayerActiveChange.emit(true);
     this.settings.isPlayerActive = true;
 
     while (!this.playerTankIndex) {

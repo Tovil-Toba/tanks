@@ -1,0 +1,121 @@
+<div class="absolute w-full h-full z-6 flex justify-content-between align-items-end">
+  <!--  Крестовина -->
+  <span>
+    <div class="grid grid-nogutter w-9rem my-1 mx-2" [class.hidden]="!isPlayerActive">
+      <div class="col-4 h-3rem w-3rem"></div>
+      <div class="col-4 h-3rem w-3rem flex align-items-center justify-content-center">
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="p-button-outlined p-button-plain"
+          style="user-select: none; touch-action: none;"
+          icon="fa-solid fa-arrow-up"
+          (pointerdown)="handleButtonDown(dPadButton.Up)"
+          (pointerup)="handleButtonUp(dPadButton.Up)"
+          (contextmenu)="onContextMenu($event)"
+          (touchstart)="onContextMenu($event)"
+          (touchend)="onContextMenu($event)"
+        ></button>
+      </div>
+      <div class="col-4 h-3rem w-3rem"></div>
+
+      <div class="col-4 h-3rem w-3rem flex align-items-center justify-content-center">
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="p-button-outlined p-button-plain"
+          style="user-select: none; touch-action: none;"
+          icon="fa-solid fa-arrow-left"
+          (pointerdown)="handleButtonDown(dPadButton.Left)"
+          (pointerup)="handleButtonUp(dPadButton.Left)"
+          (contextmenu)="onContextMenu($event)"
+          (touchstart)="onContextMenu($event)"
+          (touchend)="onContextMenu($event)"
+        ></button>
+      </div>
+      <div class="col-4 h-3rem w-3rem"></div>
+      <div class="col-4 h-3rem w-3rem flex align-items-center justify-content-center">
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="p-button-outlined p-button-plain"
+          style="user-select: none; touch-action: none;"
+          icon="fa-solid fa-arrow-right"
+          (pointerdown)="handleButtonDown(dPadButton.Right)"
+          (pointerup)="handleButtonUp(dPadButton.Right)"
+          (contextmenu)="onContextMenu($event)"
+          (touchstart)="onContextMenu($event)"
+          (touchend)="onContextMenu($event)"
+        ></button>
+      </div>
+
+      <div class="col-4 h-3rem w-3rem"></div>
+      <div class="col-4 h-3rem w-3rem flex align-items-center justify-content-center">
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="p-button-outlined p-button-plain"
+          style="user-select: none; touch-action: none;"
+          icon="fa-solid fa-arrow-down"
+          (pointerdown)="handleButtonDown(dPadButton.Down)"
+          (pointerup)="handleButtonUp(dPadButton.Down)"
+          (contextmenu)="onContextMenu($event)"
+          (touchstart)="onContextMenu($event)"
+          (touchend)="onContextMenu($event)"
+        ></button>
+      </div>
+      <div class="col-4 h-3rem w-3rem"></div>
+    </div>
+  </span>
+
+  <!--  Кнопки -->
+  <div class="grid grid-nogutter w-9rem  my-1 mx-2">
+    <div class="col-4 h-3rem w-3rem"></div>
+    <div class="col-4 h-3rem w-3rem"></div>
+    <div class="col-4 h-3rem w-3rem"></div>
+
+    <div class="col-4 h-3rem w-3rem"></div>
+    <div class="col-4 h-3rem w-3rem"></div>
+    <div class="col-4 h-3rem w-3rem flex align-items-center justify-content-center">
+      <!-- Огонь -->
+      <button
+        pButton
+        pRipple
+        type="button"
+        icon="fa-solid fa-crosshairs"
+        class="p-button-rounded p-button-danger p-button-outlined p-button-lg"
+        style="user-select: none; touch-action: none;"
+        [disabled]="button === dPadButton.Turbo"
+        (pointerdown)="handleButtonDown(dPadButton.Fire)"
+        (pointerup)="handleButtonUp(dPadButton.Fire)"
+        (contextmenu)="onContextMenu($event)"
+        (touchstart)="onContextMenu($event)"
+        (touchend)="onContextMenu($event)"
+      ></button>
+    </div>
+
+    <div class="col-4 h-3rem w-3rem"></div>
+    <div class="col-4 h-3rem w-3rem flex align-items-center justify-content-center">
+      <!-- Турбо -->
+      <button
+        pButton
+        pRipple
+        type="button"
+        icon="fa-solid fa-angles-up"
+        class="p-button-rounded p-button-success p-button-outlined p-button-lg"
+        style="user-select: none; touch-action: none;"
+        [class.hidden]="!isPlayerActive"
+        (pointerdown)="handleButtonDown(dPadButton.Turbo)"
+        (pointerup)="handleButtonUp(dPadButton.Turbo)"
+        (contextmenu)="onContextMenu($event)"
+        (touchstart)="onContextMenu($event)"
+        (touchend)="onContextMenu($event)"
+      ></button>
+    </div>
+    <div class="col-4 h-3rem w-3rem"></div>
+  </div>
+</div>

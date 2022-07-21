@@ -1,0 +1,78 @@
+:host ::ng-deep {
+  .p-button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  // Стили из тёмной темы, чтобы в обеих темах кнопки управления выглядели одинаково
+  .p-button.p-button-outlined {
+    background-color: transparent;
+    color: #9FA8DA;
+    border: 0 none;
+  }
+  .p-button.p-button-outlined:enabled:hover {
+    background: rgba(159, 168, 218, 0.04);
+    color: #9FA8DA;
+    border: 0 none;
+  }
+  .p-button.p-button-outlined:enabled:active {
+    background: rgba(159, 168, 218, 0.16);
+    color: #9FA8DA;
+    border: 0 none;
+  }
+  .p-button.p-button-outlined.p-button-plain {
+    color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  .p-button.p-button-outlined.p-button-plain:enabled:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .p-button.p-button-outlined.p-button-plain:enabled:active {
+    background: rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .p-button.p-button-success.p-button-outlined, .p-buttonset.p-button-success > .p-button.p-button-outlined, .p-splitbutton.p-button-success > .p-button.p-button-outlined {
+    background-color: transparent;
+    color: #C5E1A5;
+    border: 0 none;
+  }
+  .p-button.p-button-success.p-button-outlined:enabled:hover, .p-buttonset.p-button-success > .p-button.p-button-outlined:enabled:hover, .p-splitbutton.p-button-success > .p-button.p-button-outlined:enabled:hover {
+    background: rgba(197, 225, 165, 0.04);
+    color: #C5E1A5;
+    border: 0 none;
+  }
+  .p-button.p-button-success.p-button-outlined:enabled:active, .p-buttonset.p-button-success > .p-button.p-button-outlined:enabled:active, .p-splitbutton.p-button-success > .p-button.p-button-outlined:enabled:active {
+    background: rgba(197, 225, 165, 0.16);
+    color: #C5E1A5;
+    border: 0 none;
+  }
+  .p-button.p-button-danger.p-button-outlined, .p-buttonset.p-button-danger > .p-button.p-button-outlined, .p-splitbutton.p-button-danger > .p-button.p-button-outlined {
+    background-color: transparent;
+    color: #EF9A9A;
+    border: 0 none;
+  }
+  .p-button.p-button-danger.p-button-outlined:enabled:hover, .p-buttonset.p-button-danger > .p-button.p-button-outlined:enabled:hover, .p-splitbutton.p-button-danger > .p-button.p-button-outlined:enabled:hover {
+    background: rgba(239, 154, 154, 0.04);
+    color: #EF9A9A;
+    border: 0 none;
+  }
+  .p-button.p-button-danger.p-button-outlined:enabled:active, .p-buttonset.p-button-danger > .p-button.p-button-outlined:enabled:active, .p-splitbutton.p-button-danger > .p-button.p-button-outlined:enabled:active {
+    background: rgba(239, 154, 154, 0.16);
+    color: #EF9A9A;
+    border: 0 none;
+  }
+  .p-button.p-button-outlined {
+    box-shadow: inset 0 0 0 1px;
+  }
+  .p-button.p-button-outlined:enabled:focus {
+    box-shadow: inset 0 0 0 1px;
+  }
+  .p-button.p-button-outlined:enabled:active {
+    box-shadow: inset 0 0 0 1px;
+  }
+  .p-button:disabled.p-button-outlined {
+    background-color: transparent !important;
+    color: rgba(255, 255, 255, 0.38) !important;
+    border-color: rgba(255, 255, 255, 0.38) !important;
+  }
+}

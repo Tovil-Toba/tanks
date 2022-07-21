@@ -16,10 +16,14 @@ import { WorldTypeEnum } from '../world/world-type.enum';
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnDestroy, OnInit {
+  @Input() isDPadVisible: boolean;
+  @Input() isPlayerActive: boolean;
   @Input() isVisible: boolean;
   @Input() worldType: WorldTypeEnum;
 
   @Output() readonly hide: EventEmitter<void>;
+  @Output() readonly isDPadVisibleChange: EventEmitter<boolean>;
+  @Output() readonly isPlayerActiveChange: EventEmitter<boolean>;
   @Output() readonly isVisibleChange: EventEmitter<boolean>;
   @Output() readonly resetWorld: EventEmitter<void>;
   @Output() readonly worldTypeChange: EventEmitter<WorldTypeEnum>;
@@ -45,6 +49,10 @@ export class MenuComponent implements OnDestroy, OnInit {
   ) {
     this.hide = new EventEmitter<void>();
     this.isDarkTheme = false;
+    this.isDPadVisible = false;
+    this.isDPadVisibleChange = new EventEmitter<boolean>();
+    this.isPlayerActiveChange = new EventEmitter<boolean>();
+    this.isPlayerActive = settings.isPlayerActive;
     this.isVisible = false;
     this.isVisibleChange = new EventEmitter<boolean>();
     this.language = translocoService.getDefaultLang() as Language;

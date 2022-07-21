@@ -15,6 +15,8 @@
   "controls": "Controls",
   "fight": "Fight",
   "game": "Game",
+  "gamepad": "Gamepad",
+  "keyboard": "Keyboard",
   "language": "Language",
   "menu": "Menu",
   "pause": "Pause",
@@ -32,6 +34,8 @@
     "dark": "Dark",
     "light": "Light"
   },
+  "unsupportedBrowserNotification": "The game works correctly only in Chrome and Chromium-based browsers. Please try another browser.",
+  "virtualController": "Virtual controller",
   "world": "World",
   "worldSize": "World size",
   "worldType": "World type",
