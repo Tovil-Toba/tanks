@@ -1,4 +1,5 @@
 import { Component, DoCheck, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
@@ -36,12 +37,13 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   private readonly worldTypes: Array<WorldTypeEnum>;
 
   constructor(
+    private deviceDetectorService: DeviceDetectorService,
     @Inject(DOCUMENT) private document: Document,
     private httpClient: HttpClient,
     private primengConfig: PrimeNGConfig,
     private settings: SettingsService
   ) {
-    this.isDPadVisible = false;
+    this.isDPadVisible = !deviceDetectorService.isDesktop();
     this.isLoading = true;
     this.isMenuVisible = false;
     this.isPlayerActive = settings.isPlayerActive;
