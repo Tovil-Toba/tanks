@@ -120,8 +120,8 @@
         (pointerdown)="handleButtonDown(dPadButton.Turbo)"
         (pointerup)="handleButtonUp(dPadButton.Turbo)"
         (contextmenu)="onContextMenu($event)"
-        (touchstart)="onContextMenu($event)"
-        (touchend)="onContextMenu($event)"
+        (touchstart)="handleButtonDown(dPadButton.Turbo); onContextMenu($event)"
+        (touchend)="handleButtonUp(dPadButton.Turbo); onContextMenu($event)"
       ></button>
     </div>
     <div class="col-4 h-3rem w-3rem"></div>
