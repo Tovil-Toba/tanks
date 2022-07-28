@@ -4,7 +4,9 @@ import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
 import { PrimeNGConfig } from 'primeng/api';
+import { TranslocoService } from '@ngneat/transloco';
 
+import { LanguageService } from './shared/language.service';
 import { randomIntFromInterval } from './shared/utils';
 import { Settings } from './core/settings.model';
 import { SettingsService } from './core/settings.service';
@@ -27,7 +29,6 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   isWorldExists: boolean;
   isWorldPauseActive: boolean;
   readonly settings$: Observable<Settings>;
-  title = 'Tanks';
   readonly window: (Window & typeof globalThis) | null;
   worldType: WorldTypeEnum;
   worldSize: number;
@@ -40,8 +41,10 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     private deviceDetectorService: DeviceDetectorService,
     @Inject(DOCUMENT) private document: Document,
     private httpClient: HttpClient,
+    private languageService: LanguageService,
     private primengConfig: PrimeNGConfig,
-    private settings: SettingsService
+    private settings: SettingsService,
+    private translocoService: TranslocoService
   ) {
     this.isDPadVisible = !deviceDetectorService.isDesktop();
     this.isLoading = true;
@@ -119,6 +122,13 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
         this.settings.world = settings.world;
         this.settings.world.type = this.worldType;
         this.isLoading = false;
+      })
+    );
+
+    this.subscription.add(
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      this.translocoService.selectTranslation().subscribe(() => {
+        this.languageService.setTitle();
       })
     );
   }
