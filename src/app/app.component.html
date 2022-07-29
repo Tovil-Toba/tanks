@@ -101,4 +101,19 @@
     (resetWorld)="resetWorld(worldType)"
     [(worldType)]="worldType"
   ></app-menu>
+
+  <p-dialog
+    [draggable]="false"
+    [header]="t('unsupportedBrowser')"
+    [modal]="true"
+    (onHide)="isWorldPauseActive = false"
+    (onShow)="isWorldPauseActive = true"
+    styleClass="w-24rem"
+    [(visible)]="isUnsupportedBrowserDialogVisible"
+  >
+    <div class="flex">
+      <i class="pi pi-exclamation-triangle text-5xl mt-1 p-error"></i>
+      <span class="ml-3">{{ t('unsupportedBrowserNotification') }}</span>
+    </div>
+  </p-dialog>
 </ng-container>

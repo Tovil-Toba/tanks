@@ -34,6 +34,7 @@
     "dark": "Тёмная",
     "light": "Светлая"
   },
+  "unsupportedBrowser": "Неподдерживаемый браузер",
   "unsupportedBrowserNotification": "Игра корректно работает только в Chrome и браузерах на основе Chromium. Пожалуйста, попробуйте другой браузер.",
   "virtualController": "Виртуальный контроллер",
   "world": "Мир",

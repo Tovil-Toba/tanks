@@ -1,11 +1,14 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { LocalStorageService } from 'ngx-webstorage';
 import { Subscription } from 'rxjs';
 import { TranslocoService } from '@ngneat/transloco';
 
 import { formatActionButton } from './format-action-button';
 import { Language } from '../core/language.model';
+import { LanguageService } from '../core/language.service';
 import { SettingsService } from '../core/settings.service';
+import { ThemeService } from '../core/theme.service';
 import { WORLD_SIZES } from '../world/world-sizes';
 import { WorldSizeEnum } from '../world/world-size.enum';
 import { WorldTypeEnum } from '../world/world-type.enum';
@@ -44,11 +47,14 @@ export class MenuComponent implements OnDestroy, OnInit {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
+    private languageService: LanguageService,
+    private localStorageService: LocalStorageService,
+    private themeService: ThemeService,
     private settings: SettingsService,
     private translocoService: TranslocoService
   ) {
     this.hide = new EventEmitter<void>();
-    this.isDarkTheme = false;
+    this.isDarkTheme = !!localStorageService.retrieve('isDarkTheme');
     this.isDPadVisible = false;
     this.isDPadVisibleChange = new EventEmitter<boolean>();
     this.isPlayerActiveChange = new EventEmitter<boolean>();
@@ -70,13 +76,11 @@ export class MenuComponent implements OnDestroy, OnInit {
   }
 
   changeLanguage(): void {
-    this.translocoService.setActiveLang(this.language);
+    this.languageService.setLanguage(this.language);
   }
 
   changeTheme(): void {
-    const themeLink: HTMLLinkElement = this.document.getElementById('theme-css') as HTMLLinkElement;
-    const themeFolder = this.isDarkTheme ? this.darkThemeFolder : this.lightThemeFolder;
-    themeLink.href = `assets/css/themes/${themeFolder}/theme.css`;
+    this.themeService.setTheme(this.isDarkTheme);
   }
 
   changeWorldType(): void {

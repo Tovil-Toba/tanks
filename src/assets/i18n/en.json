@@ -34,6 +34,7 @@
     "dark": "Dark",
     "light": "Light"
   },
+  "unsupportedBrowser": "Unsupported browser",
   "unsupportedBrowserNotification": "The game works correctly only in Chrome and Chromium-based browsers. Please try another browser.",
   "virtualController": "Virtual controller",
   "world": "World",

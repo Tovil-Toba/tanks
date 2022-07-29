@@ -6,6 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RippleModule } from 'primeng/ripple';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -35,6 +36,7 @@ import { worldNumberReducer } from './store/world-number.reducer';
     FormsModule,
     HttpClientModule,
     InputSwitchModule,
+    NgxWebstorageModule.forRoot({ caseSensitive: true }),
     ProgressSpinnerModule,
     RippleModule,
     SelectButtonModule,

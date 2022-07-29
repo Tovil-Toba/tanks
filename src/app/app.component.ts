@@ -6,10 +6,11 @@ import { Observable, Subscription } from 'rxjs';
 import { PrimeNGConfig } from 'primeng/api';
 import { TranslocoService } from '@ngneat/transloco';
 
-import { LanguageService } from './shared/language.service';
+import { LanguageService } from './core/language.service';
 import { randomIntFromInterval } from './shared/utils';
 import { Settings } from './core/settings.model';
 import { SettingsService } from './core/settings.service';
+import { ThemeService } from './core/theme.service';
 import { WorldTypeEnum } from './world/world-type.enum';
 
 @Component({
@@ -26,6 +27,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   isLoading: boolean;
   isMenuVisible: boolean;
   isPlayerActive: boolean;
+  isUnsupportedBrowserDialogVisible: boolean;
   isWorldExists: boolean;
   isWorldPauseActive: boolean;
   readonly settings$: Observable<Settings>;
@@ -44,6 +46,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     private languageService: LanguageService,
     private primengConfig: PrimeNGConfig,
     private settings: SettingsService,
+    private themeService: ThemeService,
     private translocoService: TranslocoService
   ) {
     this.isDPadVisible = !deviceDetectorService.isDesktop();
@@ -64,6 +67,8 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
 
     this.subscription = new Subscription();
     this.window = this.document.defaultView;
+    const isChromium = 'chrome' in (this.window as Window);
+    this.isUnsupportedBrowserDialogVisible = !isChromium;
   }
 
   get isLandscape(): boolean {
@@ -108,6 +113,8 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    this.languageService.initLanguage();
+    this.themeService.initTheme();
     this.primengConfig.ripple = true;
 
     this.subscription.add(
