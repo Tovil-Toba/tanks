@@ -7,6 +7,7 @@ import { PrimeNGConfig } from 'primeng/api';
 import { TranslocoService } from '@ngneat/transloco';
 
 import { LanguageService } from './core/language.service';
+import packageJson from '../../package.json';
 import { randomIntFromInterval } from './shared/utils';
 import { Settings } from './core/settings.model';
 import { SettingsService } from './core/settings.service';
@@ -31,6 +32,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
   isWorldExists: boolean;
   isWorldPauseActive: boolean;
   readonly settings$: Observable<Settings>;
+  readonly version: string;
   readonly window: (Window & typeof globalThis) | null;
   worldType: WorldTypeEnum;
   worldSize: number;
@@ -56,6 +58,8 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     this.isWorldExists = true;
     this.isWorldPauseActive = false;
     this.settings$ = this.httpClient.get<Settings>('assets/settings.json');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    this.version = packageJson.version as string;
     this.worldSize = settings.world.size;
     this.worldTypes = [
       WorldTypeEnum.A,
