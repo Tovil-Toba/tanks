@@ -9,15 +9,26 @@ import { LocalStorageService } from 'ngx-webstorage';
 export class ThemeService {
   private readonly darkThemeFolder = 'mdc-dark-indigo';
   private readonly lightThemeFolder = 'mdc-light-indigo';
+  private readonly window: (Window & typeof globalThis) | null;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private localStorageService: LocalStorageService
-  ) { }
+  ) {
+    this.window = this.document.defaultView;
+  }
 
   initTheme(): void {
-    const isDarkTheme = !!this.localStorageService.retrieve('isDarkTheme');
-    this.setTheme(isDarkTheme);
+    let isDarkTheme: unknown = this.localStorageService.retrieve('isDarkTheme');
+
+    if (typeof isDarkTheme !== 'boolean' &&
+      this.window?.matchMedia &&
+      this.window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      isDarkTheme = true;
+    }
+
+    this.setTheme(!!isDarkTheme);
   }
 
   setTheme(isDarkTheme: boolean): void {
