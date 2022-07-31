@@ -33,15 +33,22 @@ export class LanguageService {
 
     this.translocoService.setDefaultLang(language);
     this.translocoService.setActiveLang(language);
+    this.setHtmlLang(language);
   }
 
   setLanguage(language: Language): void {
     this.translocoService.setActiveLang(language);
     this.localStorageService.store('language', language);
+    this.setHtmlLang(language);
   }
 
   setTitle(): void {
     const title: HTMLTitleElement = this.document.getElementsByTagName('title')[0];
     title.innerText = this.translocoService.translate('tanks');
+  }
+
+  private setHtmlLang(language: Language): void {
+    const htmlElement: HTMLHtmlElement = this.document.getElementsByTagName('html')[0];
+    htmlElement.lang = language;
   }
 }
