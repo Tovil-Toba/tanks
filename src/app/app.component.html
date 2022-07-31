@@ -4,7 +4,7 @@
     <div
       *ngIf="!isLoading"
       class="flex flex-column justify-content-between h-full"
-      [style]="{ width: isLandscape ? 'calc(100vh - 6rem - 2px)' : '100vw' }"
+      [style]="{ width: isLandscape ? 'calc(100vh - 6rem - 2px)' : 'calc(100vw - 2px)' }"
     ><!-- минус 2px - это из-за рамки, по пикселю с каждом стороны -->
       <div
         #header
@@ -55,8 +55,8 @@
             [showDelay]="1000"
           >
           <span class="mx-2">
-            <span>2022</span><br>
-            <span class="text-xs">{{ version }}</span>
+            <span>2022</span>
+            <!--<br><span class="text-xs">{{ version }}</span>-->
           </span>
         </span>
         <span class="logos flex align-items-center">

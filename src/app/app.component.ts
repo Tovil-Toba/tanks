@@ -51,7 +51,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     private themeService: ThemeService,
     private translocoService: TranslocoService
   ) {
-    this.isDPadVisible = !deviceDetectorService.isDesktop();
+    this.isDPadVisible = deviceDetectorService.isMobile() || deviceDetectorService.isTablet();
     this.isLoading = true;
     this.isMenuVisible = false;
     this.isPlayerActive = settings.isPlayerActive;
@@ -71,8 +71,20 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
 
     this.subscription = new Subscription();
     this.window = this.document.defaultView;
-    const isChromium = 'chrome' in (this.window as Window);
-    this.isUnsupportedBrowserDialogVisible = !isChromium;
+
+    const isIOS = deviceDetectorService.os.toLowerCase() === 'ios'; // iOS
+    const isChromium = this.window && (
+      'chrome' in this.window ||
+      this.window.navigator.userAgent.match('CriOS')
+    );
+    const isSafari = !!this.window &&
+      this.window.navigator.vendor.indexOf('Apple') > -1 &&
+      this.window.navigator.userAgent.indexOf('CriOS') === -1 &&
+      this.window.navigator.userAgent.indexOf('FxiOS') === -1
+    ;
+    // Проверка на iOS добавлена из-за того, что на ней игра не тормозит.
+    // Проверка на Safari оставлена на тот случай, если iOS не определится.
+    this.isUnsupportedBrowserDialogVisible = !isChromium && !isIOS && !isSafari;
   }
 
   get isLandscape(): boolean {
