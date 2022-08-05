@@ -87,6 +87,15 @@ export class TankMovementService {
     return coordinates;
   }
 
+  collapseTank(tankIndex: TankIndex): void {
+    this.setTankCoordinates(tankIndex, {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    });
+  }
+
   getDirectionSquares(tankIndex: TankIndex): Array<Square> {
     return this.directionSquares[tankIndex];
   }

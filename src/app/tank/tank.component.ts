@@ -79,7 +79,9 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
   direction: DirectionEnum;
   readonly directionEnum: typeof DirectionEnum;
   explosionFrame: number;
+  finalExplosionFrame: number;
   fireTrigger: number | null;
+  isFinalExplode?: boolean;
   isPlayerIndicatorVisible: boolean;
   isRotating: boolean;
   isShellVisible: boolean;
@@ -112,6 +114,7 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     this.direction = DirectionEnum.Up;
     this.directionEnum = DirectionEnum;
     this.explosionFrame = 0;
+    this.finalExplosionFrame = 0;
     this.explosionType = settings.tank.explosionType;
     this.fireTrigger = 0;
     this.flashType = settings.tank.flashType;
@@ -198,6 +201,14 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
       this.handleTurboControl();
     }
 
+    if (this.settings.world.isFullyDestroyableTanks &&
+      this.isExplode &&
+      this.explosionFrame > 0 &&
+      changes['armor']?.currentValue !== changes['armor']?.previousValue
+    ) {
+      this.isFinalExplode = true;
+    }
+
     this.checkPlayer();
   }
 
@@ -252,6 +263,14 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
 
     if (!this.turretColor) {
       this.turretColor = this.color;
+    }
+  }
+
+  onFinalExplosionFrameChange(frame: number): void {
+    this.finalExplosionFrame = frame;
+
+    if (frame >= 6) {
+      this.tankMovementService.collapseTank(this.index);
     }
   }
 

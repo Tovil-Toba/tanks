@@ -268,6 +268,11 @@ export class SettingsService {
       this._world.isAssetsRandomRotationEnabled = isAssetsRandomRotationEnabled;
     }
 
+    const isFullyDestroyableTanks: boolean | undefined = (world as World)?.isFullyDestroyableTanks;
+    if (typeof isFullyDestroyableTanks === 'boolean') {
+      this._world.isFullyDestroyableTanks = isFullyDestroyableTanks;
+    }
+
     const collisionExplosionType: string | undefined = (world as World)?.collisionExplosionType?.toUpperCase();
     if (collisionExplosionType &&
       ![ExplosionTypeEnum.A, ExplosionTypeEnum.B, ExplosionTypeEnum.C].includes(collisionExplosionType as ExplosionTypeEnum)

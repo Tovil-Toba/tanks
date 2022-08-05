@@ -1,5 +1,6 @@
 <div
   class="absolute"
+  [class.hidden]="finalExplosionFrame >= 6"
   [class.rotate-0]="direction === directionEnum.Up"
   [class.rotate-45]="direction === directionEnum.UpRight"
   [class.-rotate-45]="direction === directionEnum.UpLeft"
@@ -65,6 +66,21 @@
   <app-explosion
     *ngIf="isExplode"
     (frameChange)="explosionFrame = $event"
+    [showBlastTrail]="settings.world.showBlastTrail"
+  ></app-explosion>
+</div>
+
+<!-- Финальный взрыв -->
+<div
+  class="absolute z-3"
+  [style.height.px]="size"
+  [style.width.px]="size"
+  [style.top.px]="top"
+  [style.left.px]="left"
+>
+  <app-explosion
+    *ngIf="isFinalExplode"
+    (frameChange)="onFinalExplosionFrameChange($event)"
     [showBlastTrail]="settings.world.showBlastTrail"
   ></app-explosion>
 </div>

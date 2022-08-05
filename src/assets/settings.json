@@ -62,6 +62,7 @@
   },
   "world": {
     "isAssetsRandomRotationEnabled": true,
+    "isFullyDestroyableTanks": true,
     "collisionExplosionType": "H",
     "resetTimeout": 5,
     "size": 500,

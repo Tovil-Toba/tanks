@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Coordinates } from '../shared/coordinates.model';
 import { DirectionEnum } from '../shared/direction.enum';
+import { SettingsService } from './settings.service';
 import { TankIndex } from '../tank/tank-index.model';
 import { TankMovementService } from './tank-movement.service';
 import { WorldService } from '../world/world.service';
@@ -9,6 +10,7 @@ import { WorldService } from '../world/world.service';
 @Injectable()
 export class TankFireService {
   constructor(
+    private settings: SettingsService,
     private tankMovementService: TankMovementService,
     private worldService: WorldService
   ) { }
@@ -125,10 +127,12 @@ export class TankFireService {
       const undestroyableBlocks: Array<Coordinates> = this.worldService.undestroyableBlocks
         .filter((square) => isBlockInSight(target, square))
       ;
-      const destroyedTanks: Array<Coordinates> = this.tankMovementService.tanksCoordinatesArray
-        .filter((tank, index) => this.worldService.isTankDestroyed(index as TankIndex))
-        .filter((destroyedTank) => isBlockInSight(target, destroyedTank))
-      ;
+      const destroyedTanks: Array<Coordinates> = this.settings.world.isFullyDestroyableTanks
+        ? []
+        : this.tankMovementService.tanksCoordinatesArray
+          .filter((tank, index) => this.worldService.isTankDestroyed(index as TankIndex))
+          .filter((destroyedTank) => isBlockInSight(target, destroyedTank))
+        ;
 
       if (!undestroyableBlocks.length && !destroyedTanks.length) {
         isTargetInDirection = true;

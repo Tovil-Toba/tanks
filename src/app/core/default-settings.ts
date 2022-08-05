@@ -78,6 +78,7 @@ const settings: Settings = {
   },
   world: {
     isAssetsRandomRotationEnabled: true,
+    isFullyDestroyableTanks: true,
     collisionExplosionType: ExplosionTypeEnum.H,
     resetTimeout: 5, // 0 - не перезапускать мир
     size: 500,
