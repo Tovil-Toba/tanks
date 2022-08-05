@@ -48,7 +48,6 @@ export class LanguageService {
   }
 
   private setHtmlLang(language: Language): void {
-    const htmlElement: HTMLHtmlElement = this.document.getElementsByTagName('html')[0];
-    htmlElement.lang = language;
+    this.document.documentElement.lang = language.toLowerCase();
   }
 }

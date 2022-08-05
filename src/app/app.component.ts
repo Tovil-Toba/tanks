@@ -59,7 +59,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     this.isWorldPauseActive = false;
     this.settings$ = this.httpClient.get<Settings>('assets/settings.json');
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    this.version = packageJson.version as string;
+    this.version = packageJson.version;
     this.worldSize = settings.world.size;
     this.worldTypes = [
       WorldTypeEnum.A,
@@ -84,7 +84,7 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     ;
     // Проверка на iOS добавлена из-за того, что на ней игра не тормозит.
     // Проверка на Safari оставлена на тот случай, если iOS не определится.
-    this.isUnsupportedBrowserDialogVisible = !isChromium && !isIOS && !isSafari;
+    this.isUnsupportedBrowserDialogVisible = false; // !isChromium && !isIOS && !isSafari;
   }
 
   get isLandscape(): boolean {

@@ -52,6 +52,8 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
   tick$: Observable<number>;
   worldNumber$: Observable<number>;
 
+  private pressedButton?: KeyboardEvent;
+  private prevPressedButton?: KeyboardEvent;
   private readonly subscription: Subscription;
 
   constructor(
@@ -118,6 +120,14 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
+    if (this.controlsService.isDirectionButton(event)) {
+      if (this.pressedButton && !this.prevPressedButton) {
+        this.prevPressedButton = this.pressedButton;
+      }
+
+      this.pressedButton = event;
+    }
+
     if (this.playerTankIndex === undefined ||
       this.worldService.isTankDestroyed(this.playerTankIndex) ||
       this.worldService.isPauseActive
@@ -169,7 +179,22 @@ export class WorldComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     if (this.controlsService.isDirectionButton(event)) {
-      this.directionControls[this.playerTankIndex] = undefined;
+      if (this.pressedButton?.code === event.code) {
+        if (this.prevPressedButton && this.prevPressedButton.code !== this.pressedButton.code) {
+          this.pressedButton = this.prevPressedButton;
+          this.handleKeyDown(this.prevPressedButton);
+        } else {
+          this.pressedButton = undefined;
+          this.directionControls[this.playerTankIndex] = undefined;
+        }
+      } else if (this.prevPressedButton?.code === event.code && this.pressedButton) {
+        this.handleKeyDown(this.pressedButton);
+      } else {
+        this.pressedButton = undefined;
+        this.directionControls[this.playerTankIndex] = undefined;
+      }
+
+      this.prevPressedButton = undefined;
     } else if (this.controlsService.isFireButton(event)) {
       this.isFireControls[this.playerTankIndex] = false;
     } else if (this.controlsService.isTurboButton(event)) {
