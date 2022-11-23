@@ -41,7 +41,6 @@ export class PlayerIndicatorComponent implements OnDestroy, OnInit {
     let countdown = 6;
 
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       interval(this.settings.millisecondsPerFrame).subscribe((tick) => {
         if (!this.worldService.isPauseMaskActive && (tick % (this.settings.fps/2) === 0)) {
           this.isHidden = !this.isHidden;

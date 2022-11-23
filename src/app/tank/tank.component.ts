@@ -222,7 +222,6 @@ export class TankComponent implements OnChanges, OnDestroy, OnInit {
     let explosionFrame = 0;
 
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
         this.tick = tick;
 

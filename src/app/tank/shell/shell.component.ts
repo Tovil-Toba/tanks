@@ -119,7 +119,6 @@ export class ShellComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe(() => {
         if (!this.isImpact && this.isVisible) {
           this.move();

@@ -54,7 +54,6 @@ export class TrackComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
         if (tick % (this.settings.fps / 10) === 0) { // todo: привязать скорость
           this.trigger = !this.trigger;

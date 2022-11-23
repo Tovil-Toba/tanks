@@ -58,7 +58,6 @@ export class ExhaustComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
         this.tick = tick;
         this.getCurrentFrame();

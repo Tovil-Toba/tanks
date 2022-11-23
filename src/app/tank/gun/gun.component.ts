@@ -62,7 +62,6 @@ export class GunComponent implements OnChanges, OnDestroy, OnInit {
     let index = -1;
 
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
         if (!this.isActive) {
           return;

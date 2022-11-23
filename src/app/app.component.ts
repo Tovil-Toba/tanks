@@ -134,7 +134,6 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     this.primengConfig.ripple = true;
 
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.settings$.subscribe((settings) => {
         this.settings.controls = settings.controls;
         this.settings.fps = settings.fps;
@@ -149,7 +148,6 @@ export class AppComponent implements DoCheck, OnDestroy, OnInit {
     );
 
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.translocoService.selectTranslation().subscribe(() => {
         this.languageService.setTitle();
       })

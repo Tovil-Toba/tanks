@@ -91,7 +91,6 @@ export class SquareComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
         this.tick = tick;
         this.checkSquare();

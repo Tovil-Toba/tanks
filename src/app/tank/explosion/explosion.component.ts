@@ -52,7 +52,6 @@ export class ExplosionComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     this.subscription = this.tick$.subscribe((tick) => {
       if (tick % (this.settings.fps / 10) === 0) {
         if (this.frame <= this.framesCount) {

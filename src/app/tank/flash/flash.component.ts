@@ -62,7 +62,6 @@ export class FlashComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.tick$.subscribe((tick) => {
         if (!this.isActive) {
           return;

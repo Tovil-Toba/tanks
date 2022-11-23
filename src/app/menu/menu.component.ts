@@ -110,7 +110,6 @@ export class MenuComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.subscription.add(
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       this.translocoService.selectTranslation().subscribe((translation) => {
         this.themes = [
           { label: translation['themes.light'] as string, value: false },
